@@ -37,14 +37,15 @@ Bản đầu báo cáo kết luận Gradle lỗi do "sandbox/JVM". Điều tra t
 
 - Hành vi dismiss/background dừng request, resume không nhân đôi polling và lỗi mạng có đường phục hồi được bao phủ bằng test có fake clock/transport trong `camera_preview_cubit_test.dart` (gồm các ca bổ sung của T02). Logcat đã che thông tin nhạy cảm trên thiết bị thật **chưa thu thập được** vì chưa chạy được app trên thiết bị/emulator (xem AC1).
 
-### AC3 — Smoke qua backend với camera thực: **chưa chạy**
+### AC3 — Smoke qua backend với camera thực: **chưa chạy (đã có sẵn test để chạy)**
 
 - Chưa chạy được trên VM này: backend cần PostgreSQL/PostGIS tại `127.0.0.1:5433`, VM không có Docker/PostgreSQL và kho gói hệ điều hành không truy cập được (cùng giới hạn đã ghi ở bằng chứng T01/T02 trong `docs/project-status.md`).
+- **Đã bổ sung vào branch này** file test smoke `mobile/integration_test/camera_backend_smoke_test.dart` (khác fixture demo-mode: dùng `ApiCameraRepository` thật, `demoMode: false`): ca API kiểm list → detail → descriptor → snapshot 200 kèm ETag → gọi lại với ETag phải nhận 304/`SnapshotUnchanged`; ca UI mở sheet từ catalog của backend và kiểm có ảnh snapshot. File đã qua `flutter analyze` sạch và bộ `flutter test` vẫn 66/66 PASS (test này thuộc `integration_test/` nên chỉ chạy trên thiết bị cùng backend đang chạy). Cách chạy không cần Notis thật: backend ở chế độ fixture (`CAMERA_PROVIDER_MODE=fixture`, `npm run seed:fixture` nạp `backend/fixtures/catalog.json`) vẫn đi qua đúng pipeline snapshot/ETag thật; lưu ý đặt `HOST=0.0.0.0`, emulator dùng `http://10.0.2.2:3000` (thiết bị thật dùng `adb reverse tcp:3000 tcp:3000` rồi `http://127.0.0.1:3000`), truyền `--dart-define=T03_BACKEND_URL=...` và `--dart-define=T03_READER_KEY=<BACKEND_API_KEY>`.
 
 ## Việc còn lại để đóng T03
 
 1. Trên máy có KVM/thiết bị thật (Windows/macOS/Linux có tăng tốc): tạo emulator API 35/36 hoặc cắm thiết bị, chạy `flutter test integration_test/camera_flow_test.dart -d <device>`; ghi model thiết bị/OS/SDK và đính kèm screenshot các bước chính. (Build APK không còn là trở ngại: đã chứng minh build được, và máy Windows của chủ repo cũng từng build thành công.)
-2. Chạy backend với PostgreSQL/PostGIS, smoke từ app qua một camera thực trong catalog: list/detail/ảnh/304; ghi kết quả từng ca vào báo cáo này.
+2. Chạy backend với PostgreSQL/PostGIS (chế độ fixture là đủ cho smoke, không cần Notis thật), rồi chạy test smoke đã có sẵn `integration_test/camera_backend_smoke_test.dart` trên cùng thiết bị/emulator ở mục 1 (tham số ở mục AC3); ghi kết quả từng ca vào báo cáo này.
 3. Bổ sung logcat đã che thông tin nhạy cảm cho ca dismiss/background/resume.
 
 Khi các mục trên có bằng chứng, cập nhật trạng thái AC trong báo cáo này và đóng issue #3.

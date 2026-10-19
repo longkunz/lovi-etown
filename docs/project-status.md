@@ -27,6 +27,12 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 
 Đây là bằng chứng kiểm thử tự động, không phải xác nhận mới về bản APK/IPA phát hành, nghiệm thu iOS trên thiết bị, shader trên mọi thiết bị hoặc triển khai production. Bản đồ/Vietmap/nearby, LIVE, cảnh báo và tài khoản tiếp tục thuộc các lát sau A1.
 
+### T01/T02 (issue #1, #2) — 2026-10-19
+
+- T01: `CameraApiClient.getSnapshot` nay decode thật payload (ngoài kiểm tra magic bytes ở header) trước khi tạo `SnapshotFrame`; payload JPEG/PNG/WebP có header hợp lệ nhưng không giải mã được bị từ chối với lỗi 422, nên không thể thay last-good frame trong preview/viewer hay đi vào snapshot cache dùng chung. Có regression test ở tầng client và test đầu-cuối client → repository → preview/cache (kể cả thumbnail scheduler).
+- T02: `CameraPreviewCubit` được tách thành các stage detail → descriptor → snapshot; backoff tự động và retry thủ công làm lại đúng stage còn thiếu thay vì gọi snapshot khi chưa có endpoint, descriptor lỗi vẫn thử snapshot qua endpoint của camera và được khôi phục ở chu kỳ poll kế tiếp, lỗi refresh đánh dấu ảnh hiện tại là cũ (`isStale`) ngay cả trước ngưỡng 60 giây, và bộ đếm backoff đặt lại khi mỗi stage thành công.
+- Kiểm thử đã chạy lại trên môi trường agent (Flutter 3.47.7 / Dart 3.13.5): targeted tests cho T01/T02 đỏ trước khi sửa (8 test fail) và xanh sau khi sửa; `flutter test` toàn bộ **66/66 PASS**; `flutter analyze` không có issue. Backend không thay đổi mã nguồn; `npm run test:unit` **22/22 PASS**. `test:api`/`test:db` chưa chạy được trên môi trường agent vì không có Docker/PostgreSQL và kho gói hệ điều hành không truy cập được; cần chạy lại ở môi trường có PostgreSQL/PostGIS tại `127.0.0.1:5433` để hoàn tất bằng chứng backend.
+
 ## Cách đọc và cập nhật tài liệu
 
 - Dùng [README gốc](../README.md) và [README backend](../backend/README.md) cho thao tác cài đặt/chạy hiện hành. Script thực tế nằm trong [backend/package.json](../backend/package.json); dependency Flutter nằm trong [pubspec.yaml](../mobile/pubspec.yaml) và [pubspec.lock](../mobile/pubspec.lock).

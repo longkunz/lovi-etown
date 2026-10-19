@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart' hide State;
+import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memory_cache.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/preview_clock.dart';
@@ -417,6 +418,340 @@ void main() {
       await cubit.open('cam-1');
       // No active timer scheduled on 401
       expect(clock.latestTimer?.isActive, isFalse);
+    });
+  });
+
+  group('CameraPreviewCubit T01/T02 recovery branches', () {
+    late ControlledCameraRepository repository;
+    late FakePreviewClock clock;
+    late CameraPreviewCubit cubit;
+
+    setUp(() {
+      repository = ControlledCameraRepository();
+      clock = FakePreviewClock();
+      cubit = CameraPreviewCubit(
+        repository: repository,
+        clock: clock,
+      );
+    });
+
+    tearDown(() {
+      cubit.close();
+    });
+
+    Future<void> flush() async {
+      for (var i = 0; i < 5; i++) {
+        await Future<void>.delayed(Duration.zero);
+      }
+    }
+
+    Camera cameraWithoutEndpoint(String id) {
+      return Camera(
+        id: id,
+        name: 'Camera $id',
+        provinceId: 'tp_hcm',
+        district: 'Quan 1',
+        snapshotCapable: true,
+        playbackEndpoint: '/api/v1/cameras/$id/playback',
+      );
+    }
+
+    test('detail_failure_auto_retries_the_detail_step', () async {
+      var detailCalls = 0;
+      repository.onDetail = (id, token) async {
+        detailCalls++;
+        if (detailCalls == 1) {
+          return const Left(ApiFailure('Mất mạng',
+              statusCode: 503, retryable: true));
+        }
+        return Right(Camera(
+          id: id,
+          name: 'Camera $id',
+          provinceId: 'tp_hcm',
+          district: 'Quan 1',
+          snapshotCapable: true,
+          snapshotEndpoint: '/api/v1/cameras/$id/snapshot',
+          playbackEndpoint: '/api/v1/cameras/$id/playback',
+        ));
+      };
+
+      await cubit.open('cam-1');
+
+      expect(detailCalls, equals(1));
+      expect(repository.snapshotCallCount, equals(0));
+      expect(cubit.state.cameraState, isA<RequestFailure<Camera>>());
+      expect(clock.latestTimer?.isActive, isTrue);
+      expect(clock.latestTimer?.delay, equals(const Duration(seconds: 12)));
+
+      clock.latestTimer!.fire();
+      await flush();
+
+      // The automatic retry must redo the missing detail step, not get
+      // stuck trying to fetch a snapshot without an endpoint.
+      expect(detailCalls, equals(2));
+      expect(repository.snapshotCallCount, equals(1));
+      expect(cubit.state.currentFrame, isNotNull);
+    });
+
+    test('descriptor_failure_without_camera_endpoint_retries_descriptor',
+        () async {
+      repository.onDetail = (id, token) async =>
+          Right(cameraWithoutEndpoint(id));
+      var playbackCalls = 0;
+      repository.onPlayback = (id, token) async {
+        playbackCalls++;
+        if (playbackCalls == 1) {
+          return const Left(ApiFailure('Mất mạng',
+              statusCode: 503, retryable: true));
+        }
+        return Right(PlaybackDescriptor(
+          cameraId: id,
+          kind: 'snapshot',
+          snapshotEndpoint: '/api/v1/cameras/$id/snapshot',
+          refreshIntervalMs: 12000,
+        ));
+      };
+
+      await cubit.open('cam-1');
+
+      expect(cubit.state.camera, isNotNull);
+      expect(
+          cubit.state.snapshotState, isA<RequestFailure<SnapshotReply>>());
+      expect(repository.snapshotCallCount, equals(0));
+      expect(clock.latestTimer?.isActive, isTrue);
+
+      clock.latestTimer!.fire();
+      await flush();
+
+      expect(playbackCalls, equals(2));
+      expect(repository.snapshotCallCount, equals(1));
+      expect(cubit.state.currentFrame, isNotNull);
+    });
+
+    test(
+        'descriptor_failure_with_camera_endpoint_falls_back_to_snapshot_and_recovers_descriptor_on_next_poll',
+        () async {
+      var playbackCalls = 0;
+      repository.onPlayback = (id, token) async {
+        playbackCalls++;
+        if (playbackCalls == 1) {
+          return const Left(
+              ApiFailure('Mất mạng', statusCode: 503, retryable: true));
+        }
+        return Right(PlaybackDescriptor(
+          cameraId: id,
+          kind: 'snapshot',
+          snapshotEndpoint: '/api/v1/cameras/$id/snapshot',
+          refreshIntervalMs: 12000,
+        ));
+      };
+
+      await cubit.open('cam-1');
+
+      // Snapshot still loads through the camera endpoint right away.
+      expect(repository.snapshotCallCount, equals(1));
+      expect(cubit.state.currentFrame, isNotNull);
+      expect(cubit.state.descriptor, isNull);
+
+      // The next poll cycle retries the missing descriptor stage first.
+      clock.advance(const Duration(seconds: 12));
+      await flush();
+
+      expect(playbackCalls, equals(2));
+      expect(cubit.state.descriptor, isNotNull);
+      expect(repository.snapshotCallCount, equals(2));
+    });
+
+    test('detail_429_schedules_retry_respecting_retry_after', () async {
+      repository.onDetail = (id, token) async => const Left(ApiFailure(
+            'Quá nhiều yêu cầu',
+            statusCode: 429,
+            retryable: true,
+            retryAfter: Duration(seconds: 90),
+          ));
+
+      await cubit.open('cam-1');
+
+      expect(clock.latestTimer?.isActive, isTrue);
+      expect(clock.latestTimer?.delay, equals(const Duration(seconds: 90)));
+    });
+
+    test('snapshot_422_does_not_schedule_auto_retry', () async {
+      repository.onSnapshot = (endpoint, etag, token) async => const Left(
+          ApiFailure('Dữ liệu hình ảnh không hợp lệ', statusCode: 422));
+
+      await cubit.open('cam-1');
+
+      expect(
+          cubit.state.snapshotState, isA<RequestFailure<SnapshotReply>>());
+      expect(clock.scheduledTimers.where((t) => t.isActive), isEmpty);
+    });
+
+    test('refresh_error_marks_existing_frame_stale_before_age_threshold',
+        () async {
+      var calls = 0;
+      repository.onSnapshot = (endpoint, etag, token) async {
+        calls++;
+        if (calls == 1) {
+          return Right(SnapshotReceived(SnapshotFrame(
+            bytes: Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0]),
+            etag: 'etag-1',
+            fetchedAt: clock.now(),
+          )));
+        }
+        return const Left(
+            ApiFailure('Mất mạng', statusCode: 503, retryable: true));
+      };
+
+      await cubit.open('cam-1');
+      expect(cubit.state.isStale, isFalse);
+
+      // Only 12s pass: well below the 60s age threshold.
+      clock.advance(const Duration(seconds: 12));
+      await flush();
+
+      expect(cubit.state.currentFrame?.etag, equals('etag-1'));
+      expect(
+          cubit.state.snapshotState, isA<RequestFailure<SnapshotReply>>());
+      expect(cubit.state.isStale, isTrue);
+    });
+
+    test('refresh_error_recovers_on_scheduled_backoff_when_network_returns',
+        () async {
+      var calls = 0;
+      repository.onSnapshot = (endpoint, etag, token) async {
+        calls++;
+        if (calls == 2) {
+          return const Left(
+              ApiFailure('Mất mạng', statusCode: 503, retryable: true));
+        }
+        return Right(SnapshotReceived(SnapshotFrame(
+          bytes: Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0]),
+          etag: 'etag-$calls',
+          fetchedAt: clock.now(),
+        )));
+      };
+
+      await cubit.open('cam-1');
+      clock.advance(const Duration(seconds: 12));
+      await flush();
+      expect(
+          cubit.state.snapshotState, isA<RequestFailure<SnapshotReply>>());
+
+      clock.latestTimer!.fire();
+      await flush();
+
+      expect(cubit.state.currentFrame?.etag, equals('etag-3'));
+      expect(cubit.state.isStale, isFalse);
+      expect(
+          cubit.state.snapshotState, isA<RequestSuccess<SnapshotReply>>());
+    });
+
+    test('detail_non_retryable_failure_does_not_schedule_auto_retry',
+        () async {
+      repository.onDetail = (id, token) async => const Left(
+          ApiFailure('Không tìm thấy dữ liệu', statusCode: 404));
+
+      await cubit.open('cam-1');
+
+      expect(cubit.state.cameraState, isA<RequestFailure<Camera>>());
+      expect(clock.scheduledTimers.where((t) => t.isActive), isEmpty);
+    });
+
+    test('manual_retry_recovers_from_detail_failure', () async {
+      var detailCalls = 0;
+      repository.onDetail = (id, token) async {
+        detailCalls++;
+        if (detailCalls == 1) {
+          return const Left(
+              ApiFailure('Không tìm thấy dữ liệu', statusCode: 404));
+        }
+        return Right(Camera(
+          id: id,
+          name: 'Camera $id',
+          provinceId: 'tp_hcm',
+          district: 'Quan 1',
+          snapshotCapable: true,
+          snapshotEndpoint: '/api/v1/cameras/$id/snapshot',
+          playbackEndpoint: '/api/v1/cameras/$id/playback',
+        ));
+      };
+
+      await cubit.open('cam-1');
+      expect(cubit.state.camera, isNull);
+
+      await cubit.retry();
+      await flush();
+
+      expect(detailCalls, equals(2));
+      expect(cubit.state.currentFrame, isNotNull);
+    });
+
+    test('manual_retry_recovers_when_descriptor_endpoint_was_missing',
+        () async {
+      repository.onDetail = (id, token) async =>
+          Right(cameraWithoutEndpoint(id));
+      var playbackCalls = 0;
+      repository.onPlayback = (id, token) async {
+        playbackCalls++;
+        if (playbackCalls == 1) {
+          return const Left(
+              ApiFailure('Descriptor lỗi', statusCode: 500));
+        }
+        return Right(PlaybackDescriptor(
+          cameraId: id,
+          kind: 'snapshot',
+          snapshotEndpoint: '/api/v1/cameras/$id/snapshot',
+          refreshIntervalMs: 12000,
+        ));
+      };
+
+      await cubit.open('cam-1');
+      expect(repository.snapshotCallCount, equals(0));
+
+      await cubit.retry();
+      await flush();
+
+      expect(playbackCalls, equals(2));
+      expect(repository.snapshotCallCount, equals(1));
+      expect(cubit.state.currentFrame, isNotNull);
+    });
+
+    test('rejected_snapshot_does_not_pollute_shared_cache_T01', () async {
+      final cache = SnapshotMemoryCache();
+      final cacheCubit = CameraPreviewCubit(
+        repository: repository,
+        clock: clock,
+        cache: cache,
+      );
+
+      final goodBytes = Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0]);
+      var calls = 0;
+      repository.onSnapshot = (endpoint, etag, token) async {
+        calls++;
+        if (calls == 1) {
+          return Right(SnapshotReceived(SnapshotFrame(
+            bytes: goodBytes,
+            etag: 'etag-good',
+            fetchedAt: clock.now(),
+          )));
+        }
+        // What the API client returns for an undecodable payload (T01).
+        return const Left(ApiFailure('Dữ liệu hình ảnh không hợp lệ',
+            statusCode: 422));
+      };
+
+      await cacheCubit.open('cam-1');
+      expect(cache.get('cam-1')?.etag, equals('etag-good'));
+
+      clock.advance(const Duration(seconds: 12));
+      await flush();
+
+      expect(cacheCubit.state.currentFrame?.etag, equals('etag-good'));
+      expect(cache.get('cam-1')?.etag, equals('etag-good'));
+      expect(cache.get('cam-1')?.bytes, equals(goodBytes));
+
+      await cacheCubit.close();
     });
   });
 }

@@ -9,11 +9,15 @@ import 'package:flutter_starter/src/features/cameras/domain/favorites_repository
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
+import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:dio/dio.dart';
 
 class FakeSheetCameraRepository implements CameraRepository {
+  /// Optional per-test override for snapshot behaviour (T02 tests).
+  FutureEither<SnapshotReply> Function()? snapshotHandler;
+
   final Camera camera = const Camera(
     id: 'cam-01',
     name: 'Giao lo Le Loi - Pasteur',
@@ -66,6 +70,7 @@ class FakeSheetCameraRepository implements CameraRepository {
 
   @override
   FutureEither<SnapshotReply> snapshot(String endpoint, {String? etag, CancelToken? cancelToken}) async {
+    if (snapshotHandler != null) return snapshotHandler!();
     // 1x1 transparent png / dummy bytes
     final dummyBytes = Uint8List.fromList([
       0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
@@ -210,6 +215,73 @@ void main() {
       // No live clock or timestamp labels (timestamp is in JPEG image itself)
       expect(find.textContaining('Cập nhật lúc'), findsNothing);
       expect(find.textContaining('giây trước'), findsNothing);
+    });
+
+    testWidgets(
+        'refresh_error_shows_stale_badge_and_keeps_image_T02', (tester) async {
+      final dummyBytes = Uint8List.fromList([
+        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
+        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
+        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
+        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
+        0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
+        0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
+        0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
+        0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
+        0x42, 0x60, 0x82,
+      ]);
+      var snapshotCalls = 0;
+      repo.snapshotHandler = () async {
+        snapshotCalls++;
+        if (snapshotCalls == 1) {
+          return Right(SnapshotReceived(
+              SnapshotFrame(bytes: dummyBytes, etag: 'etag-1')));
+        }
+        return const Left(
+            ApiFailure('Mất mạng', statusCode: 503, retryable: true));
+      };
+
+      await tester.pumpWidget(
+        buildTestApp(
+          child: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  showCameraSnapshotSheet(
+                    context,
+                    cameraId: 'cam-01',
+                    preview: previewCubit,
+                    favorites: favRepo,
+                  );
+                },
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      // First frame loaded; no stale notice yet.
+      expect(find.byKey(const ValueKey('snapshot_sheet_image')),
+          findsOneWidget);
+      expect(find.text('Ảnh cũ'), findsNothing);
+
+      // Descriptor refresh interval is 5s: advance past it so the poll
+      // runs and fails, well before any 60s age threshold.
+      await tester.pump(const Duration(seconds: 5));
+      await tester.pump();
+      await tester.pump();
+
+      // The good image is still shown and is now visibly marked stale,
+      // without calling the network error "camera offline".
+      expect(find.byKey(const ValueKey('snapshot_sheet_image')),
+          findsOneWidget);
+      expect(find.text('Ảnh cũ'), findsOneWidget);
+      expect(find.textContaining('offline'), findsNothing);
     });
 
     testWidgets('tap_image_opens_viewer_with_same_preview', (tester) async {

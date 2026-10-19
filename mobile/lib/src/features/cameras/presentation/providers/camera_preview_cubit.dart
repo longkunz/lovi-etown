@@ -58,6 +58,17 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
       isStale: false,
     ));
 
+    await _loadDetail(currentGen);
+  }
+
+  /// Stage 1 of loading a preview: fetch the camera detail, then continue
+  /// to the descriptor stage. A retryable failure re-runs this stage, so the
+  /// recovery chain never gets stuck fetching a snapshot before any
+  /// endpoint exists (T02).
+  Future<void> _loadDetail(int currentGen) async {
+    final id = state.cameraId;
+    if (id == null || _generation != currentGen) return;
+
     final detailResult =
         await _repository.detail(id, cancelToken: _cancelToken);
     if (_generation != currentGen) return;
@@ -68,31 +79,76 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
           cameraState: RequestFailure(failure),
           snapshotState: RequestFailure(failure),
         ));
-        _handleFailure(failure, currentGen);
+        _handleFailure(
+          failure,
+          currentGen,
+          onRetry: () => _loadDetail(currentGen),
+        );
       },
       (camera) async {
+        // This stage succeeded: the next stage starts its backoff from the
+        // first interval instead of inheriting this stage's attempts.
+        _retryAttempt = 0;
         emit(state.copyWith(
           camera: camera,
           cameraState: RequestSuccess(camera),
         ));
-
-        // Fetch playback descriptor
-        final playbackResult =
-            await _repository.playback(id, cancelToken: _cancelToken);
-        if (_generation != currentGen) return;
-
-        await playbackResult.fold(
-          (failure) async {
-            // Playback descriptor failed, but snapshot endpoint might exist on camera
-            await _fetchSnapshot(currentGen);
-          },
-          (descriptor) async {
-            emit(state.copyWith(descriptor: descriptor));
-            await _fetchSnapshot(currentGen);
-          },
-        );
+        await _loadDescriptor(currentGen);
       },
     );
+  }
+
+  /// Stage 2: fetch the playback descriptor, then the snapshot. When the
+  /// descriptor fails but the camera itself carries a snapshot/thumbnail
+  /// endpoint, the snapshot is still attempted through that endpoint. When
+  /// no endpoint exists at all, the failure is surfaced on the snapshot
+  /// state and a retryable failure re-runs this stage (T02).
+  Future<void> _loadDescriptor(int currentGen) async {
+    final id = state.cameraId;
+    if (id == null || _generation != currentGen) return;
+
+    final playbackResult =
+        await _repository.playback(id, cancelToken: _cancelToken);
+    if (_generation != currentGen) return;
+
+    await playbackResult.fold(
+      (failure) async {
+        if (_cameraEndpoint() != null) {
+          await _fetchSnapshot(currentGen);
+          return;
+        }
+        emit(state.copyWith(
+          snapshotState: RequestFailure(failure),
+        ));
+        _handleFailure(
+          failure,
+          currentGen,
+          onRetry: () => _loadDescriptor(currentGen),
+        );
+      },
+      (descriptor) async {
+        _retryAttempt = 0;
+        emit(state.copyWith(descriptor: descriptor));
+        await _fetchSnapshot(currentGen);
+      },
+    );
+  }
+
+  String? _cameraEndpoint() {
+    final camera = state.camera;
+    if (camera == null || camera.id != state.cameraId) return null;
+    final endpoint = camera.snapshotEndpoint ?? camera.thumbnailEndpoint;
+    return (endpoint == null || endpoint.isEmpty) ? null : endpoint;
+  }
+
+  String _currentSnapshotEndpoint() {
+    final descriptor = state.descriptor;
+    if (descriptor != null &&
+        descriptor.cameraId == state.cameraId &&
+        descriptor.snapshotEndpoint.isNotEmpty) {
+      return descriptor.snapshotEndpoint;
+    }
+    return _cameraEndpoint() ?? '';
   }
 
   Future<void> _fetchSnapshot(int currentGen,
@@ -102,20 +158,23 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
 
     _isInFlight = true;
 
-    final descriptorEndpoint = (state.descriptor != null &&
-            state.descriptor!.cameraId == state.cameraId)
-        ? state.descriptor!.snapshotEndpoint
-        : null;
-    final cameraEndpoint =
-        (state.camera != null && state.camera!.id == state.cameraId)
-            ? (state.camera!.snapshotEndpoint ??
-                state.camera!.thumbnailEndpoint)
-            : null;
-
-    final endpoint = descriptorEndpoint ?? cameraEndpoint ?? '';
+    final endpoint = _currentSnapshotEndpoint();
 
     if (endpoint.isEmpty) {
       _isInFlight = false;
+      // No way to fetch an image at all: surface a terminal failure instead
+      // of leaving the preview in a loading state forever (T02). There is
+      // no automatic retry for this state; recovery goes through retry() /
+      // foreground resume, which redo the descriptor stage that supplies
+      // the endpoint.
+      const failure = ApiFailure(
+        'Camera không cung cấp địa chỉ ảnh xem trước',
+        statusCode: 422,
+      );
+      emit(state.copyWith(
+        snapshotState: const RequestFailure(failure),
+        isStale: state.currentFrame != null,
+      ));
       return;
     }
 
@@ -139,17 +198,29 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
         return;
       }
 
-      // Stale check
-      final isStale = state.currentFrame?.fetchedAt != null &&
-          _clock.now().difference(state.currentFrame!.fetchedAt!).inSeconds >
-              60;
-
+      // A failed refresh is recognisable immediately: the frame on screen
+      // is no longer confirmed current, so it is marked stale right away
+      // instead of only after the 60-second age threshold (T02). The good
+      // frame itself is always kept.
       emit(state.copyWith(
         snapshotState: RequestFailure(failure),
-        isStale: isStale,
+        isStale: state.currentFrame != null,
       ));
 
-      _handleFailure(failure, currentGen);
+      _handleFailure(
+        failure,
+        currentGen,
+        // While the descriptor is still missing, the retry redoes that
+        // stage (which then continues to the snapshot); otherwise it
+        // retries the snapshot directly.
+        onRetry: () async {
+          if (state.descriptor == null) {
+            await _loadDescriptor(currentGen);
+          } else {
+            await _fetchSnapshot(currentGen);
+          }
+        },
+      );
       return;
     }
 
@@ -200,11 +271,30 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
 
     _pollingTimer = _clock.schedule(
       Duration(seconds: intervalSeconds),
-      () => _fetchSnapshot(currentGen),
+      () {
+        // While the descriptor has not been recovered yet, a cycle first
+        // retries the descriptor stage; it continues straight to the
+        // snapshot, so the image keeps refreshing either way (T02).
+        if (state.descriptor == null) {
+          _loadDescriptor(currentGen);
+        } else {
+          _fetchSnapshot(currentGen);
+        }
+      },
     );
   }
 
-  void _handleFailure(Failure failure, int currentGen) {
+  /// Schedules [onRetry] after a failure, honouring the retry policy:
+  /// 401/403/404/422 and other non-retryable failures stop the chain, 429
+  /// respects Retry-After (with a 60-second floor), and other retryable
+  /// failures use the backoff intervals. [onRetry] must redo the exact
+  /// loading stage that failed, so recovery cannot stall on a later stage
+  /// whose inputs do not exist yet (T02).
+  void _handleFailure(
+    Failure failure,
+    int currentGen, {
+    required Future<void> Function() onRetry,
+  }) {
     if (!state.isForeground || _generation != currentGen) return;
 
     int? statusCode;
@@ -239,7 +329,9 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
     }
 
     _pollingTimer?.cancel();
-    _pollingTimer = _clock.schedule(delay, () => _fetchSnapshot(currentGen));
+    _pollingTimer = _clock.schedule(delay, () {
+      onRetry();
+    });
   }
 
   void setForeground(bool isForeground) {
@@ -258,12 +350,24 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
         _cancelToken = CancelToken();
         _pollingTimer?.cancel();
         _isInFlight = false;
-        if (state.camera == null) {
-          open(state.cameraId!);
-        } else {
-          _fetchSnapshot(_generation);
-        }
+        _resumeFromMissingStep();
       }
+    }
+  }
+
+  /// Continues loading from whichever stage is still missing: detail when
+  /// there is no camera yet, descriptor when no snapshot endpoint is known,
+  /// otherwise the snapshot itself. Shared by foreground resume and the
+  /// manual retry so both recover through the exact same chain (T02).
+  Future<void> _resumeFromMissingStep() async {
+    final id = state.cameraId;
+    if (id == null) return;
+    if (state.camera == null) {
+      await open(id);
+    } else if (_currentSnapshotEndpoint().isNotEmpty) {
+      await _fetchSnapshot(_generation);
+    } else {
+      await _loadDescriptor(_generation);
     }
   }
 
@@ -274,14 +378,7 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
   Future<void> retry() async {
     if (_isInFlight) return;
     _pollingTimer?.cancel();
-
-    if (state.cameraId != null) {
-      if (state.camera == null) {
-        await open(state.cameraId!);
-      } else {
-        await _fetchSnapshot(_generation);
-      }
-    }
+    await _resumeFromMissingStep();
   }
 
   void dismiss() {

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_starter/src/config/app_config.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_starter/src/features/cameras/data/models/camera_dto.dart
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:flutter_starter/src/utils/failure.dart';
+import 'package:flutter_starter/src/utils/logger.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 extension _UriPortExtension on Uri {
@@ -321,7 +323,7 @@ class CameraApiClient {
       }
 
       final bytes = bytesBuilder.takeBytes();
-      if (!_isValidImageHeader(bytes)) {
+      if (!_isValidImageHeader(bytes) || !await _isDecodableImage(bytes)) {
         return const Left(ApiFailure(
           'Dữ liệu hình ảnh không hợp lệ hoặc bị lỗi',
           statusCode: 422,
@@ -341,6 +343,36 @@ class CameraApiClient {
       return Left(_mapDioException(e));
     } catch (e) {
       return Left(ApiFailure('Lỗi không xác định: $e', statusCode: 500));
+    }
+  }
+
+  /// Full decode check (T01): a valid header / magic bytes alone is not
+  /// enough, because a payload can carry a correct header and still be
+  /// undecodable. Only bytes that actually decode to a frame may become a
+  /// [SnapshotFrame], so a corrupt payload can never replace the last good
+  /// frame in the preview, the viewer or the shared snapshot cache.
+  Future<bool> _isDecodableImage(Uint8List bytes) async {
+    ui.Codec? codec;
+    try {
+      codec = await ui.instantiateImageCodec(bytes);
+      final frame = await codec.getNextFrame();
+      frame.image.dispose();
+      return true;
+    } catch (e, stackTrace) {
+      // Any codec error means the payload is not a usable image; the caller
+      // maps this to the same 422 failure as an invalid header. Log the
+      // error (never the payload or headers) so field failures stay
+      // debuggable.
+      AppLogger.log(
+        'Snapshot payload failed image decode',
+        category: LogCategory.network,
+        context: {'bytes': bytes.length},
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return false;
+    } finally {
+      codec?.dispose();
     }
   }
 

@@ -35,6 +35,7 @@ docs/
 │   ├── stitch-brief.md                 # Design Brief tạo giao diện trên Google Stitch
 │   ├── mobile-a1-review-2026-10-16.md  # Báo cáo rà soát 14 findings (ST1-ST4, SP1-SP10)
 │   ├── mobile-a1-verification.md       # Báo cáo nghiệm thu hoàn tất 45 tests & 10 probes
+│   ├── t03-android-acceptance-2026-10-19.md  # Nghiệm thu T03 trên Android: bằng chứng từng phần + việc còn lại
 │   └── stitch/                         # Mockup, HTML, screenshot, JSON screens từ Stitch
 │       ├── README.md                   # Tổng kết artboards và các phiên bản UI
 │       └── assets/, references/        # Snapshot gốc, ảnh tham chiếu và prototype

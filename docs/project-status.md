@@ -1,0 +1,36 @@
+# Hiện trạng dự án Lovi Etown
+
+Cập nhật: **2026-10-19**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
+
+## Repository và cấu hình làm việc
+
+- Repository chung: [longkunz/lovi-etown](https://github.com/longkunz/lovi-etown), nhánh `main`, workspace `D:\lovi-etown`.
+- `backend/`, `mobile/`, `docs/` và `scripts/` là các thư mục của cùng repository. Tạo commit từ repo chính; các hướng dẫn khởi tạo Git riêng trong plan cũ là lịch sử.
+- Hai commit đã đưa mã nguồn và cấu hình lên GitHub: `f94338b` (mã nguồn hiện tại) và `8592757` (Matt Pocock Skills).
+- Lịch sử Git trước khi hợp nhất được lưu cục bộ tại `.git/local-repositories/backend.git` và `.git/local-repositories/mobile.git`; các bản sao lưu này không nằm trên GitHub.
+- Cấu hình Matt Pocock Skills: [issue tracker](agents/issue-tracker.md), [triage labels](agents/triage-labels.md), [domain docs](agents/domain.md).
+
+## Phạm vi và bằng chứng
+
+Backend A1 có [báo cáo nghiệm thu](../backend/docs/verification.md). Mobile A1 có [báo cáo xử lý review và nghiệm thu](ui/mobile-a1-verification.md) cho luồng danh sách/tìm kiếm → snapshot bottom sheet → viewer → Quan tâm inline. Dùng các báo cáo để tra nội dung đã kiểm chứng; các đề xuất rộng hơn trong [rebuild-spec](rebuild-spec.md) là phạm vi sản phẩm/roadmap, không phải danh sách tính năng đã hoàn thành.
+
+Ngày 2026-10-19 đã chạy lại trên mã nguồn đưa lên GitHub:
+
+| Phần | Lệnh, chạy trong thư mục tương ứng | Kết quả |
+|---|---|---|
+| Backend unit | `npm run test:unit` | 22/22 PASS |
+| Backend API | `npm run test:api` | 15/15 PASS |
+| Backend database | `npm run test:db` | 12/12 PASS |
+| Mobile unit/widget | `flutter test` | 45/45 PASS |
+
+Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox ban đầu bị chặn kết nối `127.0.0.1:5433`, sau đó chạy lại với quyền truy cập local và đều PASS. Flutter tests cũng chạy với quyền truy cập SDK/cache ngoài workspace.
+
+Đây là bằng chứng kiểm thử tự động, không phải xác nhận mới về bản APK/IPA phát hành, nghiệm thu iOS trên thiết bị, shader trên mọi thiết bị hoặc triển khai production. Bản đồ/Vietmap/nearby, LIVE, cảnh báo và tài khoản tiếp tục thuộc các lát sau A1.
+
+## Cách đọc và cập nhật tài liệu
+
+- Dùng [README gốc](../README.md) và [README backend](../backend/README.md) cho thao tác cài đặt/chạy hiện hành. Script thực tế nằm trong [backend/package.json](../backend/package.json); dependency Flutter nằm trong [pubspec.yaml](../mobile/pubspec.yaml) và [pubspec.lock](../mobile/pubspec.lock).
+- Các spec/plan ngày 14–16/10 mô tả cả thời điểm chưa triển khai. Những câu như “chờ review”, “chưa có Git” và checkbox chưa đánh dấu trong bản kế hoạch gốc là ghi chép lịch sử; đối chiếu báo cáo nghiệm thu và bằng chứng mới trước khi nhận việc.
+- Báo cáo review ban đầu lưu các lỗi đã được phát hiện. Đọc cùng báo cáo nghiệm thu kế tiếp để biết phần đã xử lý; không xóa phát hiện cũ hoặc tự đánh dấu các hạng mục chưa được xác minh là hoàn tất.
+- Chỉ cập nhật kết quả kiểm thử sau khi thực sự chạy lại, kèm ngày và phạm vi. Số lượng test trong bảng là mốc kiểm chứng, không phải giới hạn cố định cho các lần phát triển tiếp theo.
+- Khi dùng quy trình nhiều phiên của Matt Pocock Skills, xuất công việc mới thành spec/tickets trên GitHub Issues với tiêu chí nghiệm thu và quan hệ phụ thuộc. `CONTEXT.md` và ADR được tạo khi chốt thuật ngữ hoặc quyết định phù hợp theo [quy tắc domain](agents/domain.md).

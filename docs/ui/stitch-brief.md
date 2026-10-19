@@ -2,7 +2,7 @@
 
 Feedback sheet mới nhất (thay thế controls/thời gian bên dưới): chỉ giữ header, saved star và ảnh; bỏ nút Làm mới/Toàn màn hình, bỏ text giờ nhận/cập nhật/giờ chụp unknown. Chạm ảnh mở viewer overlay hỗ trợ xoay ngang, pinch zoom, pan và double-tap fit/zoom. Sheet co chiều cao theo nội dung, giữ list context. Timestamp in sẵn trong JPEG không bị chỉnh sửa.
 
-Ngày: 2026-10-16. Trạng thái: sau feedback ba ảnh mẫu đã tạo **v3 Card/Grid/Dropdown có ảnh camera và infinite loading**, import bản HTML sửa asset lên Stitch. Người dùng chốt **Liquid Glass dùng `liquid_glass_widgets`**. Chờ review hình ảnh; chưa triển khai Flutter. [Bản review hiện tại](stitch/README.md). Cơ sở hợp nhất: [review tài liệu](document-review-2026-10-16.md), được yêu cầu v3 bên dưới cập nhật.
+Ngày thiết kế: 2026-10-16; cập nhật hiện trạng 2026-10-19. Sau feedback ba ảnh mẫu đã tạo **v3 Card/Grid/Dropdown có ảnh camera và infinite loading**, import bản HTML sửa asset lên Stitch. Người dùng chốt **Liquid Glass dùng `liquid_glass_widgets`**. Mobile A1 đã có mã nguồn và [báo cáo nghiệm thu](mobile-a1-verification.md); xem [hiện trạng dự án](../project-status.md) cho kết quả kiểm thử mới nhất. Các mô tả “chưa thêm dependency” hoặc việc cần làm trong brief phản ánh thời điểm thiết kế. [Bản review mockup](stitch/README.md). Cơ sở hợp nhất: [review tài liệu gốc](document-review-2026-10-16.md), được yêu cầu v3 bên dưới cập nhật.
 
 ## Mục tiêu
 

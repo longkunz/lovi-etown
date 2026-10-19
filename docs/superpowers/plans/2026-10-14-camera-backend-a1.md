@@ -1,5 +1,7 @@
 # Camera Backend A1 Implementation Plan
 
+> **Hiện trạng 2026-10-19:** Backend A1 đã có [báo cáo nghiệm thu](../../../backend/docs/verification.md); cả 49 tests đã chạy lại PASS. Xem [hiện trạng dự án](../../project-status.md) trước khi nhận việc. Các bước và checkpoint trong plan lưu lịch sử thực thi; không khởi tạo lại repo hoặc dựng lại A1 chỉ vì đọc kế hoạch này.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans for inline execution or superpowers:subagent-driven-development if the user chooses delegation. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Backend riêng thay vai trò catalog của Udrivex, lấy metadata/ảnh public Notis, phục vụ danh sách → tìm/lọc → chi tiết/playback → snapshot/refresh.
@@ -8,12 +10,12 @@
 
 **Tech Stack:** Node.js 24 LTS, TypeScript 6.0.3 strict, NestJS/Fastify, `pg`, Undici, Zod, OpenAPI, Node built-in test runner, Docker Compose/PostGIS.
 
-**Spec:** [2026-10-14-camera-backend-design.md](../specs/2026-10-14-camera-backend-design.md). Đọc cùng [reverse traceability](../../backend-reverse-traceability.md). Người dùng xác nhận đã xem/đồng ý spec ngày 2026-10-14; plan này chờ review và chọn phương thức thực thi.
+**Spec:** [2026-10-14-camera-backend-design.md](../specs/2026-10-14-camera-backend-design.md). Đọc cùng [reverse traceability](../../backend-reverse-traceability.md). Người dùng xác nhận spec ngày 2026-10-14; kết quả thực thi nằm trong báo cáo nghiệm thu được dẫn ở đầu tài liệu.
 
 ## Global Constraints
 
-- Tạo sản phẩm trong `D:/REVERSE_TOOLS/TTGT-Tphcm/backend/`; giữ nguyên APK/evidence/mã dịch ngược. Chưa có Git repository tại workspace; khi bắt đầu thực thi, khởi tạo repository riêng trong `backend/`, không đưa APK vào Git. Nếu đã có repo mới từ người khác thì dùng trạng thái thực tế, không reset/revert.
-- Node.js 24 LTS; PostgreSQL 17 + PostGIS; TypeScript strict; source `.ts`, `experimentalDecorators`/`emitDecoratorMetadata`, `module/moduleResolution=Node16`, package type commonjs. Compile tests bằng tsc trước Node test runner để tránh phụ thuộc transpiler decorator metadata.
+- Sản phẩm nằm trong `D:/lovi-etown/backend/`, thuộc repository chung tại `D:/lovi-etown/`. Giữ APK/evidence/mã dịch ngược bên ngoài repo sản phẩm. Dùng Git từ repo chính; lịch sử các repo con cũ đã được lưu theo trang hiện trạng.
+- Node.js 24 LTS; PostgreSQL 17 + PostGIS; TypeScript strict; source `.ts`, `experimentalDecorators`/`emitDecoratorMetadata`, `module/moduleResolution=Node16`, package type `module` (ESM) theo `backend/package.json`. Compile tests bằng tsc trước Node test runner để tránh phụ thuộc transpiler decorator metadata.
 - App default `CAMERA_PROVIDER_MODE=notis`; `.env.example`/Compose dùng notis; test/demo override fixture rõ ràng. Không Udrivex/app-check hoặc Vietmap key/runtime calls trong A1.
 - Province duy nhất `tp_hcm`. List q trim/rỗng=no filter/2–120, district 1–80, limit 1–100/default50, offset 0–10000/default0. Related limit 1–20/default6. Bbox admin `[west,south,east,north]`, finite, range hợp lệ, west<east/south<north.
 - Source GET Notis `https://api.notis.vn/v4/`; snapshot ID 24 hex. Không gửi credentials mặc định, không nhận URL từ client, không kết nối `values.ip`, không follow redirect. Secret optional từ env, không copy token app.
@@ -174,4 +176,4 @@ Nội bộ `CameraRecord` chứa providerCameraId/source reference; `CameraDto` 
 
 ## Execution handoff
 
-Plan chờ người dùng review và chọn Native/inline hoặc Subagent-driven. Sau xác nhận, đọc skill thực thi tương ứng và tạo repo riêng backend; nếu repository đã tồn tại thì áp dụng isolation theo workflow, không tự reset hoặc đưa APK vào repo. Spec đã được xác nhận, không hỏi lại lựa chọn nguồn Notis/Vietmap hoặc phạm vi camera-first.
+Plan A1 được giữ làm hồ sơ thực thi. Khi phát triển tiếp, nhận phạm vi mới từ spec/ticket hiện hành, dùng repository chung và hướng dẫn tại root `AGENTS.md`. Đối chiếu báo cáo nghiệm thu trước khi coi một bước cũ là việc còn thiếu; lựa chọn nguồn Notis/Vietmap và phạm vi camera-first đã được ghi nhận.

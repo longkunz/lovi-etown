@@ -2,6 +2,8 @@
 
 Chào mừng đến với kho tài liệu phát triển của dự án **Lovi Etown**. Thư mục này tổng hợp toàn bộ tài liệu đặc tả, thiết kế kiến trúc, hợp đồng API, kế hoạch triển khai, tài sản UI/Stitch và báo cáo nghiệm thu được chuyển giao từ giai đoạn phân tích sang giai đoạn phát triển chính thức tại `D:\lovi-etown`.
 
+Đọc [hiện trạng dự án](project-status.md) trước khi tiếp tục phát triển. Các spec/plan và nhật ký ngày 14–16/10 lưu cả trạng thái trước triển khai; dùng trang hiện trạng và báo cáo nghiệm thu để phân biệt phần đã làm với roadmap.
+
 ---
 
 ## 1. Cấu trúc Tài liệu & Bản đồ Tra cứu
@@ -9,6 +11,8 @@ Chào mừng đến với kho tài liệu phát triển của dự án **Lovi Et
 ```
 docs/
 ├── README.md                           # Bản đồ tra cứu tài liệu (file này)
+├── project-status.md                   # Hiện trạng, kiểm thử gần nhất và tài liệu lịch sử
+├── agents/                             # Cấu hình tracker, nhãn triage và domain cho Matt Pocock Skills
 ├── rebuild-spec.md                     # Đặc tả cốt lõi xây dựng ứng dụng mới (11 yêu cầu R-01 -> R-11)
 ├── camera-spec.md                      # Đặc tả chức năng module Camera
 ├── api-catalog.md                      # Danh mục API nguồn & backend contract
@@ -74,4 +78,4 @@ docs/
 1. **Độc lập dữ liệu:** Không gọi trực tiếp upstream API gốc từ client. Tất cả giao tiếp qua Backend proxy NestJS (`/v1/...`).
 2. **Bảo mật:** Không hardcode API key, không commit file `.env`. Client chỉ dùng `x-api-key` dạng reader công khai được cấp phép.
 3. **Quản lý state & Lifecycle:** Mọi luồng polling ảnh phải tự hủy khi widget unmount, modal đóng hoặc app vào background để tiết kiệm tài nguyên.
-4. **Kiểm thử trước khi commit:** Chạy `npm test` ở `backend/` và `flutter test` ở `mobile/` trước khi tạo PR hoặc hoàn thành tác vụ.
+4. **Kiểm thử trước khi commit mã nguồn:** Chạy lần lượt `npm run test:unit`, `npm run test:api`, `npm run test:db` ở `backend/` và `flutter test` ở `mobile/`. Chuẩn bị PostgreSQL/PostGIS theo [hướng dẫn backend](../backend/README.md) trước các suite API/database.

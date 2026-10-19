@@ -1,6 +1,6 @@
 # Thiết kế backend — danh sách và xem camera trước
 
-Ngày 2026-10-14. Trạng thái: **người dùng đã xem và xác nhận spec**; implementation plan đã soạn tại `docs/superpowers/plans/2026-10-14-camera-backend-a1.md`, chờ review plan/chọn phương thức thực thi. Đây là đặc tả app mới, không mô tả cấu trúc app gốc. Workspace hiện chưa là Git repository; tài liệu đã lưu trên filesystem, chưa commit.
+Ngày thiết kế 2026-10-14; cập nhật hiện trạng 2026-10-19. Spec đã được người dùng xác nhận, Backend A1 đã có mã nguồn và [báo cáo nghiệm thu](../../../backend/docs/verification.md). Backend thuộc repository chung `D:\lovi-etown`; xem [hiện trạng dự án](../../project-status.md) cho kết quả chạy lại 49 tests và quy tắc đọc ghi chú lịch sử. Đây là đặc tả app mới, không mô tả cấu trúc app gốc.
 
 ## 1. Brief và phạm vi
 

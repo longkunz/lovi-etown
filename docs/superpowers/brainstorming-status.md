@@ -1,5 +1,11 @@
 # Superpowers — thiết kế app camera mới
 
+## Hiện trạng cập nhật — 2026-10-19
+
+Backend và Mobile A1 đã có mã nguồn trong repository chung `D:\lovi-etown`, đã đẩy lên GitHub. Kiểm thử chạy lại: 49 backend tests và 45 Flutter unit/widget tests đều PASS. Đọc [hiện trạng dự án](../project-status.md), [nghiệm thu backend](../../backend/docs/verification.md) và [nghiệm thu Mobile A1](../ui/mobile-a1-verification.md) trước khi tiếp tục phát triển.
+
+Các mục có ngày cũ bên dưới là nhật ký quyết định tại thời điểm viết. Những mô tả “chờ review”, “chưa code Flutter”, “root chưa có Git” và đường dẫn workspace cũ không mô tả trạng thái hiện tại. Kết quả kiểm thử tự động không xác nhận mọi bước nghiệm thu thiết bị hoặc roadmap đã hoàn tất.
+
 ## Plan triển khai Mobile A1 — 16/10/2026
 
 Đã tạo [implementation plan](plans/2026-10-16-camera-mobile-a1.md) theo yêu cầu người dùng: 7 task từ boot/glass → Camera fixture → sheet/viewer → Quan tâm bền → backend/infinite/thumbnails → polling lifecycle → nghiệm thu thiết bị. Có prototype tương tác và artboard light/dark/loading/error/empty. Feedback hiện hành: sheet không có hai nút hoặc text thời gian, chạm ảnh mở viewer xoay ngang/zoom. Chờ review plan và lựa chọn cách thực thi; chưa sửa product Flutter code hoặc dependencies. Inventory starter hiện chưa có runner Android/iOS; Flutter SDK chưa resolve trong PATH, không kết luận chưa cài.
@@ -24,13 +30,13 @@ Người dùng chỉnh hướng: dropdown địa điểm, mode Card/Grid/List, �
 
 Người dùng đã yêu cầu tiến hành tạo design. Đã tạo project `15634181901662145156`, màn Camera light đầu và refinement v2 `f4b077a13f3a42db99b0df38fc835b88`. Đã tải/đọc screenshot và HTML; v2 sửa wrap tên/địa chỉ, count 6 thẻ và touch target. [Bản review và giới hạn](../ui/stitch/README.md). Chờ người dùng chọn hướng hình ảnh để mở rộng Chi tiết/Quan tâm/dark/state variants; chưa có Flutter UI hoặc dependency glass mới. Các trạng thái “chưa tạo màn Stitch” phía dưới là lịch sử trước lệnh tạo design.
 
-## Cập nhật mới nhất — 2026-10-16, UI trước code
+## Ghi nhận — 2026-10-16, UI trước code
 
 Người dùng đã setup starter ở `mobile/`, chọn Stitch CLI để thiết kế trước khi code và chốt style **Liquid Glass dùng `liquid_glass_widgets`**. CLI 0.11.1 đã cài; `stitch status` trả Valid/OAuth Canvas credential present. Chưa tạo màn Stitch hoặc thêm dependency Flutter trong lượt review. A1 vẫn là danh sách/tìm kiếm → snapshot → Quan tâm; map/Vietmap/LIVE/cảnh báo/VIP giữ trong roadmap sau A1.
 
 Đã review 40 tài liệu Markdown dự án trong docs/mobile/backend và cập nhật Mobile A1, brief và hướng UI trong mobile/DESIGN.md. [Review + giới hạn](../ui/document-review-2026-10-16.md), [brief hiện hành](../ui/stitch-brief.md). Các dòng dưới ghi “chưa generate mobile/chưa có backend” là lịch sử, không mô tả hiện trạng. Báo cáo backend acceptance ngày 14/10 chưa chạy lại. Bước tiếp là tạo mockup theo brief Liquid Glass để review; chưa triển khai Flutter.
 
-## Trạng thái mới nhất — 2026-10-15, Mobile A1
+## Ghi nhận — 2026-10-15, Mobile A1
 
 **Quyết định mới nhất:** người dùng chốt Flutter; chọn BLoC vì đã quen và yêu cầu dùng https://github.com/Arjun544/flutter_init làm starter. Đã cập nhật Mobile A1 spec, thay đề xuất Riverpod/notifier SDK bằng BLoC/Cubit. Cấu hình đề xuất: Feature-First, go_router, Dio, Shared Preferences, REST backend hiện có. Chưa generate hoặc kiểm chứng code output. Các đoạn bên dưới ghi Flutter chưa chốt là lịch sử.
 

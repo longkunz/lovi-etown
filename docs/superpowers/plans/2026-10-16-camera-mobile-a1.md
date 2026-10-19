@@ -1,5 +1,7 @@
 # Camera Mobile A1 Implementation Plan
 
+> **Hiện trạng 2026-10-19:** Mobile A1 đã có mã nguồn và [báo cáo nghiệm thu](../../ui/mobile-a1-verification.md); 45 unit/widget tests đã chạy lại PASS. Xem [hiện trạng dự án](../../project-status.md) cho phạm vi và giới hạn. Checkbox trong kế hoạch gốc chưa được đối soát từng bước, không phải danh sách việc còn thiếu đã xác nhận; không suy từ test PASS rằng mọi bước nghiệm thu thiết bị trong plan đã hoàn tất.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:executing-plans` để triển khai tuần tự trong phiên này (đề xuất), hoặc `superpowers:subagent-driven-development` nếu người dùng chọn chia task cho agent. Theo dõi bằng checkbox; không tự bắt đầu implementation chỉ vì plan đã được tạo.
 
 **Goal:** Hoàn thành Flutter Android/iOS cho luồng Camera → snapshot bottom sheet → viewer xoay ngang/zoom → Quan tâm inline, bắt đầu với fixture rồi nối backend hiện có.
@@ -42,7 +44,7 @@ Graph `TTGT-Tphcm` generation 2026-10-14T03:17:26Z chỉ 9 nodes, search các sy
 
 Package vừa đối chiếu ngày 16/10: pub.dev API/readme 1.13.0 yêu cầu Flutter ≥3.41.0. Chốt dependency `liquid_glass_widgets: 1.13.0` và commit lockfile khi thực thi; không tự nâng SDK/downgrade package chỉ để bỏ lỗi resolve. Tham khảo [package](https://pub.dev/packages/liquid_glass_widgets), [InteractiveViewer](https://api.flutter.dev/flutter/widgets/InteractiveViewer-class.html), [orientation](https://api.flutter.dev/flutter/services/SystemChrome/setPreferredOrientations.html).
 
-Native runner: theo `mobile/SETUP.md`, nếu còn thiếu, generate platform scaffolding Android/iOS tại bước môi trường, bảo toàn Dart/assets hiện có và review diff; không chỉnh native config tùy tiện hoặc thêm quyền GPS. Android chỉ cần Internet. Không chạy regenerate toàn starter. Root/mobile hiện chưa có Git metadata trong inventory; không commit mobile vào repo backend. Mỗi task tạo một checkpoint/commit nếu mobile đã được đặt trong repo hợp lệ khi thực thi; không tự `git init`/push trong lượt lập plan.
+Native runner: theo `mobile/SETUP.md`, nếu còn thiếu, generate platform scaffolding Android/iOS tại bước môi trường, bảo toàn Dart/assets hiện có và review diff; không chỉnh native config tùy tiện hoặc thêm quyền GPS. Android chỉ cần Internet. Không chạy regenerate toàn starter. Hiện `mobile/` và `backend/` cùng repository `D:/lovi-etown`; tạo checkpoint/commit từ repo chính theo công việc mới, giữ nguyên lịch sử kế hoạch cũ.
 
 ## Cấu trúc file và contract dùng chung
 

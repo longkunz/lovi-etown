@@ -50,14 +50,15 @@ Sản phẩm bao gồm:
 ## 4. Quy chuẩn Kiểm thử & Nghiệm thu
 
 - Sau bất kỳ thay đổi nào trên mã nguồn:
-  - Backend: Chạy `npm test` bên trong `backend/` và bảo đảm tất cả test suite đều PASS.
-  - Mobile: Chạy `flutter test` bên trong `mobile/` và bảo đảm toàn bộ 45 unit/widget tests đều PASS.
+  - Backend: Chạy lần lượt `npm run test:unit`, `npm run test:api`, `npm run test:db` bên trong `backend/` và bảo đảm tất cả test suite đều PASS. API/database tests cần PostgreSQL/PostGIS theo `backend/compose.test.yml`; xem cách chuẩn bị trong `backend/README.md`.
+  - Mobile: Chạy `flutter test` bên trong `mobile/` và bảo đảm toàn bộ unit/widget tests đều PASS.
 - Mọi kết luận kỹ thuật phải dựa trên bằng chứng kiểm thử thực tế (evidence before assertion).
 
 ---
 
 ## 5. Tham chiếu Tài liệu
 
+- Hiện trạng, kết quả kiểm thử gần nhất và cách đọc tài liệu lịch sử: [`docs/project-status.md`](docs/project-status.md). Đọc trước khi dùng spec hoặc kế hoạch A1 để tiếp tục phát triển.
 - Danh mục tài liệu đầy đủ: [`docs/README.md`](docs/README.md)
 - Đặc tả xây dựng ứng dụng mới: [`docs/rebuild-spec.md`](docs/rebuild-spec.md)
 - Thiết kế Mobile A1: [`docs/superpowers/specs/2026-10-15-camera-mobile-a1-design.md`](docs/superpowers/specs/2026-10-15-camera-mobile-a1-design.md)

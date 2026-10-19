@@ -1,12 +1,12 @@
 # Mobile A1 — danh sách, snapshot và Quan tâm
 
-Ngày: 2026-10-15; cập nhật 2026-10-16. Người dùng đã setup starter tại `mobile/`, chốt Flutter/BLoC/FlutterInit và yêu cầu thiết kế bằng Stitch trước khi code, style Liquid Glass dùng `liquid_glass_widgets`. Các chi tiết thiết kế/triển khai còn lại vẫn là đề xuất; chưa có bằng chứng build hoặc camera UI tích hợp. Review tài liệu: [document-review-2026-10-16.md](../../ui/document-review-2026-10-16.md).
+Ngày thiết kế: 2026-10-15; cập nhật hiện trạng 2026-10-19. Mobile A1 đã có mã nguồn trong repository chung và [báo cáo nghiệm thu](../../ui/mobile-a1-verification.md). Kết quả chạy lại 45 unit/widget tests và các giới hạn kiểm chứng được ghi tại [hiện trạng dự án](../../project-status.md). Các ghi chú trước triển khai bên dưới là lịch sử thiết kế; chúng không thay thế báo cáo nghiệm thu. Review tài liệu gốc: [document-review-2026-10-16.md](../../ui/document-review-2026-10-16.md).
 
 ## 1. Mục tiêu và phạm vi
 
 Người dùng đã đồng ý tiến hành bước tiếp theo sau backend: chọn một tính năng cốt lõi, đối chiếu API và dựng flow đầu tiên. Brief đã lưu: Android + iOS, TP.HCM trước, giúp kiểm tra đường trước chuyến đi; backend riêng, nguồn Notis đã được người dùng chọn. Lát này hoàn thành **danh sách/tìm kiếm → chọn camera → xem snapshot → lưu/xóa Quan tâm → mở lại**.
 
-Đây là thiết kế đề xuất cho app mới; không phải kết luận về nội bộ app gốc. Mã mới dự kiến ở `mobile/`, tách khỏi APK, evidence và repo `backend/`. Không cần sửa contract backend để hoàn thành lát này.
+Đây là thiết kế cho app mới; không phải kết luận về nội bộ app gốc. Mã nằm trong `mobile/`, cùng repository với `backend/`, tách khỏi APK và evidence điều tra. Không cần sửa contract backend để hoàn thành lát này.
 
 Vietmap/bản đồ/nearby, LIVE, thời tiết/cảnh báo, tài khoản, quảng cáo/VIP tiếp tục thuộc roadmap sau. Không thêm tab chức năng chưa hoạt động vào bản đầu.
 
@@ -26,7 +26,7 @@ Tổ chức feature với presentation/data/models, luồng `View → Bloc/Cubit
 
 `CameraCatalogBloc`: query/filter/page events và generation chống response cũ; `CameraDetailBloc`: mở camera, refresh, lifecycle, giữ ảnh khi lỗi; `FavoritesCubit`: state dùng chung toàn app qua repository lưu bền. Timer/request dọn trong close và xử lý background riêng, không phụ thuộc việc widget rebuild. Animation Liquid Glass giữ local ở widget, không phát event BLoC từng frame.
 
-FlutterInit là generator tạo project; starter đã có trong `mobile/` theo xác nhận người dùng và tài liệu/config đã đọc. Chưa chứng nhận code generated đạt chất lượng hoặc tương thích backend. Khi triển khai cần lưu cấu hình/revision, review dependency và chạy analyze/tests. Liquid Glass sẽ tích hợp qua package người dùng chọn; bản tham chiếu ngày 16/10 là 1.13.0, yêu cầu Flutter ≥3.41.0. Chưa thêm dependency, pin version hoặc kiểm chứng renderer local.
+FlutterInit là generator tạo project. Cấu hình hiện tại đã khai báo `liquid_glass_widgets: 1.13.0` trong `mobile/pubspec.yaml` và có lockfile. Phần mô tả starter và tên state/controller ở trên ghi lại đề xuất ban đầu; khi tiếp tục phát triển, dùng hướng dẫn repository và báo cáo nghiệm thu cho hiện trạng. Kiểm thử widget không thay thế nghiệm thu shader trên thiết bị Android/iOS.
 
 ## 3. Màn hình và điều hướng
 

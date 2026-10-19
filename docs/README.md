@@ -62,6 +62,7 @@ docs/
 - [superpowers/specs/2026-10-14-camera-backend-design.md](superpowers/specs/2026-10-14-camera-backend-design.md): Kiến trúc dịch vụ REST API NestJS, phân vùng module (`catalog`, `snapshot`, `health`), bảo mật `x-api-key`, xử lý ETag 304, TTL in-memory cache và giới hạn rate limiting.
 - [superpowers/plans/2026-10-14-camera-backend-a1.md](superpowers/plans/2026-10-14-camera-backend-a1.md): Kế hoạch và các bước dựng server, test fixture, và acceptance criteria.
 - [backend/docs/verification.md](../backend/docs/verification.md): Báo cáo nghiệm thu tích hợp backend, kiểm chứng toàn diện các endpoint danh mục, snapshot và kiểm soát chuyển hướng an toàn.
+- [deploy/README.md](../deploy/README.md): Runbook triển khai bản dùng thử T08 theo spec T06 (một VPS + Docker Compose + Caddy HTTPS, backup/khôi phục, kiểm tải D7) — bộ triển khai sẵn sàng, chưa triển khai thật.
 
 ### 2.3. Về Mobile (Flutter App)
 - [superpowers/specs/2026-10-15-camera-mobile-a1-design.md](superpowers/specs/2026-10-15-camera-mobile-a1-design.md): Đặc tả thiết kế Mobile A1:

@@ -1,0 +1,14 @@
+# T08: public HTTPS entrypoint for the trial backend.
+# Caddy obtains and renews the Let's Encrypt certificate for {$DOMAIN}
+# automatically; HTTP is redirected to HTTPS.
+{$DOMAIN} {
+	encode gzip
+
+	header {
+		# Do not leak the proxy software in responses.
+		-Server
+		X-Content-Type-Options "nosniff"
+	}
+
+	reverse_proxy backend:3000
+}

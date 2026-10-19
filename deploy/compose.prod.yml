@@ -1,0 +1,69 @@
+# T08 / T06-D5: production stack for the trial VPS.
+# One small VPS, everything in Docker Compose:
+#   caddy   - public entrypoint, automatic HTTPS (Let's Encrypt)
+#   backend - NestJS API (built from ../backend/Dockerfile)
+#   db      - PostgreSQL + PostGIS (internal network only, never published)
+#
+# Usage (on the VPS, from this directory):
+#   cp .env.prod.example .env.prod   # then fill real values
+#   docker compose -f compose.prod.yml --env-file .env.prod up -d --build
+#   docker compose -f compose.prod.yml --env-file .env.prod exec backend npm run db:migrate
+# See README.md in this directory for the full runbook.
+
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-camera_catalog}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-camera_catalog}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    # No ports: the database is reachable only inside the compose network.
+
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-camera_catalog}
+      BACKEND_API_KEY: ${BACKEND_API_KEY:?BACKEND_API_KEY is required}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required}
+      # Set only while a key-rotation window is open (T06-D3), then remove.
+      BACKEND_API_KEY_PREVIOUS: ${BACKEND_API_KEY_PREVIOUS:-}
+      CAMERA_PROVIDER_MODE: ${CAMERA_PROVIDER_MODE:-notis}
+      NOTIS_AUTH_TOKEN: ${NOTIS_AUTH_TOKEN:-}
+      RATE_LIMIT_MAX_PER_MINUTE: ${RATE_LIMIT_MAX_PER_MINUTE:-120}
+    # No ports: only Caddy talks to the backend, inside the compose network.
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN is required}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

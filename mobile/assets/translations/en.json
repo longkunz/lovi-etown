@@ -21,6 +21,8 @@
     "view_card": "Card",
     "view_grid": "Grid",
     "view_list": "List",
+    "update_required_title": "App update required",
+    "update_required_body": "This version is no longer supported. Please install the latest version to keep watching cameras.",
     "density_comfortable": "Comfortable",
     "density_compact": "Compact",
     "retry_button": "Retry",

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/utils/async_state.dart';
+import 'package:flutter_starter/src/utils/failure.dart';
 
 class CameraCatalogState extends Equatable {
   const CameraCatalogState({
@@ -36,6 +37,17 @@ class CameraCatalogState extends Equatable {
   final int nextOffset;
   final int total;
   final bool hasMore;
+
+  /// T06-D4: the backend rejected this build's reader key (401/403). The
+  /// only remedy is installing a newer app build, so the screen must show
+  /// the dedicated update-required view instead of a retryable error.
+  bool get isUpdateRequired {
+    final state = catalogState;
+    if (state is! RequestFailure<CatalogPage>) return false;
+    final failure = state.failure;
+    return failure is ApiFailure &&
+        (failure.statusCode == 401 || failure.statusCode == 403);
+  }
 
   CameraCatalogState copyWith({
     RequestState<CatalogPage>? catalogState,

@@ -7,6 +7,7 @@ export interface AppConfig {
   databaseSchema?: string;
   backendApiKey: string;
   adminApiKey: string;
+  backendApiKeyPrevious?: string;
   cameraProviderMode: 'notis' | 'fixture';
   notisAuthToken?: string;
   bodyLimitBytes: number;
@@ -40,6 +41,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     ADMIN_API_KEY: z.string({
       error: 'ADMIN_API_KEY is required',
     }).min(1, 'ADMIN_API_KEY is required'),
+    BACKEND_API_KEY_PREVIOUS: z.string().min(1, 'BACKEND_API_KEY_PREVIOUS must not be empty').optional(),
     CAMERA_PROVIDER_MODE: z.enum(['notis', 'fixture'], {
       error: 'CAMERA_PROVIDER_MODE must be either "notis" or "fixture"',
     }).default('notis'),
@@ -111,12 +113,26 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     throw new Error('Configuration validation failed: ADMIN_API_KEY and BACKEND_API_KEY must not be identical');
   }
 
+  // The rotation-window previous reader key must be a distinct credential:
+  // equal to the current key it would be a no-op, equal to the admin key it
+  // would silently hand admin rights to every app build (T06-D3).
+  if (
+    data.BACKEND_API_KEY_PREVIOUS !== undefined &&
+    (data.BACKEND_API_KEY_PREVIOUS === data.BACKEND_API_KEY ||
+      data.BACKEND_API_KEY_PREVIOUS === data.ADMIN_API_KEY)
+  ) {
+    throw new Error(
+      'Configuration validation failed: BACKEND_API_KEY_PREVIOUS must not be identical to BACKEND_API_KEY or ADMIN_API_KEY',
+    );
+  }
+
   return {
     port: data.PORT,
     host: data.HOST,
     databaseUrl: data.DATABASE_URL,
     backendApiKey: data.BACKEND_API_KEY,
     adminApiKey: data.ADMIN_API_KEY,
+    backendApiKeyPrevious: data.BACKEND_API_KEY_PREVIOUS,
     cameraProviderMode: data.CAMERA_PROVIDER_MODE,
     notisAuthToken: data.NOTIS_AUTH_TOKEN,
     bodyLimitBytes: data.BODY_LIMIT_BYTES,

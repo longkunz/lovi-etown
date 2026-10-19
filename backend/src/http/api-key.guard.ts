@@ -42,14 +42,22 @@ export class ApiKeyGuard implements CanActivate {
       if (apiKey === this.config.adminApiKey) {
         return true;
       }
-      if (apiKey === this.config.backendApiKey) {
+      // Recognized reader credentials (current or rotation-window previous)
+      // are authenticated but not authorized for admin routes.
+      if (apiKey === this.config.backendApiKey || apiKey === this.config.backendApiKeyPrevious) {
         throw new ApiError('FORBIDDEN', 403, false, 'Admin privileges required');
       }
       throw new ApiError('UNAUTHORIZED', 401, false, 'Invalid API key');
     }
 
-    // Reader route
-    if (apiKey === this.config.backendApiKey || apiKey === this.config.adminApiKey) {
+    // Reader route: current key, the previous key while the rotation window
+    // is open (T06-D3), or the admin key.
+    if (
+      apiKey === this.config.backendApiKey ||
+      apiKey === this.config.adminApiKey ||
+      (this.config.backendApiKeyPrevious !== undefined &&
+        apiKey === this.config.backendApiKeyPrevious)
+    ) {
       return true;
     }
 

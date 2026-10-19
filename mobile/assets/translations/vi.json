@@ -21,6 +21,8 @@
     "view_card": "Thẻ",
     "view_grid": "Lưới",
     "view_list": "Danh sách",
+    "update_required_title": "Cần cập nhật ứng dụng",
+    "update_required_body": "Phiên bản này không còn được hỗ trợ. Vui lòng cài bản mới nhất để tiếp tục xem camera.",
     "density_comfortable": "Thoải mái",
     "density_compact": "Gọn",
     "retry_button": "Thử lại",

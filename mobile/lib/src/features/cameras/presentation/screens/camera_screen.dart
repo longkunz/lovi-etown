@@ -344,6 +344,11 @@ class _CameraScreenState extends State<CameraScreen>
             });
           },
           builder: (context, state) {
+            // T06-D4: a rejected reader key gets a dedicated screen, not a
+            // retryable error. Favorites stay untouched in local storage.
+            if (state.isUpdateRequired) {
+              return _buildUpdateRequiredView(context);
+            }
             return CustomScrollView(
               controller: _scrollController,
               slivers: [
@@ -426,6 +431,32 @@ class _CameraScreenState extends State<CameraScreen>
           onToggleFavorite: _handleToggleFavorite,
         );
       },
+    );
+  }
+
+  Widget _buildUpdateRequiredView(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(CameraUiTokens.spacing16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.system_update_alt,
+                size: 48, color: CameraUiTokens.errorRed),
+            const SizedBox(height: CameraUiTokens.spacing12),
+            Text(
+              'camera.update_required_title'.tr(),
+              style: Theme.of(context).textTheme.titleMedium,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: CameraUiTokens.spacing8),
+            Text(
+              'camera.update_required_body'.tr(),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 

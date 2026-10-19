@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Camera — Bottom sheet snapshot</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Fonts: Be Vietnam Pro & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#6df5e1",
+            "tertiary-container": "#248279",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#3d4947",
+            "on-secondary-fixed-variant": "#005048",
+            "primary-fixed-dim": "#6bd8cb",
+            "surface-tint": "#006a61",
+            "surface-container-highest": "#d3e4fe",
+            "primary": "#00685f",
+            "on-secondary-fixed": "#00201c",
+            "surface-variant": "#d3e4fe",
+            "surface": "#f8f9ff",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary": "#006860",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "tertiary-fixed-dim": "#80d5cb",
+            "primary-fixed": "#89f5e7",
+            "on-background": "#0b1c30",
+            "on-tertiary-fixed": "#00201d",
+            "on-tertiary-fixed-variant": "#00504a",
+            "on-tertiary": "#ffffff",
+            "outline": "#6d7a77",
+            "on-primary-fixed": "#00201d",
+            "on-secondary": "#ffffff",
+            "background": "#f8f9ff",
+            "inverse-surface": "#213145",
+            "secondary": "#006b5f",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#f3fffc",
+            "on-secondary-container": "#006f64",
+            "surface-dim": "#cbdbf5",
+            "surface-bright": "#f8f9ff",
+            "inverse-primary": "#6bd8cb",
+            "error": "#ba1a1a",
+            "outline-variant": "#bcc9c6",
+            "on-primary-fixed-variant": "#005049",
+            "primary-container": "#008378",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed": "#71f8e4",
+            "error-container": "#ffdad6",
+            "on-primary-container": "#f4fffc",
+            "secondary-fixed-dim": "#4fdbc8",
+            "on-surface": "#0b1c30",
+            "surface-container-high": "#dce9ff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#9cf2e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-sm": "0.75rem",
+            "space-md": "1rem",
+            "margin": "1rem",
+            "margin-sm": "0.75rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "margin-lg": "1.5rem",
+            "gutter-lg": "1.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Be Vietnam Pro"],
+            "headline-md": ["Be Vietnam Pro"],
+            "body-lg": ["Be Vietnam Pro"],
+            "body-sm": ["Be Vietnam Pro"],
+            "label-md": ["Be Vietnam Pro"],
+            "label-lg": ["Be Vietnam Pro"],
+            "mono-timestamp": ["JetBrains Mono"],
+            "headline-sm": ["Be Vietnam Pro"],
+            "display": ["Be Vietnam Pro"],
+            "headline-lg": ["Be Vietnam Pro"],
+            "body-md": ["Be Vietnam Pro"]
+          },
+          "fontSize": {
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-lg": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "mono-timestamp": ["12px", { "lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-sm": ["17px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "display": ["34px", { "lineHeight": "41px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-md": ["15px", { "lineHeight": "21px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Safe-area insets & glass refinements */
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+    }
+    .pt-safe { padding-top: max(12px, env(safe-area-inset-top)); }
+    .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    
+    .liquid-glass-sheet {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      box-shadow: 0 -12px 40px rgba(11, 28, 48, 0.16), 0 -2px 8px rgba(0, 104, 95, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.95);
+    }
+
+    .liquid-glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    
+    .pill-cyan-glow {
+      box-shadow: 0 4px 14px -2px rgba(0, 104, 95, 0.18);
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="h-full w-full font-body-md text-on-surface antialiased select-none overflow-hidden bg-surface flex justify-center items-center">
+<!-- Mobile Viewport Container (390 x 844 target) -->
+<main class="relative w-full max-w-[430px] h-full max-h-[920px] bg-surface overflow-hidden shadow-2xl flex flex-col sm:rounded-[40px] sm:border sm:border-outline-variant/30">
+<!-- ============================================== -->
+<!-- LAYER 1: BACKDROP INTERFACE (Base CCTV Screen) -->
+<!-- ============================================== -->
+<div aria-hidden="true" class="absolute inset-0 flex flex-col z-0 overflow-y-auto">
+<!-- iOS Status Bar Simulation -->
+<div class="w-full flex justify-between items-center px-7 pt-3 pb-1 z-30">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight font-semibold">14:12</span>
+<div class="flex items-center space-x-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[17px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[17px]">wifi</span>
+<span class="material-symbols-outlined text-[19px]">battery_full</span>
+</div>
+</div>
+<!-- Top Search & Quick District Capsule Bar -->
+<div class="px-4 py-2 flex flex-col gap-2.5 z-20">
+<div class="flex items-center gap-2">
+<!-- Search Pill -->
+<div class="flex-1 h-11 bg-surface-container-lowest/90 rounded-full flex items-center px-3.5 shadow-sm border border-outline-variant/30">
+<span class="material-symbols-outlined text-outline text-[20px] mr-2">search</span>
+<span class="text-on-surface-variant font-body-sm text-body-sm truncate">Tên đường, mã, hoặc tên riêng...</span>
+</div>
+<!-- District Pill Filter -->
+<div class="h-11 px-3 bg-secondary-container/30 text-primary border border-secondary-container/60 rounded-full flex items-center gap-1 shrink-0 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>Bình Hưng Hòa</span>
+<span class="material-symbols-outlined text-[16px]">expand_more</span>
+</div>
+</div>
+<!-- Filter Quick Tabs & Grid Switcher -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2 overflow-x-hidden">
+<!-- 718 Camera Chip -->
+<div class="h-8 px-3 rounded-full bg-surface-container border border-outline-variant/40 flex items-center gap-1.5 font-label-sm text-label-sm text-on-surface">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>718 camera</span>
+</div>
+<!-- Active List Pill -->
+<div class="h-8 px-3.5 rounded-full bg-primary text-on-primary flex items-center gap-1.5 font-label-sm text-label-sm shadow-sm">
+<span class="material-symbols-outlined text-[16px]">grid_view</span>
+<span>Danh sách</span>
+</div>
+<!-- Map Icon Chip -->
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-[18px]">map</span>
+</div>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest border border-outline-variant/30 flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</div>
+</div>
+</div>
+<!-- Section Title: Yêu thích -->
+<div class="px-4 pt-3 pb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-amber-500 text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Yêu thích</h2>
+</div>
+<!-- Grid of Cameras (Behind scrim) -->
+<div class="px-4 py-2 grid grid-cols-2 gap-3 pb-32">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm flex flex-col">
+<div class="relative w-full aspect-[4/3] bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="High angle daytime municipal traffic CCTV camera overlooking an intersection in Ho Chi Minh City with motorbikes and cars moving in sunlight under clear skies in a realistic civic surveillance feed aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1kgbrMv7BOirwivkWUFXMQokig65LDjS_PjwBVJG9XF1MjCBYSV7SDS4g3lYu888EeGfuwtr7WhPHUoKFLLDHIf9L65FoF6nazVgeImCMr56HjL45yPAJNXvT-0mvsRd6bWbVjAjc6VgtPZofpzYh0JVuXV0x-Jpr-OY2Hvw3ILFcLIAq4T9TjVF7wG0Evgy9PQTqJkdAODMhnW6GA_nZrQw-okEgEgPwJ15uTAPjeTxdztQhEP7_6u5J0yQxieCLAcavXSyt5JSM"/>
+<div class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div class="p-2.5">
+<p class="font-label-md text-label-md text-on-surface truncate">Huỳnh Tấn Phát - Phú Thu...</p>
+<p class="font-body-sm text-[11px] text-outline truncate mt-0.5">Phường Phú Thuận · TTH 320</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm flex flex-col">
+<div class="relative w-full aspect-[4/3] bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="CCTV surveillance angle of crowded urban street intersection in Vietnam showing traffic lights, motorbikes, and commercial shopfronts in daylight with high crisp contrast" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8E_v0aS4o0Pz-nzilsvJ96Al7jyrheTiZtUmIeln9SqW3cSqmuwxwNPOPgCyEyDDt2lS0L60SlYTx8NaRlNNx6PtpxiPgFzllUCB5uYC5vsqq7K84QlXPz0giaPhvlNTt01olsnKkeGOZq7pcTwDkLKMpT7pbsgQ_e3klUjKSeofhqXasrmiJGRUzS6orNjGbN5-M7KIhkkjkqAnXEZzzV8umVKIs-EZK-qV6zw1pBiUd0PDhgq433S1itYMA1qfi3tc-OzE85rod"/>
+<div class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div class="p-2.5">
+<p class="font-label-md text-label-md text-on-surface truncate">Nguyễn Thị Thập - Tân Mỹ</p>
+<p class="font-body-sm text-[11px] text-outline truncate mt-0.5">Phường Tân Mỹ · TTH 322</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm flex flex-col">
+<div class="relative w-full aspect-[4/3] bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Urban Ho Chi Minh City road crossing captured from surveillance camera angle during clear afternoon daylight with scooters waiting at zebra crossing" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAL0Cn-uFeXRrfajpCl0UvssnaDwhFpjmc82sppU9DzwfDW3tBG3oKbIXpEZVpgvcFkUY_pSEtdKPmyje8SP9oW4aEMk1G5VLTIaJo6JOrkKNXVGBP-ktK5r-ssE85CQ73KhYk5WU3R-aErXrDZyynrYUYbgU6iAEMcScCHvLT3gVPbKqxU64Xl6SGY9pYBwdqYmMO7tC-HYz8zOuBp6kvDjzDUQ6H9nxDmx9VgXZldRHn-YCXmy7zVDvI-69Un_NibMB3qN0z04_kl"/>
+<div class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div class="p-2.5">
+<p class="font-label-md text-label-md text-on-surface truncate">Nguyễn Thị Thập - Huỳnh Tấn...</p>
+<p class="font-body-sm text-[11px] text-outline truncate mt-0.5">Phường Tân Phú · TTH 319</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/30 shadow-sm flex flex-col">
+<div class="relative w-full aspect-[4/3] bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Wide panoramic traffic junction surveillance snapshot in suburban district of Ho Chi Minh City showing flowing motor traffic under bright direct sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-pT4wyMXTzxa-2wftmGoaP92g47EQGKem5xL2EO4Xv08Pzb64spvS2iVY16yw1bysAfvsoR0eptF1IZKYzhDkNlAklG9mCnpdrq6K-_PSQUSSflW-v3Ap4q6Sia-YXlr4W2QnGB4X9mdhojWVDnVvZ7ywV6Dm3H2HEGpTrXdJdom1e03RiT5YJBh2QP0RkJAxZI0P5nenSKGpX_tz5_JVR9p6zHxTR9ChfCvJ7zragMG9aS78y00Rbmqbcy8tFTL-HgsnagZREcXq"/>
+<div class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+<div class="p-2.5">
+<p class="font-label-md text-label-md text-on-surface truncate">Nguyễn Thị Thập - Lê Văn Lương</p>
+<p class="font-body-sm text-[11px] text-outline truncate mt-0.5">Phường Tân Kiểng · TTH 315</p>
+</div>
+</div>
+</div>
+</div>
+<!-- ============================================== -->
+<!-- LAYER 2: BACKDROP DIM SCRIM (Per requirements)  -->
+<!-- ============================================== -->
+<div class="absolute inset-0 bg-on-surface/40 backdrop-blur-[2.5px] z-20 transition-opacity duration-300 pointer-events-auto" id="scrim"></div>
+<!-- ============================================== -->
+<!-- LAYER 3: DRAGGABLE LIQUID GLASS MODAL SHEET   -->
+<!-- ============================================== -->
+<section aria-label="Chi tiết Camera Snapshot" class="liquid-glass-sheet absolute bottom-0 left-0 w-full z-30 rounded-t-[32px] flex flex-col pb-safe max-h-[82%] animate-in slide-in-from-bottom duration-300">
+<!-- Drag Indicator Handle -->
+<div class="w-full flex justify-center pt-2.5 pb-1">
+<div class="w-10 h-1 rounded-full bg-outline-variant/80 hover:bg-outline transition-colors cursor-grab active:cursor-grabbing"></div>
+</div>
+<!-- Sheet Header Bar -->
+<div class="px-4 py-2 flex items-center justify-between gap-3">
+<!-- Close Button (48px strict touch barrier) -->
+<button aria-label="Đóng cửa sổ camera" class="w-11 h-11 shrink-0 rounded-full bg-surface-container-lowest/90 border border-outline-variant/40 flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all shadow-sm" id="closeSheetBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+<!-- Camera Title & District Subtitle -->
+<div class="flex-1 min-w-0 pr-1">
+<h1 class="font-headline-sm text-[16px] leading-tight font-bold text-on-surface truncate">
+            Huỳnh Tấn Phát - Phú Thuận
+          </h1>
+<p class="font-body-sm text-[12px] text-outline truncate mt-0.5">
+            Phường Phú Thuận · TTH 320
+          </p>
+</div>
+<!-- Star / Saved Status Capsule (48px touch target enclosure) -->
+<button aria-label="Bỏ lưu khỏi danh sách yêu thích" class="h-11 px-3.5 shrink-0 rounded-full bg-surface-container-lowest/95 border border-outline-variant/40 flex items-center gap-1.5 shadow-sm active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-amber-500 text-[20px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md text-on-surface font-semibold">Đã lưu</span>
+</button>
+</div>
+<!-- Sheet Main Content Canvas -->
+<div class="px-4 pt-1 pb-3 flex flex-col gap-3 overflow-y-auto">
+<!-- HERO CCTV SNAPSHOT CONTAINER (16:9 strict, uncropped) -->
+<div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-on-surface shadow-md border border-outline-variant/30 group">
+<!-- Snapshot Image from live CCTV API feed -->
+<img alt="Ảnh chụp thời gian thực camera giao thông Huỳnh Tấn Phát - Phú Thuận TP.HCM" class="w-full h-full object-cover object-center block" data-alt="Authentic traffic surveillance camera stream frame from a high elevated pole showing street vehicles cars scooters moving on a sunny boulevard in Ho Chi Minh City with Vietnamese road markings and building facades in the background" id="cameraHeroFeed" onerror="this.onerror=null; this.src='placeholder';" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRGpZ_KnhvPgdfZb7KMr4COdeSfNOAr-w3FvJ33EUNGIIbMyoxrfHGBbDT-dsTptgSS-NcGv6fKWFjRO44b6RC5rsEMwMIsj7K6KL0j-yOmLK7sDzh6ffKxo8XLkel641e6UiwG30W358gK6Wq1HZ8i8WC11K-jj0nQfIWJ8b3c4j9MZFlR3AduWoH8-XZCHm9DxjVwEax55lADX0vlSJQh1mDTfgo7nOXs4mIqTF294rMHQpkIIv_oUWbar-dNapJCeEVrygS8eIr"/>
+<!-- Live Glass Pill Badge: Top Left -->
+<div class="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white shadow-sm">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+<span class="w-2 h-2 rounded-full bg-emerald-400 -ml-3.5"></span>
+<span class="font-label-sm text-[11px] font-medium tracking-wide uppercase">Ảnh chụp</span>
+</div>
+<!-- Timestamp Overlay: Top Right -->
+<div class="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-md border border-white/10 text-white/90 font-mono-timestamp text-[11px]">
+<span id="liveTimestamp">14:12:25</span>
+</div>
+<!-- Corner Refraction subtle gradient overlay -->
+<div class="absolute inset-0 ring-1 ring-inset ring-white/15 rounded-2xl pointer-events-none"></div>
+</div>
+<!-- Snapshot Metadata & Source Status -->
+<div class="flex items-center justify-between px-1 text-on-surface-variant font-body-sm text-[12px]">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="material-symbols-outlined text-[15px] text-primary shrink-0">history</span>
+<span class="truncate font-medium">Nhận ảnh lúc <span class="font-semibold text-on-surface">14:12</span> · Dữ liệu mẫu</span>
+</div>
+<span class="text-outline text-[11px] shrink-0 font-light">Chưa rõ thời điểm chụp từ nguồn</span>
+</div>
+<!-- ACTION TOOLBAR: Single-hand ergonomic transit buttons -->
+<div class="grid grid-cols-2 gap-3 pt-1">
+<!-- Action 1: Refresh Snapshot -->
+<button class="h-12 rounded-2xl bg-surface-container-lowest/90 border border-outline-variant/40 hover:bg-surface-container flex items-center justify-center gap-2 text-primary font-label-lg text-label-lg active:scale-95 transition-all shadow-sm" id="refreshBtn" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform duration-500" id="refreshIcon">refresh</span>
+<span>Làm mới</span>
+</button>
+<!-- Action 2: Fullscreen Viewer -->
+<button class="h-12 rounded-2xl bg-primary text-on-primary hover:bg-primary-container flex items-center justify-center gap-2 font-label-lg text-label-lg active:scale-95 transition-all shadow-md pill-cyan-glow" id="fullscreenBtn" type="button">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+<span>Toàn màn hình</span>
+</button>
+</div>
+<!-- Contextual Quick Note on Traffic Flow -->
+<div class="rounded-xl p-2.5 bg-surface-container-low/70 border border-outline-variant/30 flex items-center gap-2.5">
+<div class="w-7 h-7 rounded-lg bg-emerald-500/15 text-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[17px]">traffic</span>
+</div>
+<div class="min-w-0 flex-1">
+<p class="font-label-sm text-[12px] text-on-surface font-semibold leading-none">Giao thông thông thoáng</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant mt-0.5 truncate">Tốc độ trung bình 28 km/h trên tuyến Huỳnh Tấn Phát</p>
+</div>
+</div>
+</div>
+<!-- iOS Home Bar Indicator Pill -->
+<div class="w-full flex justify-center pt-1 pb-1">
+<div class="w-32 h-1 rounded-full bg-on-surface/20"></div>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- LAYER 4: FULLSCREEN VIEWER OVERLAY (In-situ)    -->
+<!-- ============================================== -->
+<div class="fixed inset-0 z-50 bg-black/95 hidden flex-col justify-between p-4 backdrop-blur-xl" id="fullscreenOverlay">
+<!-- Fullscreen Header -->
+<div class="flex items-center justify-between text-white pt-safe">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold">Huỳnh Tấn Phát - Phú Thuận</h2>
+<p class="font-body-sm text-xs text-white/70">Phường Phú Thuận · TTH 320 · TP.HCM</p>
+</div>
+<button aria-label="Thoát toàn màn hình" class="w-11 h-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white active:scale-90 transition-transform" id="closeFullscreenBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">close_fullscreen</span>
+</button>
+</div>
+<!-- Fullscreen Centered Image -->
+<div class="relative w-full my-auto flex items-center justify-center">
+<img alt="Xem ảnh toàn màn hình camera Huỳnh Tấn Phát" class="w-full max-h-[618px] object-contain rounded-lg border border-white/10 shadow-2xl" data-alt="Surveillance view of a bustling Vietnamese road crossing Huynh Tan Phat district 7 Ho Chi Minh City daytime camera snapshot" onerror="this.onerror=null; this.src='placeholder';" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnNO1Ki3QGoAVHV-Vv2AVYYnsVyuy9PZwyHucfwI-1GduK0yDGqoc7mNvD2aHK0gBAL6SJK5dPBnlgfGLbJXDgVhsw8FiNGHqu2GYDAhhMRJGczozM4NUydz_CfELxu3uGEH9M8MMNKTiN4N-8VNUNS32YE4r-gB18nLfBEmZ_aabX1XL6RyjQQalmRptWlwMWK449JwB5-E-xIE5k_OEG1B2sfZAKY0FDfehy0OVx7fwUSxSbcDhZ0gpmNsQCicw95y2luD_7nclJ"/>
+<div class="absolute bottom-3 left-4 px-3 py-1 rounded-full bg-black/60 border border-white/20 text-white font-mono-timestamp text-xs">
+          Cập nhật: 14:12:25 (GMT+7)
+        </div>
+</div>
+<!-- Fullscreen Bottom Toolbar -->
+<div class="flex items-center justify-around pb-safe text-white/80">
+<button class="flex flex-col items-center gap-1 active:scale-90 transition-transform text-xs" onclick="triggerRefresh()" type="button">
+<span class="material-symbols-outlined text-[24px]">refresh</span>
+<span>Tải lại</span>
+</button>
+<button class="flex flex-col items-center gap-1 active:scale-90 transition-transform text-xs text-amber-400" type="button">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>Đã lưu</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Interactive Logic for Sheet Controls -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const closeBtn = document.getElementById('closeSheetBtn');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const refreshIcon = document.getElementById('refreshIcon');
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const fullscreenOverlay = document.getElementById('fullscreenOverlay');
+      const closeFullscreenBtn = document.getElementById('closeFullscreenBtn');
+      const heroFeed = document.getElementById('cameraHeroFeed');
+      const liveTimestamp = document.getElementById('liveTimestamp');
+
+      // Refresh Simulation
+      function doRefresh() {
+        if (!refreshIcon) return;
+        refreshIcon.classList.add('rotate-180');
+        
+        // Append cache-buster query parameter to force live CCTV snapshot reload
+        const baseUrl = 'https://api.notis.vn/v4/cameras/5deb576d1dc17d7c5515ad13/snapshot';
+        const timestampParam = '?t=' + new Date().getTime();
+        
+        if (heroFeed) {
+          heroFeed.src = baseUrl + timestampParam;
+        }
+
+        const now = new Date();
+        const timeStr = [
+          String(now.getHours()).padStart(2, '0'),
+          String(now.getMinutes()).padStart(2, '0'),
+          String(now.getSeconds()).padStart(2, '0')
+        ].join(':');
+
+        if (liveTimestamp) {
+          liveTimestamp.textContent = timeStr;
+        }
+
+        setTimeout(() => {
+          refreshIcon.classList.remove('rotate-180');
+        }, 500);
+      }
+
+      window.triggerRefresh = doRefresh;
+
+      if (refreshBtn) {
+        refreshBtn.addEventListener('click', doRefresh);
+      }
+
+      // Fullscreen Overlay Toggle
+      if (fullscreenBtn && fullscreenOverlay) {
+        fullscreenBtn.addEventListener('click', () => {
+          fullscreenOverlay.classList.remove('hidden');
+          fullscreenOverlay.classList.add('flex');
+        });
+      }
+
+      if (closeFullscreenBtn && fullscreenOverlay) {
+        closeFullscreenBtn.addEventListener('click', () => {
+          fullscreenOverlay.classList.add('hidden');
+          fullscreenOverlay.classList.remove('flex');
+        });
+      }
+
+      // Close bottom sheet (soft dismiss toggle simulation)
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          const sheet = document.querySelector('.liquid-glass-sheet');
+          const scrim = document.getElementById('scrim');
+          if (sheet && scrim) {
+            sheet.classList.add('translate-y-full', 'transition-transform', 'duration-300');
+            scrim.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+              // Reset after brief demonstration delay for fluid preview
+              sheet.classList.remove('translate-y-full');
+              scrim.classList.remove('opacity-0', 'pointer-events-none');
+            }, 1800);
+          }
+        });
+      }
+    });
+  </script>
+</body></html>

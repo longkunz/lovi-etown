@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/prototype-viewer-portrait.html",
+    "project": "15634181901662145156",
+    "title": "Prototype A1 - viewer-portrait",
+    "screenIds": [
+      "12098818503967825305"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=12098818503967825305"
+  }
+}

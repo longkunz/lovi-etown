@@ -1,0 +1,282 @@
+{
+  "success": true,
+  "data": {
+    "resource": "screen",
+    "id": "13901783425361611016",
+    "updated": {
+      "outputComponents": [
+        {
+          "designSystem": {
+            "designSystem": {
+              "displayName": "Liquid Saigon Traffic",
+              "styleGuidelines": "## Brand & Style\n\nThe design system delivers an authentic Apple-inspired Liquid Glass aesthetic calibrated specifically for Saigon's high-velocity urban mobility. Built for daily commuters, delivery drivers, and city navigators across Ho Chi Minh City's 24 districts, the interface strips away cognitive noise to surface immediate street-level reality. The emotional tone is airy, pristine, and razor-sharp: the calm lens through which the bustling tropical energy of Saigon traffic can be read at a glance.\n\nThe visual style synthesizes heavy optical frosted glass (`backdrop-filter: blur(28px) saturate(180%)`), pure specular rim highlights, subtle cyan and teal atmospheric glows, and generous corner radiuses (24px to 32px). Street snapshots remain crisp, unaltered, and high-contrast, framed by translucent physical materials that refract the underlying content without obstructing legibility. The interface focuses strictly on static snapshots and status clarity, omitting misleading live-video streams or secondary weather overlays.\n\n## Layout & Spacing\n\nThe layout employs an adaptive responsive grid tuned for quick visual scanning on mobile screens while scaling effortlessly to multi-column tablet viewports:\n\n- **Mobile Viewports (< 640px)**: A 2-column equal-split grid (`gutter: 0.75rem`, `margin: 1rem`) maximizes screen real estate, presenting 4 to 6 live camera stills above the fold without horizontal clipping.\n- **Tablet & Large Screens (≥ 640px)**: Refits dynamically to 3 or 4 columns with `gutter: 1rem` and `margin: 1.5rem`.\n- **Vertical Rhythm**: Section headers (\"Yêu thích\", ward groupings like \"Phường Tân Mỹ\") command `space-lg` separation. Camera cards maintain `space-sm` internal padding between image containers and label groups.\n- **Dock Safe Area**: The bottom scroll canvas reserves a mandatory `96px` inset to ensure the floating 2-tab Liquid Glass dock never obscures bottom-row camera metadata.\n\n## Elevation & Depth\n\nVisual hierarchy uses a refined Apple-grade Liquid Glass physical model rather than generic drop shadows:\n\n- **Liquid Glass Materials**: Translucent panels (`background: rgba(255, 255, 255, 0.76)`) paired with `backdrop-filter: blur(28px) saturate(190%)`. \n- **Specular Rim Highlighting**: A crisp 1px perimeter inner highlight (`box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), 0 8px 32px -4px rgba(15, 23, 42, 0.08)`) creates an optical glass bevel that catches light from the top edge.\n- **Floating Glass Dock**: Elevated with an ambient cyan/teal diffused radiance (`box-shadow: 0 16px 40px -8px rgba(14, 165, 233, 0.16), 0 2px 10px rgba(0, 0, 0, 0.04)`), creating total detachment from the scrolling feed beneath it.\n- **Camera Stills**: Embedded in a recessed matte base with a subtle inner edge border (`1px solid rgba(0, 0, 0, 0.06)`), cleanly distinguishing bright daytime sky snapshots from white card containers.\n\n## Components\n\n### Floating Liquid Glass Dock\n- A compact, pill-shaped dock anchored 24px above the bottom screen edge.\n- **Structure**: Exactly 2 primary tabs: **Camera** (Live snapshot junction grid) and **Quan tâm** (Saved favorites & pinned routes).\n- **Styling**: Translucent glass pill (`rgba(255, 255, 255, 0.82)`), specular rim highlight, with active states pill-highlighted in Cyan-Teal gradient glass with high-contrast glyphs.\n\n### Camera Snapshot Card\n- **Photo Container**: 16:10 aspect ratio thumbnail displaying actual Ho Chi Minh City street views (scooters, arterial junctions, flyovers).\n- **Status Indicator**: Top-right floating glass favorite star icon (amber fill when active, semi-transparent frosted circle when inactive).\n- **Offline Mode**: Muted slate-gray fallback card displaying the `camera-off` vector glyph, labeled \"Camera offline\" with junction metadata intact.\n- **Data Footer**: Primary street junction name in bold Be Vietnam Pro (`14px`), accompanied by secondary metadata containing Ward (\"Phường\") and camera identification code.\n\n### Search Bar & Floating Ward Filter\n- **Global Search**: Floating glass pill container with leading search icon, clear prompt text, and responsive focus ring glowing in `#0ea5e9`.\n- **Ward Selector (\"Phường Tân Mỹ\")**: Glass dropdown trigger with teal badge accents. Tapping expands a frosted popover sheet listing HCMC wards with smooth kinetic transitions.\n\n### Category & Mode Chips\n- Filter chips (e.g., \"718 camera\", \"Danh sách\", \"Bản đồ\") rendered as frosted horizontal pills. Active chip defaults to primary cyan fill with crisp white text.",
+              "theme": {
+                "bodyFont": "BE_VIETNAM_PRO",
+                "bodyFontFamily": "Be Vietnam Pro",
+                "colorMode": "LIGHT",
+                "colorVariant": "FIDELITY",
+                "customColor": "#0ea5e9",
+                "designMd": "---\nname: Liquid Saigon Traffic\ncolors:\n  surface: '#faf8ff'\n  surface-dim: '#d2d9f4'\n  surface-bright: '#faf8ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f2f3ff'\n  surface-container: '#eaedff'\n  surface-container-high: '#e2e7ff'\n  surface-container-highest: '#dae2fd'\n  on-surface: '#131b2e'\n  on-surface-variant: '#3e4850'\n  inverse-surface: '#283044'\n  inverse-on-surface: '#eef0ff'\n  outline: '#6e7881'\n  outline-variant: '#bec8d2'\n  surface-tint: '#006591'\n  primary: '#006591'\n  on-primary: '#ffffff'\n  primary-container: '#0ea5e9'\n  on-primary-container: '#003751'\n  inverse-primary: '#89ceff'\n  secondary: '#006b5f'\n  on-secondary: '#ffffff'\n  secondary-container: '#6df5e1'\n  on-secondary-container: '#006f64'\n  tertiary: '#855300'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#d88a00'\n  on-tertiary-container: '#4a2c00'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#c9e6ff'\n  primary-fixed-dim: '#89ceff'\n  on-primary-fixed: '#001e2f'\n  on-primary-fixed-variant: '#004c6e'\n  secondary-fixed: '#71f8e4'\n  secondary-fixed-dim: '#4fdbc8'\n  on-secondary-fixed: '#00201c'\n  on-secondary-fixed-variant: '#005048'\n  tertiary-fixed: '#ffddb8'\n  tertiary-fixed-dim: '#ffb95f'\n  on-tertiary-fixed: '#2a1700'\n  on-tertiary-fixed-variant: '#653e00'\n  background: '#faf8ff'\n  on-background: '#131b2e'\n  surface-variant: '#dae2fd'\ntypography:\n  headline-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 30px\n    fontWeight: '700'\n    lineHeight: 38px\n  headline-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 22px\n    fontWeight: '600'\n    lineHeight: 28px\n  headline-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 18px\n    fontWeight: '600'\n    lineHeight: 24px\n  body-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 22px\n  body-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n  body-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\n  label-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: 18px\n  label-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n  label-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 10px\n    fontWeight: '700'\n    lineHeight: 14px\nrounded:\n  sm: 0.5rem\n  DEFAULT: 1rem\n  md: 1.5rem\n  lg: 2rem\n  xl: 3rem\n  full: 9999px\nspacing:\n  gutter: 0.75rem\n  margin: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 0.875rem\n  space-lg: 1.25rem\n  space-xl: 2rem\n---\n\n## Brand & Style\n\nThe design system delivers an authentic Apple-inspired Liquid Glass aesthetic calibrated specifically for Saigon's high-velocity urban mobility. Built for daily commuters, delivery drivers, and city navigators across Ho Chi Minh City's 24 districts, the interface strips away cognitive noise to surface immediate street-level reality. The emotional tone is airy, pristine, and razor-sharp: the calm lens through which the bustling tropical energy of Saigon traffic can be read at a glance.\n\nThe visual style synthesizes heavy optical frosted glass (`backdrop-filter: blur(28px) saturate(180%)`), pure specular rim highlights, subtle cyan and teal atmospheric glows, and generous corner radiuses (24px to 32px). Street snapshots remain crisp, unaltered, and high-contrast, framed by translucent physical materials that refract the underlying content without obstructing legibility. The interface focuses strictly on static snapshots and status clarity, omitting misleading live-video streams or secondary weather overlays.\n\n## Colors\n\nThe palette operates in a hyper-clean, light chromatic atmosphere rooted in cool oceanic tints:\n\n- **Primary (`#0ea5e9`)**: Cyan Blue. Powers interactive pills, active tab glows, camera status rings, and dominant actions.\n- **Secondary (`#14b8a6`)**: Deep Teal. Accents ward filters, metadata badges, and smooth gradient undertones.\n- **Tertiary (`#f59e0b`)**: Warm Amber Gold. Reserved exclusively for the favorite (\"Yêu thích\") star icons and priority intersection bookmarks.\n- **Neutral (`#0f172a`)**: Slate Black. Ensures sharp optical contrast for typography, crisp secondary caption labels (`#64748b`), and translucent glass fills (`rgba(255, 255, 255, 0.72)`).\n\nBackground canvas layers sit at `#f8fafc`, allowing glass elements with white translucent borders (`rgba(255, 255, 255, 0.65)`) to produce natural refractive depth against moving scrollable imagery.\n\n## Typography\n\nTypography relies entirely on **Be Vietnam Pro** to render native Vietnamese tone marks, micro-intersections, and alphanumeric ward codes (e.g., \"TTH 320\") with precision.\n\n- **Headlines & Street Identifiers**: Set in bold weights (`600` and `700`) to guarantee rapid identification under high outdoor glare. Text truncation is forbidden on arterial labels; secondary lines flex with ellipsis rules on camera codes only.\n- **Camera Snapshot Metadata**: Compact and tabular, pairing medium weights with tracking adjustments to legibly convey timecodes, ward names, and live junction identifiers.\n- **Labels & Chips**: Uppercase or title-case medium-to-bold weights with tight letter spacing for maximum density on compact touch targets.\n\n## Layout & Spacing\n\nThe layout employs an adaptive responsive grid tuned for quick visual scanning on mobile screens while scaling effortlessly to multi-column tablet viewports:\n\n- **Mobile Viewports (< 640px)**: A 2-column equal-split grid (`gutter: 0.75rem`, `margin: 1rem`) maximizes screen real estate, presenting 4 to 6 live camera stills above the fold without horizontal clipping.\n- **Tablet & Large Screens (≥ 640px)**: Refits dynamically to 3 or 4 columns with `gutter: 1rem` and `margin: 1.5rem`.\n- **Vertical Rhythm**: Section headers (\"Yêu thích\", ward groupings like \"Phường Tân Mỹ\") command `space-lg` separation. Camera cards maintain `space-sm` internal padding between image containers and label groups.\n- **Dock Safe Area**: The bottom scroll canvas reserves a mandatory `96px` inset to ensure the floating 2-tab Liquid Glass dock never obscures bottom-row camera metadata.\n\n## Elevation & Depth\n\nVisual hierarchy uses a refined Apple-grade Liquid Glass physical model rather than generic drop shadows:\n\n- **Liquid Glass Materials**: Translucent panels (`background: rgba(255, 255, 255, 0.76)`) paired with `backdrop-filter: blur(28px) saturate(190%)`. \n- **Specular Rim Highlighting**: A crisp 1px perimeter inner highlight (`box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.95), 0 8px 32px -4px rgba(15, 23, 42, 0.08)`) creates an optical glass bevel that catches light from the top edge.\n- **Floating Glass Dock**: Elevated with an ambient cyan/teal diffused radiance (`box-shadow: 0 16px 40px -8px rgba(14, 165, 233, 0.16), 0 2px 10px rgba(0, 0, 0, 0.04)`), creating total detachment from the scrolling feed beneath it.\n- **Camera Stills**: Embedded in a recessed matte base with a subtle inner edge border (`1px solid rgba(0, 0, 0, 0.06)`), cleanly distinguishing bright daytime sky snapshots from white card containers.\n\n## Shapes\n\nThe design system embraces generous, organic curved contours inspired by modern hardware displays:\n\n- **Camera Snapshot Cards**: `rounded-2xl` (24px) for the outer glass shell, enclosing internal photography frames nested at 18px corners.\n- **Floating Controls & Dock**: `rounded-full` (32px / pill format) for floating action clusters, search bars, ward filter triggers, and the central 2-tab floating navigation dock.\n- **Offline States & Placeholder Containers**: Matched to card radius curves with low-contrast circular icon cutouts.\n\n## Components\n\n### Floating Liquid Glass Dock\n- A compact, pill-shaped dock anchored 24px above the bottom screen edge.\n- **Structure**: Exactly 2 primary tabs: **Camera** (Live snapshot junction grid) and **Quan tâm** (Saved favorites & pinned routes).\n- **Styling**: Translucent glass pill (`rgba(255, 255, 255, 0.82)`), specular rim highlight, with active states pill-highlighted in Cyan-Teal gradient glass with high-contrast glyphs.\n\n### Camera Snapshot Card\n- **Photo Container**: 16:10 aspect ratio thumbnail displaying actual Ho Chi Minh City street views (scooters, arterial junctions, flyovers).\n- **Status Indicator**: Top-right floating glass favorite star icon (amber fill when active, semi-transparent frosted circle when inactive).\n- **Offline Mode**: Muted slate-gray fallback card displaying the `camera-off` vector glyph, labeled \"Camera offline\" with junction metadata intact.\n- **Data Footer**: Primary street junction name in bold Be Vietnam Pro (`14px`), accompanied by secondary metadata containing Ward (\"Phường\") and camera identification code.\n\n### Search Bar & Floating Ward Filter\n- **Global Search**: Floating glass pill container with leading search icon, clear prompt text, and responsive focus ring glowing in `#0ea5e9`.\n- **Ward Selector (\"Phường Tân Mỹ\")**: Glass dropdown trigger with teal badge accents. Tapping expands a frosted popover sheet listing HCMC wards with smooth kinetic transitions.\n\n### Category & Mode Chips\n- Filter chips (e.g., \"718 camera\", \"Danh sách\", \"Bản đồ\") rendered as frosted horizontal pills. Active chip defaults to primary cyan fill with crisp white text.",
+                "font": "BE_VIETNAM_PRO",
+                "headlineFont": "BE_VIETNAM_PRO",
+                "headlineFontFamily": "Be Vietnam Pro",
+                "labelFont": "BE_VIETNAM_PRO",
+                "labelFontFamily": "Be Vietnam Pro",
+                "namedColors": {
+                  "background": "#faf8ff",
+                  "error": "#ba1a1a",
+                  "error_container": "#ffdad6",
+                  "inverse_on_surface": "#eef0ff",
+                  "inverse_primary": "#89ceff",
+                  "inverse_surface": "#283044",
+                  "on_background": "#131b2e",
+                  "on_error": "#ffffff",
+                  "on_error_container": "#93000a",
+                  "on_primary": "#ffffff",
+                  "on_primary_container": "#003751",
+                  "on_primary_fixed": "#001e2f",
+                  "on_primary_fixed_variant": "#004c6e",
+                  "on_secondary": "#ffffff",
+                  "on_secondary_container": "#006f64",
+                  "on_secondary_fixed": "#00201c",
+                  "on_secondary_fixed_variant": "#005048",
+                  "on_surface": "#131b2e",
+                  "on_surface_variant": "#3e4850",
+                  "on_tertiary": "#ffffff",
+                  "on_tertiary_container": "#4a2c00",
+                  "on_tertiary_fixed": "#2a1700",
+                  "on_tertiary_fixed_variant": "#653e00",
+                  "outline": "#6e7881",
+                  "outline_variant": "#bec8d2",
+                  "primary": "#006591",
+                  "primary_container": "#0ea5e9",
+                  "primary_fixed": "#c9e6ff",
+                  "primary_fixed_dim": "#89ceff",
+                  "secondary": "#006b5f",
+                  "secondary_container": "#6df5e1",
+                  "secondary_fixed": "#71f8e4",
+                  "secondary_fixed_dim": "#4fdbc8",
+                  "surface": "#faf8ff",
+                  "surface_bright": "#faf8ff",
+                  "surface_container": "#eaedff",
+                  "surface_container_high": "#e2e7ff",
+                  "surface_container_highest": "#dae2fd",
+                  "surface_container_low": "#f2f3ff",
+                  "surface_container_lowest": "#ffffff",
+                  "surface_dim": "#d2d9f4",
+                  "surface_tint": "#006591",
+                  "surface_variant": "#dae2fd",
+                  "tertiary": "#855300",
+                  "tertiary_container": "#d88a00",
+                  "tertiary_fixed": "#ffddb8",
+                  "tertiary_fixed_dim": "#ffb95f"
+                },
+                "overrideNeutralColor": "#0f172a",
+                "overridePrimaryColor": "#0ea5e9",
+                "overrideSecondaryColor": "#14b8a6",
+                "overrideTertiaryColor": "#f59e0b",
+                "roundness": "ROUND_FULL",
+                "spacing": {
+                  "gutter": "0.75rem",
+                  "margin": "1rem",
+                  "space-lg": "1.25rem",
+                  "space-md": "0.875rem",
+                  "space-sm": "0.5rem",
+                  "space-xl": "2rem",
+                  "space-xs": "0.25rem"
+                },
+                "spacingScale": 2,
+                "typography": {
+                  "body-lg": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "16px",
+                    "fontWeight": "400",
+                    "lineHeight": "22px"
+                  },
+                  "body-md": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "14px",
+                    "fontWeight": "400",
+                    "lineHeight": "20px"
+                  },
+                  "body-sm": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "12px",
+                    "fontWeight": "400",
+                    "lineHeight": "16px"
+                  },
+                  "headline-lg": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "30px",
+                    "fontWeight": "700",
+                    "lineHeight": "38px"
+                  },
+                  "headline-md": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "22px",
+                    "fontWeight": "600",
+                    "lineHeight": "28px"
+                  },
+                  "headline-sm": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "18px",
+                    "fontWeight": "600",
+                    "lineHeight": "24px"
+                  },
+                  "label-lg": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "14px",
+                    "fontWeight": "600",
+                    "lineHeight": "18px"
+                  },
+                  "label-md": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "12px",
+                    "fontWeight": "600",
+                    "lineHeight": "16px"
+                  },
+                  "label-sm": {
+                    "fontFamily": "Be Vietnam Pro",
+                    "fontSize": "10px",
+                    "fontWeight": "700",
+                    "lineHeight": "14px"
+                  }
+                }
+              }
+            },
+            "name": "assets/e4830c6e631c48328884c09cd03b0d2a",
+            "version": "1"
+          }
+        },
+        {
+          "design": {
+            "screens": [
+              {
+                "deviceType": "MOBILE",
+                "generatedBy": "HatterAgent",
+                "height": "1768",
+                "htmlCode": {
+                  "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzc2MjVmMzA4ZDE4ZjQ5ZWY4MDI5MTAxYzRjYjU5OWU0EgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+                  "mimeType": "text/html",
+                  "name": "projects/15634181901662145156/files/350b43789d7c45c89bddb0a7bf81c15b"
+                },
+                "id": "fdc61b0a8a57454c97bbfaba56c79ed3",
+                "name": "projects/15634181901662145156/screens/fdc61b0a8a57454c97bbfaba56c79ed3",
+                "prompt": "Recreate the Saigon Traffic Camera app screen A: 'Camera — Grid'. Mobile viewport 390x844.\n\nArt Direction: Authentic Cupertino Apple-like LIQUID GLASS.\n- Warm near-white background (#f8fafc) with subtle cool cyan/teal illumination.\n- Compact Header:\n  - Top line: 'Camera TP.HCM' with small camera glyph and tiny subtle glass badge 'Dữ liệu mẫu'.\n  - Search & Location row: Translucent glass search bar capsule (placeholder 'Tìm tên đường hoặc camera', glass search icon) with an integrated or adjacent cyan-tinted Liquid Glass location pill: map pin icon, 'Tân Mỹ', and chevron down icon (min-h-[48px]).\n  - Mode Switcher: Liquid glass segmented control with 3 segments: 'Card', 'Grid' (ACTIVE, highlighted with crisp translucent white pill), 'List'. To the right, a compact 3-column density button (grid icon).\n- Content Area (scrollable 2-column photo grid):\n  - Section '★ Quan tâm' (or 'Yêu thích'):\n    - Camera 1: 'Huỳnh Tấn Phát - Phú Thuận', subtitle 'Phường Phú Thuận • TTH 320'. Photo shows Saigon street traffic (scooters, road, daylight). Top right: translucent glass circle with FILLED yellow star icon.\n    - Camera 2: 'Nguyễn Thị Thập - Tân Mỹ', subtitle 'Phường Tân Mỹ • TTH 322'. Photo showing street with shops and motorbikes. Top right: FILLED yellow star.\n    - Camera 3: 'Huỳnh Tấn Phát - Nguyễn Thị Thập', subtitle 'Phường Tân Thuận • TTH 246'. Photo showing bus and traffic. Top right: FILLED yellow star.\n    - Camera 4: 'Nguyễn Thị Thập - Lê Văn Lương', subtitle 'Phường Tân Hưng • TTH 327'. Photo with yellow truck and bikes. Top right: FILLED yellow star.\n    - Camera 5 (Error State Tile): Instead of offline, an opaque neutral light gray card with a camera-off/alert icon, clear title 'Nguyễn Hữu Thọ - Nguyễn Thị Thập', subtitle 'Phường Tân Hưng • TTH 25.1', text 'Không tải được ảnh' and a small retry button 'Thử lại' with reload icon. Translucent glass star button on top right.\n    - Camera 6: 'Nguyễn Văn Linh - Nguyễn Thị Thập', subtitle 'Phường Tân Mỹ • TTH 324.1'. Photo showing busy wide intersection. Top right: FILLED yellow star.\n  - Section 'Khu vực Tân Mỹ' (or remaining cameras):\n    - 2 more cards with unsaved outline star (star_border, dark gray/white stroke).\n  - Infinite scroll indicator at bottom: subtle compact spinner + 'Đang tải thêm... • Đã tải 6 camera (Dữ liệu mẫu)'.\n- Bottom Navigation Dock:\n  - Floating Liquid Glass capsule fixed above bottom safe area:\n  - Exactly TWO destinations: 'Camera' (active: filled teal videocam icon + 'Camera' label on one line, active glass pill) and 'Quan tâm' (inactive: outline favorite heart + 'Quan tâm' label).\n  - Authentic Liquid Glass: backdrop-blur-2xl, translucent white bg with cool cyan reflection, thin specular white highlight border, soft shadow. Content visibly blurs behind it.\n- All interactive touch targets are at least 48px. Typography in Be Vietnam Pro / SF Pro with crisp Vietnamese diacritics. Clean, professional, premium native iOS utility.",
+                "screenMetadata": {
+                  "agentType": "PRO_AGENT",
+                  "status": "COMPLETE"
+                },
+                "screenType": "DESIGN",
+                "screenshot": {
+                  "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XsHKPs6W3jlOvDczdvdVrTNmFEwgsPyGPsp2NyNSu5z2pM5gXtR5roPB65HikdInnCDcZyvtQP4NErjxVSNu2vVEel_Z9G7SIfb8YLNTotwytYMeXKg7NNNNha0s9Ohzy1EoZSMnSmpa40Ktiai8yn895KAiQeMnGdRJptIE0d3D_GIh-6sU72a5aSl9-THRu-4edAJrEIhVYSCp5DSitkqKcvufVgXdPd6h-mlpc2pwOuAJMueAiOn9Y",
+                  "name": "projects/15634181901662145156/files/38ba72b872cc415888ce192bc967b11a"
+                },
+                "theme": {},
+                "title": "Camera — Grid (Cupertino Liquid Glass)",
+                "width": "780"
+              },
+              {
+                "deviceType": "MOBILE",
+                "generatedBy": "HatterAgent",
+                "height": "3124",
+                "htmlCode": {
+                  "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzE5NjFmMGUwOTI0NDQ3ODA5YmE3OTkyODBiNDM3ZmNmEgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+                  "mimeType": "text/html",
+                  "name": "projects/15634181901662145156/files/830df4520d5e4cd0b230e28d1dd78ac8"
+                },
+                "id": "9a66f399f9d244a0bb4069365d4e701e",
+                "name": "projects/15634181901662145156/screens/9a66f399f9d244a0bb4069365d4e701e",
+                "prompt": "Recreate screen B: 'Camera — Card'. Mobile viewport 390x844.\nArt Direction: Identical Authentic Cupertino Apple-like LIQUID GLASS visual system as screen A, but showing LARGE SINGLE-COLUMN PHOTO CARDS (Card mode selected).\n\n- Background: Clean soft near-white (#f8fafc) with subtle cool cyan rim.\n- Header:\n  - Top line: 'Camera TP.HCM' with small videocam glyph and glass badge 'Dữ liệu mẫu'.\n  - Search & Location row: Translucent glass search bar ('Tìm tên đường hoặc camera') with cyan-tinted Liquid Glass location pill: pin icon, 'Tân Mỹ', chevron-down.\n  - Mode Switcher: Glass segmented bar with:\n    - 'Card' (ACTIVE, highlighted with crisp translucent glass white pill with soft specular highlight)\n    - 'Grid' (inactive)\n    - 'List' (inactive)\n- Content Area (Large single-column full-width photo cards):\n  - Section '★ Quan tâm' (or 'Yêu thích'):\n    - Card 1: Large 16:9 photo thumbnail of traffic at 'Huỳnh Tấn Phát - Phú Thuận'. Top right of photo has a 48px round frosted liquid-glass button with a FILLED yellow star. Below photo: title 'Huỳnh Tấn Phát - Phú Thuận' (bold, wrap 2 lines readable), subtitle 'Phường Phú Thuận • TTH 320'.\n    - Card 2: Large 16:9 photo thumbnail of 'Nguyễn Thị Thập - Tân Mỹ'. Round glass button with FILLED yellow star. Title 'Nguyễn Thị Thập - Tân Mỹ', subtitle 'Phường Tân Mỹ • TTH 322'.\n    - Card 3 (Error State): 16:9 neutral gray card placeholder with camera-off icon, text 'Không tải được ảnh', retry action pill 'Thử lại'. Title 'Nguyễn Hữu Thọ - Nguyễn Thị Thập', subtitle 'Phường Tân Hưng • TTH 25.1'. Glass star button top-right.\n    - Card 4: Large 16:9 photo thumbnail of 'Nguyễn Văn Linh - Nguyễn Thị Thập'. Title 'Nguyễn Văn Linh - Nguyễn Thị Thập', subtitle 'Phường Tân Mỹ • TTH 324.1'. Unsaved outline star.\n  - Infinite scroll indicator: subtle spinner + 'Đang tải thêm... • Đã tải 4 camera'.\n- Floating Liquid Glass Dock:\n  - Fixed above bottom safe area:\n  - EXACTLY TWO destinations: 'Camera' (active: filled teal videocam + 'Camera' label) and 'Quan tâm' (outline heart + 'Quan tâm' label).\n  - Authentic Liquid Glass: backdrop-blur-2xl, translucent white with cyan rim glow, specular edge. Content visibly passes and blurs behind the dock.\n- Touch targets >= 48px. Crisp Vietnamese typography.",
+                "screenMetadata": {
+                  "agentType": "PRO_AGENT",
+                  "status": "COMPLETE"
+                },
+                "screenType": "DESIGN",
+                "screenshot": {
+                  "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UGS8YrM_xAMQTx32qkcNAjRFKa2fvtO9tjySGkcuyZwawBqFDLmCWjjXPTF40iQO8FB8w-5LY1O47Xci628DMbU8q1YyXJqMoOooIhGSKYY7_sE7BQoKdw3bbUbHYS-7s_Aw93iyw6ZGmbX3HVBdlyQhv6xC6YhKEq3mQ15TnDyW6ugLNx16PBb3CmFARhB0coEhn3QUTq6tMEY21X0Jbd1LLN8KVWcia9wCwZWpZfieuBV_wstYeOFkH0",
+                  "name": "projects/15634181901662145156/files/992f9e092dec4037ac84cf9016fc3d0f"
+                },
+                "theme": {},
+                "title": "Camera — Card (Cupertino Liquid Glass)",
+                "width": "780"
+              },
+              {
+                "deviceType": "MOBILE",
+                "generatedBy": "HatterAgent",
+                "height": "1768",
+                "htmlCode": {
+                  "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzg5NWM5NjdhMzIzNTQyNDdiMGE2MDgzOGRlOTUzMWYxEgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+                  "mimeType": "text/html",
+                  "name": "projects/15634181901662145156/files/7e909c2c834c446fbf42b89e6ba2d678"
+                },
+                "id": "9c223b427cbd4d13846f76ee8aac9959",
+                "name": "projects/15634181901662145156/screens/9c223b427cbd4d13846f76ee8aac9959",
+                "prompt": "Recreate screen C: 'Camera — Dropdown'. Mobile viewport 390x844.\nArt Direction: Exactly identical 2-column photo grid as screen A, but with the LOCATION DROPDOWN POPOVER OPEN, anchored directly under the 'Tân Mỹ' pill, showcasing authentic Apple-like LIQUID GLASS optical frosting.\n\n- Reference: Closely inspect {{DATA:IMAGE:IMAGE_3}}.\n- Backdrop / Base screen: The 2-column camera grid is active underneath (Huỳnh Tấn Phát, Nguyễn Thị Thập, etc.).\n- Dropdown Popover:\n  - Anchored directly under the cyan location pill ('Tân Mỹ').\n  - Shape: Smooth rounded pill / card with 28px-32px border radius.\n  - Optical Liquid Glass Material: Deep translucent frosted glass with backdrop-blur-3xl, specular top/side rim highlights (bright translucent white border), soft cool cyan light diffusion, and ambient drop shadow.\n  - Camera photos and road colors visibly bleed softly through the translucent frosted glass behind the menu rows!\n  - Popover Content:\n    - Search input: compact glass search field 'Tìm khu vực...' with magnifying glass.\n    - Option 1: 'Tất cả khu vực' (subtle icon or clean row).\n    - Option 2: 'Phường Tân Mỹ' (ACTIVE / SELECTED with bold text and a crisp teal/cyan checkmark icon).\n    - Option 3: 'Phường Tân Thuận'.\n    - Option 4: 'Phường Tân Hưng'.\n    - Option 5: 'Phường Phú Thuận'.\n    - Option 6: 'Phường Bến Thành'.\n    - Option 7: 'Phường Bàn Cờ'.\n    - Option 8: 'Phường An Đông'.\n    - High contrast dark text floating above the glass surface. Subtle scroll indicator line on the right.\n  - Popover does not cover the entire screen — it stays neatly floating in the upper-right / center area so the backdrop camera grid remains clearly visible around and softly through it.\n- Floating Liquid Glass Dock:\n  - Fixed at the bottom with exactly TWO destinations: 'Camera' (active) and 'Quan tâm' (inactive). Translucent frosted glass over the bottom photos.\n- Vietnamese typography, 48px hit targets, flawless iOS aesthetic.",
+                "screenMetadata": {
+                  "agentType": "PRO_AGENT",
+                  "status": "COMPLETE"
+                },
+                "screenType": "DESIGN",
+                "screenshot": {
+                  "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VMj0qtEnOKAtNI2ai6wEWV806QcmhWZqLZwO0idyVxg9MLq06YDFWA_VzMneREXQk3uoOxaot-p5lVpjEFz-hxlWbOhVnlku_Pyt_cKYQXFA1rlQq9VUJQQISth0kLQ7hLfNhsmbxQBBOM8N9DojHtdIrFivUcUOhfqpl1_J78fEqMIOn3VKWHhbseNAro9KjEynxSPsaWl5PxVo2Awn5fHRaLEz6Z08K3rjEdV7WnleVlTH7UZ9KYvUzQ",
+                  "name": "projects/15634181901662145156/files/cdf2888afb2442b98958d3118debc6f1"
+                },
+                "theme": {},
+                "title": "Camera — Dropdown (Cupertino Liquid Glass)",
+                "width": "780"
+              }
+            ],
+            "theme": {}
+          }
+        },
+        {
+          "text": "Bộ 3 màn hình **Camera TP.HCM** đã được hoàn thiện đồng bộ theo đúng chỉ dẫn thiết kế và 3 ảnh tư liệu thực tế của bạn, ứng dụng triệt để hiệu ứng **Cupertino Liquid Glass** (kính mờ quang học truyền sáng, viền phản xạ specular rim và ánh cyan dịu mát):\n\n---\n\n### Tổng quan 3 Màn hình Thiết kế:\n\n1. **Màn hình A: Camera — Grid** (`Camera — Grid (Cupertino Liquid Glass)`):\n   - **Bố cục lưới ảnh 2 cột**: Hiển thị ảnh chụp giao thông thực tế tại các nút giao TP.HCM (Huỳnh Tấn Phát, Nguyễn Thị Thập, Nguyễn Văn Linh,...).\n   - **Phân biệt trạng thái Yêu thích**: Nút tròn kính mờ quang học góc trên bên phải với icon ngôi sao vàng tô đặc (**Filled Yellow Star**) cho camera đã lưu, và ngôi sao viền nét mảnh cho camera chưa lưu.\n   - **Xử lý lỗi tải ảnh chuẩn mực**: Thẻ lỗi trung tính hiển thị icon camera gạch chéo, nhãn rõ ràng *\"Không tải được ảnh\"* và nút thao tác *\"Thử lại\"* (không gán nhãn offline giả định).\n   - **Thanh chuyển chế độ xem (Mode Switcher)**: Cụm kính mờ 3 phân đoạn `Card | Grid | List` với tab **Grid** đang kích hoạt, kèm icon tuỳ chọn mật độ hiển thị 3 cột.\n\n2. **Màn hình B: Camera — Card** (`Camera — Card (Cupertino Liquid Glass)`):\n   - **Bố cục thẻ ảnh đơn 1 cột khổ lớn**: Tab **Card** được chọn, tối ưu trải nghiệm soi chi tiết mặt đường và tình hình giao thông trên khung hình rộng 16:9 sắc nét.\n   - Giữ nguyên các tiêu chuẩn chạm 48px, tên đường và phường hiển thị 1–2 dòng tự nhiên không bị cắt ngắn.\n\n3. **Màn hình C: Camera — Dropdown** (`Camera — Dropdown (Cupertino Liquid Glass)`):\n   - **Bảng chọn khu vực Liquid Glass mở nổi (Popover)**: Bám sát ảnh tư liệu với góc bo 28–32px, hiệu ứng khúc xạ kính mờ chân thực cho phép màu sắc của các khung hình giao thông phía sau hiển thị loang mờ tự nhiên xuyên qua bề mặt kính.\n   - Chứa ô tìm kiếm nhanh *\"Tìm khu vực...\"*, mục chọn *\"Tất cả khu vực\"*, mục đang kích hoạt *\"Phường Tân Mỹ\"* kèm dấu tick xanh ngọc nổi bật, cùng danh sách các phường tiêu biểu (Tân Thuận, Tân Hưng, Phú Thuận, Bến Thành, Bàn Cờ, An Đông,...).\n\n---\n\n### Các chuẩn mực hệ thống được đảm bảo:\n- **Floating Liquid Glass Capsule**: Thanh điều hướng nổi đáy kính mờ cố định với **duy nhất 2 tab** (`Camera` và `Quan tâm`) trên cùng một hàng; nội dung danh sách cuộn mượt mà phía sau thanh kính mờ.\n- **Cuộn vô tận (Infinite Scroll)**: Thay thế hoàn toàn nút bấm \"Tải thêm\" bằng chỉ báo gọn nhẹ *\"Đang tải thêm...\"*.\n- **Phạm vi nghiêm ngặt**: Không bịa đặt số liệu tổng, trạng thái trực tiếp/ngập lụt, không chèn bản đồ, thời tiết, quảng cáo hay tài khoản cá nhân. Tất cả dữ liệu đều gắn nhãn *\"Dữ liệu mẫu\"*."
+        },
+        {
+          "suggestion": "Thiết kế thêm chế độ thu gọn 'List' (danh sách 1 cột với thumbnail nhỏ)"
+        },
+        {
+          "suggestion": "Thiết kế màn hình chi tiết Snapshot khi chạm vào một camera cụ thể"
+        },
+        {
+          "suggestion": "Xem xét phiên bản Dark Mode với hiệu ứng kính mờ đêm"
+        }
+      ],
+      "projectId": "15634181901662145156",
+      "sessionId": "4222221957809237020",
+      "deviceType": "MOBILE",
+      "generatedBy": "HatterAgent",
+      "height": "1768",
+      "htmlCode": {
+        "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzc2MjVmMzA4ZDE4ZjQ5ZWY4MDI5MTAxYzRjYjU5OWU0EgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+        "mimeType": "text/html",
+        "name": "projects/15634181901662145156/files/350b43789d7c45c89bddb0a7bf81c15b"
+      },
+      "id": "fdc61b0a8a57454c97bbfaba56c79ed3",
+      "name": "projects/15634181901662145156/screens/fdc61b0a8a57454c97bbfaba56c79ed3",
+      "prompt": "Recreate the Saigon Traffic Camera app screen A: 'Camera — Grid'. Mobile viewport 390x844.\n\nArt Direction: Authentic Cupertino Apple-like LIQUID GLASS.\n- Warm near-white background (#f8fafc) with subtle cool cyan/teal illumination.\n- Compact Header:\n  - Top line: 'Camera TP.HCM' with small camera glyph and tiny subtle glass badge 'Dữ liệu mẫu'.\n  - Search & Location row: Translucent glass search bar capsule (placeholder 'Tìm tên đường hoặc camera', glass search icon) with an integrated or adjacent cyan-tinted Liquid Glass location pill: map pin icon, 'Tân Mỹ', and chevron down icon (min-h-[48px]).\n  - Mode Switcher: Liquid glass segmented control with 3 segments: 'Card', 'Grid' (ACTIVE, highlighted with crisp translucent white pill), 'List'. To the right, a compact 3-column density button (grid icon).\n- Content Area (scrollable 2-column photo grid):\n  - Section '★ Quan tâm' (or 'Yêu thích'):\n    - Camera 1: 'Huỳnh Tấn Phát - Phú Thuận', subtitle 'Phường Phú Thuận • TTH 320'. Photo shows Saigon street traffic (scooters, road, daylight). Top right: translucent glass circle with FILLED yellow star icon.\n    - Camera 2: 'Nguyễn Thị Thập - Tân Mỹ', subtitle 'Phường Tân Mỹ • TTH 322'. Photo showing street with shops and motorbikes. Top right: FILLED yellow star.\n    - Camera 3: 'Huỳnh Tấn Phát - Nguyễn Thị Thập', subtitle 'Phường Tân Thuận • TTH 246'. Photo showing bus and traffic. Top right: FILLED yellow star.\n    - Camera 4: 'Nguyễn Thị Thập - Lê Văn Lương', subtitle 'Phường Tân Hưng • TTH 327'. Photo with yellow truck and bikes. Top right: FILLED yellow star.\n    - Camera 5 (Error State Tile): Instead of offline, an opaque neutral light gray card with a camera-off/alert icon, clear title 'Nguyễn Hữu Thọ - Nguyễn Thị Thập', subtitle 'Phường Tân Hưng • TTH 25.1', text 'Không tải được ảnh' and a small retry button 'Thử lại' with reload icon. Translucent glass star button on top right.\n    - Camera 6: 'Nguyễn Văn Linh - Nguyễn Thị Thập', subtitle 'Phường Tân Mỹ • TTH 324.1'. Photo showing busy wide intersection. Top right: FILLED yellow star.\n  - Section 'Khu vực Tân Mỹ' (or remaining cameras):\n    - 2 more cards with unsaved outline star (star_border, dark gray/white stroke).\n  - Infinite scroll indicator at bottom: subtle compact spinner + 'Đang tải thêm... • Đã tải 6 camera (Dữ liệu mẫu)'.\n- Bottom Navigation Dock:\n  - Floating Liquid Glass capsule fixed above bottom safe area:\n  - Exactly TWO destinations: 'Camera' (active: filled teal videocam icon + 'Camera' label on one line, active glass pill) and 'Quan tâm' (inactive: outline favorite heart + 'Quan tâm' label).\n  - Authentic Liquid Glass: backdrop-blur-2xl, translucent white bg with cool cyan reflection, thin specular white highlight border, soft shadow. Content visibly blurs behind it.\n- All interactive touch targets are at least 48px. Typography in Be Vietnam Pro / SF Pro with crisp Vietnamese diacritics. Clean, professional, premium native iOS utility.",
+      "screenMetadata": {
+        "agentType": "PRO_AGENT",
+        "status": "COMPLETE"
+      },
+      "screenType": "DESIGN",
+      "screenshot": {
+        "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XsHKPs6W3jlOvDczdvdVrTNmFEwgsPyGPsp2NyNSu5z2pM5gXtR5roPB65HikdInnCDcZyvtQP4NErjxVSNu2vVEel_Z9G7SIfb8YLNTotwytYMeXKg7NNNNha0s9Ohzy1EoZSMnSmpa40Ktiai8yn895KAiQeMnGdRJptIE0d3D_GIh-6sU72a5aSl9-THRu-4edAJrEIhVYSCp5DSitkqKcvufVgXdPd6h-mlpc2pwOuAJMueAiOn9Y",
+        "name": "projects/15634181901662145156/files/38ba72b872cc415888ce192bc967b11a"
+      },
+      "theme": {},
+      "title": "Camera — Grid (Cupertino Liquid Glass)",
+      "width": "780",
+      "imageUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XsHKPs6W3jlOvDczdvdVrTNmFEwgsPyGPsp2NyNSu5z2pM5gXtR5roPB65HikdInnCDcZyvtQP4NErjxVSNu2vVEel_Z9G7SIfb8YLNTotwytYMeXKg7NNNNha0s9Ohzy1EoZSMnSmpa40Ktiai8yn895KAiQeMnGdRJptIE0d3D_GIh-6sU72a5aSl9-THRu-4edAJrEIhVYSCp5DSitkqKcvufVgXdPd6h-mlpc2pwOuAJMueAiOn9Y",
+      "agentText": "Bộ 3 màn hình **Camera TP.HCM** đã được hoàn thiện đồng bộ theo đúng chỉ dẫn thiết kế và 3 ảnh tư liệu thực tế của bạn, ứng dụng triệt để hiệu ứng **Cupertino Liquid Glass** (kính mờ quang học truyền sáng, viền phản xạ specular rim và ánh cyan dịu mát):\n\n---\n\n### Tổng quan 3 Màn hình Thiết kế:\n\n1. **Màn hình A: Camera — Grid** (`Camera — Grid (Cupertino Liquid Glass)`):\n   - **Bố cục lưới ảnh 2 cột**: Hiển thị ảnh chụp giao thông thực tế tại các nút giao TP.HCM (Huỳnh Tấn Phát, Nguyễn Thị Thập, Nguyễn Văn Linh,...).\n   - **Phân biệt trạng thái Yêu thích**: Nút tròn kính mờ quang học góc trên bên phải với icon ngôi sao vàng tô đặc (**Filled Yellow Star**) cho camera đã lưu, và ngôi sao viền nét mảnh cho camera chưa lưu.\n   - **Xử lý lỗi tải ảnh chuẩn mực**: Thẻ lỗi trung tính hiển thị icon camera gạch chéo, nhãn rõ ràng *\"Không tải được ảnh\"* và nút thao tác *\"Thử lại\"* (không gán nhãn offline giả định).\n   - **Thanh chuyển chế độ xem (Mode Switcher)**: Cụm kính mờ 3 phân đoạn `Card | Grid | List` với tab **Grid** đang kích hoạt, kèm icon tuỳ chọn mật độ hiển thị 3 cột.\n\n2. **Màn hình B: Camera — Card** (`Camera — Card (Cupertino Liquid Glass)`):\n   - **Bố cục thẻ ảnh đơn 1 cột khổ lớn**: Tab **Card** được chọn, tối ưu trải nghiệm soi chi tiết mặt đường và tình hình giao thông trên khung hình rộng 16:9 sắc nét.\n   - Giữ nguyên các tiêu chuẩn chạm 48px, tên đường và phường hiển thị 1–2 dòng tự nhiên không bị cắt ngắn.\n\n3. **Màn hình C: Camera — Dropdown** (`Camera — Dropdown (Cupertino Liquid Glass)`):\n   - **Bảng chọn khu vực Liquid Glass mở nổi (Popover)**: Bám sát ảnh tư liệu với góc bo 28–32px, hiệu ứng khúc xạ kính mờ chân thực cho phép màu sắc của các khung hình giao thông phía sau hiển thị loang mờ tự nhiên xuyên qua bề mặt kính.\n   - Chứa ô tìm kiếm nhanh *\"Tìm khu vực...\"*, mục chọn *\"Tất cả khu vực\"*, mục đang kích hoạt *\"Phường Tân Mỹ\"* kèm dấu tick xanh ngọc nổi bật, cùng danh sách các phường tiêu biểu (Tân Thuận, Tân Hưng, Phú Thuận, Bến Thành, Bàn Cờ, An Đông,...).\n\n---\n\n### Các chuẩn mực hệ thống được đảm bảo:\n- **Floating Liquid Glass Capsule**: Thanh điều hướng nổi đáy kính mờ cố định với **duy nhất 2 tab** (`Camera` và `Quan tâm`) trên cùng một hàng; nội dung danh sách cuộn mượt mà phía sau thanh kính mờ.\n- **Cuộn vô tận (Infinite Scroll)**: Thay thế hoàn toàn nút bấm \"Tải thêm\" bằng chỉ báo gọn nhẹ *\"Đang tải thêm...\"*.\n- **Phạm vi nghiêm ngặt**: Không bịa đặt số liệu tổng, trạng thái trực tiếp/ngập lụt, không chèn bản đồ, thời tiết, quảng cáo hay tài khoản cá nhân. Tất cả dữ liệu đều gắn nhãn *\"Dữ liệu mẫu\"*.",
+      "suggestions": [
+        "Thiết kế thêm chế độ thu gọn 'List' (danh sách 1 cột với thumbnail nhỏ)",
+        "Thiết kế màn hình chi tiết Snapshot khi chạm vào một camera cụ thể",
+        "Xem xét phiên bản Dark Mode với hiệu ứng kính mờ đêm"
+      ]
+    },
+    "imageUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XsHKPs6W3jlOvDczdvdVrTNmFEwgsPyGPsp2NyNSu5z2pM5gXtR5roPB65HikdInnCDcZyvtQP4NErjxVSNu2vVEel_Z9G7SIfb8YLNTotwytYMeXKg7NNNNha0s9Ohzy1EoZSMnSmpa40Ktiai8yn895KAiQeMnGdRJptIE0d3D_GIh-6sU72a5aSl9-THRu-4edAJrEIhVYSCp5DSitkqKcvufVgXdPd6h-mlpc2pwOuAJMueAiOn9Y",
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=fdc61b0a8a57454c97bbfaba56c79ed3"
+  }
+}

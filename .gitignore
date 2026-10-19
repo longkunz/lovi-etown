@@ -1,0 +1,15 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies and local Python caches
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local logs and OS metadata
+*.log
+.DS_Store
+Thumbs.db

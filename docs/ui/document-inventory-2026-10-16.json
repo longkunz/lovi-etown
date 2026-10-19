@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-16",
+  "scope": "Markdown in docs/, mobile/, backend/ excluding generated build/dependencies; before UI brief/spec updates",
+  "count": 40,
+  "files": [
+    {
+      "path": "backend/docs/verification.md",
+      "bytes": 4712,
+      "sha256": "a37ecce21457716685ce61193ae2aea680e082fea0dddb4859525b3cb14f0ebe"
+    },
+    {
+      "path": "backend/README.md",
+      "bytes": 6824,
+      "sha256": "44b63f5c3c67e4d24a081c392b18d41605f5f00505ba291d1195686b240a7081"
+    },
+    {
+      "path": "docs/android13-playback.md",
+      "bytes": 1605,
+      "sha256": "dfaac0a4347786236be38d82662cdec9e20ea75324bc38a9850971d48acb68cc"
+    },
+    {
+      "path": "docs/api-catalog.md",
+      "bytes": 17347,
+      "sha256": "3d916a12785db2dfd1a014e9ffc9de582c65473071cb1839214c5cb152a3ff2f"
+    },
+    {
+      "path": "docs/app-check-analysis.md",
+      "bytes": 3470,
+      "sha256": "2966e1cc54e6b30ffc9fd711e044e4d6d2b0059edee54eed31428c52ee06729b"
+    },
+    {
+      "path": "docs/backend-reverse-traceability.md",
+      "bytes": 9498,
+      "sha256": "f33c5d69fd06cbce3a780f3654f05d309c9b5b1ae97f8dcc13fdad534f2bee5b"
+    },
+    {
+      "path": "docs/camera-api-debug-pass7.md",
+      "bytes": 11810,
+      "sha256": "e91c60a67b06e7dfee789d255322e94a5b68e9471be9011010990a302d2543d7"
+    },
+    {
+      "path": "docs/camera-contract-pass6.md",
+      "bytes": 4127,
+      "sha256": "c24a8868b72399e4f9189b0a154fd61d6859311f3e845248a6a9acd4e91186e8"
+    },
+    {
+      "path": "docs/camera-runtime-pass2.md",
+      "bytes": 4079,
+      "sha256": "1f4f10b2bcd9799a859456cb05f99f45f3e3ac2eb5112303d84ff512cccdd293"
+    },
+    {
+      "path": "docs/camera-runtime-pass3.md",
+      "bytes": 7021,
+      "sha256": "12fdd5d36cfc9085639868b626fa998b9aecd4d26a2e71527b14adf0388891a3"
+    },
+    {
+      "path": "docs/camera-runtime-pass4.md",
+      "bytes": 9470,
+      "sha256": "83b57c228481772f2691807caf7f149e82565a810f8f848f42fc283beaae7a01"
+    },
+    {
+      "path": "docs/camera-runtime-pass5.md",
+      "bytes": 9727,
+      "sha256": "fb83f97b690e68f06d19ff3891f571a9ff4718ca3bfc2bd183738b61d68e6451"
+    },
+    {
+      "path": "docs/camera-spec.md",
+      "bytes": 21650,
+      "sha256": "166f910d056f04a9ef745ff857fea182a564b0df116524083dcca847740e0217"
+    },
+    {
+      "path": "docs/catalog-cache-favorites.md",
+      "bytes": 4959,
+      "sha256": "61702aac2acaa20816371ae77a402e247324425c43d70962d362991e6b2b0fe4"
+    },
+    {
+      "path": "docs/catalog-fallback-runtime.md",
+      "bytes": 3753,
+      "sha256": "abea4e2c56c23a518fa0807fe189006cbfcca9abc7f379821b7f9db3b0ff67d9"
+    },
+    {
+      "path": "docs/dart-network-findings.md",
+      "bytes": 7304,
+      "sha256": "a86728f7d3ea6bc4b6e293202612b688ce22b7e60714e93600c94c08b2d5c869"
+    },
+    {
+      "path": "docs/data-model.md",
+      "bytes": 4563,
+      "sha256": "aca0524ba5fe37f4936e683531f57ac928f87706dac8270ff1f95ea7458ab05e"
+    },
+    {
+      "path": "docs/feature-matrix.md",
+      "bytes": 3134,
+      "sha256": "9ab22af270514f9bb6451636406a5534b5c95a14978fc471d3e21a8d51836b1e"
+    },
+    {
+      "path": "docs/flows.md",
+      "bytes": 5398,
+      "sha256": "d698ab70a1e7c9a980eee380ef794804f5a66ed736d98f5c74a8a96e98d641d3"
+    },
+    {
+      "path": "docs/improvement-backlog.md",
+      "bytes": 3231,
+      "sha256": "56c2f4269644fd7ab8e3e5955a580502fe9b55b4b459f067da0609c504b7dfeb"
+    },
+    {
+      "path": "docs/investigation.md",
+      "bytes": 10039,
+      "sha256": "a968c4cbfa43fc9fe77a748675baeb874d11827d53787a0e3d5d39b221e9c75c"
+    },
+    {
+      "path": "docs/player-runtime.md",
+      "bytes": 2319,
+      "sha256": "225021364412c260c8a1239f93c941e5f4fb33f82ac91a71d24acd86560f03eb"
+    },
+    {
+      "path": "docs/rebuild-spec.md",
+      "bytes": 11372,
+      "sha256": "fbbe39a40300140e894d8b8539f59c2e89d7b58fb4ed0f3403f796b14cf4109d"
+    },
+    {
+      "path": "docs/recovery-and-backup.md",
+      "bytes": 4567,
+      "sha256": "1973e7a2bfb4ef6996e1440d797c529052f90c999e94d859f4681b942513ef1d"
+    },
+    {
+      "path": "docs/research-eplus-camera.md",
+      "bytes": 14438,
+      "sha256": "cc73e888907a4b2567ced09db89c607fce01ce4ea933711a46242c4cfe25ed24"
+    },
+    {
+      "path": "docs/runtime-validation.md",
+      "bytes": 8339,
+      "sha256": "3853c1a0233a619f0c9fcd63963033da9cd6137759be3da3d05719659364ea0f"
+    },
+    {
+      "path": "docs/stack-review.md",
+      "bytes": 16084,
+      "sha256": "3df5096cec5d20065867f3d0bd91dc3d18cac468ec920402b567a4b27e7da08b"
+    },
+    {
+      "path": "docs/superpowers/brainstorming-status.md",
+      "bytes": 7193,
+      "sha256": "878e9d26f5d2c83e38f9e647b78b6c25e5fc675e737058d7b0c94555396043ae"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-14-android-reverse-and-rebuild.md",
+      "bytes": 13916,
+      "sha256": "a0b8634986484692c6f9129c18f3294dc3967683cc9bc76dfee401bcc4c4b976"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-10-14-camera-backend-a1.md",
+      "bytes": 27210,
+      "sha256": "5493158f641bfc08d54b18f7b4a34ed0a4313cf123fdbd7add1987cc3e2d6129"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-14-camera-backend-design.md",
+      "bytes": 26877,
+      "sha256": "3a5a3545e8d1f84d6f36b49f27060f113aca4b978868bfeca657092dc8058d4e"
+    },
+    {
+      "path": "docs/superpowers/specs/2026-10-15-camera-mobile-a1-design.md",
+      "bytes": 15238,
+      "sha256": "a4abcc2847fcf0a083ffb1120506bc97d9355116df1a30a47505905f37c4b60b"
+    },
+    {
+      "path": "docs/tech-stack.md",
+      "bytes": 4946,
+      "sha256": "05e1b092e06aeefbd91aff5b9f9744463cc9c89c3e2861c8f23d5e2b4f39f32d"
+    },
+    {
+      "path": "docs/ui/stitch-brief.md",
+      "bytes": 6000,
+      "sha256": "8a077f40555f225d986d24fa6574fe0ad3c50251c29e815cf0e89e0ca971fb0f"
+    },
+    {
+      "path": "mobile/AGENTS.md",
+      "bytes": 9324,
+      "sha256": "1955cf778fe0cae06510e20fb7474f55196ad77e274cdb08262469434e4e34f8"
+    },
+    {
+      "path": "mobile/architecture.md",
+      "bytes": 142,
+      "sha256": "280f3ba1858ef500a57d6d32885b2580548b449b5a5ad384378997bcd186907f"
+    },
+    {
+      "path": "mobile/CLAUDE.md",
+      "bytes": 9548,
+      "sha256": "902c31409fe1a4f8717e5df30edfbc0f3f44e22fb76e7fbb7fcd5784cf06715b"
+    },
+    {
+      "path": "mobile/DESIGN.md",
+      "bytes": 6401,
+      "sha256": "ed0c01ca409209ad287eaae1bce095b148e65ddd14372030a916cbfc3bea06ae"
+    },
+    {
+      "path": "mobile/README.md",
+      "bytes": 504,
+      "sha256": "ffd1894c644881ba7b90266e073e7883065d57be4908e56c166e7845b6ba287c"
+    },
+    {
+      "path": "mobile/SETUP.md",
+      "bytes": 6028,
+      "sha256": "bda53efc30cdace9c878cd8890b30ae10ec8590a02c33f31e3986b98ded92fc9"
+    }
+  ]
+}

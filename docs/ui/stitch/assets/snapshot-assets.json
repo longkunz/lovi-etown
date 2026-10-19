@@ -1,0 +1,29 @@
+[
+  {
+    "cameraSourceId": "5deb576d1dc17d7c5515ad13",
+    "sourceUrl": "https://api.notis.vn/v4/cameras/5deb576d1dc17d7c5515ad13/snapshot",
+    "retrievedFor": "UI mockup asset only; not a backend/mobile acceptance test",
+    "retrievedDate": "2026-10-16",
+    "httpStatus": 200,
+    "bytes": 54649,
+    "sha256": "ebe75a4aae1c5d954533736b5e46c34a79b38ac5960b1b41c56eed65d82a4544"
+  },
+  {
+    "cameraSourceId": "662b7f651afb9c00172dc992",
+    "sourceUrl": "https://api.notis.vn/v4/cameras/662b7f651afb9c00172dc992/snapshot",
+    "retrievedFor": "UI mockup asset only; not a backend/mobile acceptance test",
+    "retrievedDate": "2026-10-16",
+    "httpStatus": 200,
+    "bytes": 54378,
+    "sha256": "59e02165c6ca11a53d51bc38b8b53d643aa14b4bdf93863939b674fd42db90ab"
+  },
+  {
+    "cameraSourceId": "586e28a0f9fab7001111b0b3",
+    "sourceUrl": "https://api.notis.vn/v4/cameras/586e28a0f9fab7001111b0b3/snapshot",
+    "retrievedFor": "UI mockup asset only; not a backend/mobile acceptance test",
+    "retrievedDate": "2026-10-16",
+    "httpStatus": 200,
+    "bytes": 29975,
+    "sha256": "4a0e5e4a754f75002da0fd49b97228c7fa42e1551b144fc327e10dbfb07b42bf"
+  }
+]

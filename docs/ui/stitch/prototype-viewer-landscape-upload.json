@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/prototype-viewer-landscape.html",
+    "project": "15634181901662145156",
+    "title": "Prototype A1 - viewer-landscape",
+    "screenIds": [
+      "4915810932345148316"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=4915810932345148316"
+  }
+}

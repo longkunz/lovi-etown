@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-16",
+  "projectId": "15634181901662145156",
+  "scope": "Một màn Camera, Quan tâm inline, snapshot bottom sheet",
+  "verification": "stitch get screen success; screenshot visually inspected",
+  "screens": [
+    {
+      "html": "camera-inline-favorites-review.html",
+      "screenshot": "camera-inline-favorites-review.png",
+      "name": "Camera - Quan tâm inline",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=17833083762628583982",
+      "id": "17833083762628583982"
+    },
+    {
+      "html": "camera-sheet-open-review.html",
+      "screenshot": "camera-sheet-tap-review.png",
+      "name": "Snapshot sheet - tap image to fullscreen",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=8405138958362570852",
+      "id": "8405138958362570852"
+    }
+  ],
+  "limitations": [
+    "Static HTML mockup; gestures, infinite scroll and image refresh not implemented",
+    "Flutter liquid_glass_widgets shader not yet verified",
+    "Sample grid labels do not establish production camera metadata mapping"
+  ],
+  "rebuildScript": "../../../scripts/ui/build-camera-sheet-review.ps1"
+}

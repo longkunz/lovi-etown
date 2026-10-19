@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      PORT: 3000
+      HOST: 0.0.0.0
+      DATABASE_URL: postgres://postgres:postgres_production_pass@db:5432/camera_catalog
+      BACKEND_API_KEY: ${BACKEND_API_KEY:-camera-reader-production-secret-key-32chars!}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:-camera-admin-production-secret-key-32chars!}
+      CAMERA_PROVIDER_MODE: ${CAMERA_PROVIDER_MODE:-notis}
+      NOTIS_AUTH_TOKEN: ${NOTIS_AUTH_TOKEN:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgis/postgis:17-3.5
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_DB: camera_catalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_production_pass
+    volumes:
+      - camera_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d camera_catalog"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  camera_pgdata:

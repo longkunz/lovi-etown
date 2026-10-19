@@ -1,0 +1,77 @@
+{
+  "verifiedAt": "2026-10-16T08:09:54.08Z",
+  "checks": [
+    "sheet/modal background inert",
+    "double-tap zoom",
+    "landscape size",
+    "Escape returns viewer -> sheet -> list",
+    "error retry",
+    "favorites empty",
+    "no page errors"
+  ],
+  "views": [
+    {
+      "name": "viewer-portrait",
+      "query": "state=viewer",
+      "html": "prototype-viewer-portrait.html",
+      "screenshot": "prototype-viewer-portrait.png",
+      "screenId": "12098818503967825305",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=12098818503967825305",
+      "verified": true
+    },
+    {
+      "name": "viewer-landscape",
+      "query": "state=viewer&landscape=1",
+      "html": "prototype-viewer-landscape.html",
+      "screenshot": "prototype-viewer-landscape.png",
+      "screenId": "4915810932345148316",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=4915810932345148316",
+      "verified": true
+    },
+    {
+      "name": "sheet-loading",
+      "query": "state=loading",
+      "html": "prototype-sheet-loading.html",
+      "screenshot": "prototype-sheet-loading.png",
+      "screenId": "12846569958381432907",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=12846569958381432907",
+      "verified": true
+    },
+    {
+      "name": "sheet-error",
+      "query": "state=error",
+      "html": "prototype-sheet-error.html",
+      "screenshot": "prototype-sheet-error.png",
+      "screenId": "4784653953629500233",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=4784653953629500233",
+      "verified": true
+    },
+    {
+      "name": "favorites-empty",
+      "query": "state=empty",
+      "html": "prototype-favorites-empty.html",
+      "screenshot": "prototype-favorites-empty.png",
+      "screenId": "13554865549383247718",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=13554865549383247718",
+      "verified": true
+    },
+    {
+      "name": "sheet-dark",
+      "query": "state=ready&theme=dark",
+      "html": "prototype-sheet-dark.html",
+      "screenshot": "prototype-sheet-dark.png",
+      "screenId": "14130712146618173273",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=14130712146618173273",
+      "verified": true
+    },
+    {
+      "name": "viewer-dark-landscape",
+      "query": "state=viewer&theme=dark&landscape=1",
+      "html": "prototype-viewer-dark-landscape.html",
+      "screenshot": "prototype-viewer-dark-landscape.png",
+      "screenId": "13172309405925922911",
+      "url": "https://stitch.google.com/projects/15634181901662145156?node-id=13172309405925922911",
+      "verified": true
+    }
+  ]
+}

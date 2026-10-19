@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/camera-sheet-open-review.html",
+    "project": "15634181901662145156",
+    "title": "Camera A1 - camera-sheet-open - single screen flow",
+    "screenIds": [
+      "15931119288024057610"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=15931119288024057610"
+  }
+}

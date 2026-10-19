@@ -1,0 +1,357 @@
+{
+  "designSystem": {
+    "designSystem": {
+      "displayName": "Saigon Transit Glass",
+      "styleGuidelines": "## Brand & Style\nThe design system delivers an ultra-refined, Cupertino-grade civic utility tailored for everyday commuters, motorbike navigators, and urban transit travelers in Ho Chi Minh City (TP.HCM). The aesthetic bridges pure Apple Human Interface Guidelines (HIG) restraint with modern Liquid Glass optics, transforming heavy real-time traffic monitoring, CCTV feeds, and flood-level warnings into an effortless, serene daily companion.\n\nKey design principles:\n- **Calm Civic Authority:** Avoid aggressive or alarmist design patterns. Real-time city incidents, choke points (kẹt xe), and rain floods (ngập nước) are delivered with measured, reliable clarity.\n- **Optic Liquid Glass:** Translucent floating navigation surfaces, frosted camera viewing docks, and luminous rim highlights that mimic physical polished glass overlaying the dynamic map surface.\n- **Ergonomic Transit Utility:** Optimized for single-hand thumb reach on scooters and street curbs, enforcing 48px touch barriers, prominent live indicators, and immediate scannability under direct daylight.\n\n## Layout & Spacing\nThe layout relies on a fluid mobile-first grid anchored by fixed safe-area insets (iOS Dynamic Island and Home Indicator).\n\n- **Mobile Canvas (375px - 428px):** 4-column layout, 16px screen margins (`margin: 1rem`), and 12px gutters. Floating controls sit 16px from screen perimeters.\n- **Bottom Navigation Anchor:** The bottom tab capsule floats 24px above the screen edge, reserving 34px for the iOS home indicator safe area.\n- **Touch Target Enclosure:** All interactive touch points (filter chips, map re-center toggles, camera playback triggers) enforce a strict 48x48px hit target regardless of visual footprint.\n\n## Elevation & Depth\nElevation is achieved using ambient light diffusion, Liquid Glass refraction, and delicate specular rim highlights rather than opaque drop shadows.\n\n### Glass Stack Hierarchy\n- **Level 0 (Map Surface / Base Viewport):** Deep canvas background `#F8F9FA`.\n- **Level 1 (Docked Cards & Modal Drawers):** `#FFFFFF` with `box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06)`, bounded by a 1px solid border in `#E2E8F0`.\n- **Level 2 (Floating Glass Chrome - Search, Chips, App Bar):**\n  - Surface: `rgba(255, 255, 255, 0.82)`\n  - Filter: `backdrop-filter: blur(20px) saturate(180%)`\n  - Shadow: `0 8px 32px 0 rgba(15, 23, 42, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)`\n  - Edge Rim: `1px solid rgba(255, 255, 255, 0.65)` plus `inset 0 1px 0 rgba(255, 255, 255, 0.95)`\n- **Level 3 (Floating Pill Navigation Capsule & Modal Sheets):**\n  - Surface: `rgba(255, 255, 255, 0.88)`\n  - Filter: `backdrop-filter: blur(32px) saturate(200%)`\n  - Shadow: `0 16px 40px -4px rgba(13, 148, 136, 0.12), 0 12px 28px -6px rgba(15, 23, 42, 0.1)`\n  - Edge Rim: `1px solid rgba(255, 255, 255, 0.9)` with a soft outer rim `ring-1 ring-slate-900/5`\n\n## Components\n\n### Floating Navigation Capsule (Bottom Tab Bar)\n- **Geometry:** Height 64px, `rounded-full`, floating 20px above viewport bottom.\n- **Materials:** Level 3 Liquid Glass (`rgba(255, 255, 255, 0.88)`), dual specular border rim (`rgba(255, 255, 255, 0.95)` top highlight).\n- **Items:** 4 primary destinations (Bản đồ, Camera, Cảnh báo, Yêu thích). Active icon tinted `#0D9488` resting on an elastic `#0D9488/10` rounded-full highlight.\n\n### Floating Search & Quick-Filter Bar\n- **Search Header:** Pill capsule (`h-12`, `rounded-full`), glass backplate, leading search icon, trailing microphone / district selector (\"Quận 1, Bình Thạnh...\").\n- **Filter Chips:** Horizontal scrolling shelf. Inactive chips use translucent white `rgba(255, 255, 255, 0.75)` with slate typography (`#475569`). Active chips transition to solid `#0D9488` with crisp white text and a soft teal glow shadow (`0 4px 12px rgba(13, 148, 136, 0.3)`).\n\n### Camera Stream Cards (CCTV Feeds)\n- **Container:** `rounded-2xl`, background `#FFFFFF`, border `1px solid #E2E8F0`.\n- **Header:** Location title (`label-lg`), district tag, and a live pill badge displaying a pulsing red/green beacon accompanied by \"TRỰC TIẾP\" and JetBrains Mono timestamp.\n- **Video Window:** `16:9` ratio, `rounded-xl`, subtle inner vignette.\n- **Footer Toolbar:** 48px touch targets for snapshot, favorite (bookmark), zoom fullscreen, and reporting road incidents.\n\n### Incident Alert Banners\n- **Style:** Compact floating cards anchored below search bar with soft semantic fills (e.g., `#F0FDF4` for smooth, `#FEF2F2` for severe congestion, `#F0F9FF` for tide flooding/Triều cường).\n- **Typography:** `label-md` bold prefix + `body-sm` description with high-contrast text to remain completely legible against sunny background reflections.\n\n### Buttons & Controls\n- **Primary Action Button:** Solid `#0D9488` background, `#FFFFFF` text, `rounded-full`, `min-h-[48px]`, active press state scaling down to `0.97` with `#0F766E` transition.\n- **Secondary Action Button:** `rgba(255, 255, 255, 0.85)` surface, `1px solid #0D9488/30`, `#0D9488` text.\n- **Map Control Floating Action Buttons (FAB):** 48x48px circle, glass backplate, centered vector glyph (GPS location, layers toggle, traffic heat map).",
+      "theme": {
+        "bodyFont": "BE_VIETNAM_PRO",
+        "bodyFontFamily": "Be Vietnam Pro",
+        "colorMode": "LIGHT",
+        "colorVariant": "FIDELITY",
+        "customColor": "#0d9488",
+        "designMd": "---\nname: Saigon Transit Glass\ncolors:\n  surface: '#f8f9ff'\n  surface-dim: '#cbdbf5'\n  surface-bright: '#f8f9ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#eff4ff'\n  surface-container: '#e5eeff'\n  surface-container-high: '#dce9ff'\n  surface-container-highest: '#d3e4fe'\n  on-surface: '#0b1c30'\n  on-surface-variant: '#3d4947'\n  inverse-surface: '#213145'\n  inverse-on-surface: '#eaf1ff'\n  outline: '#6d7a77'\n  outline-variant: '#bcc9c6'\n  surface-tint: '#006a61'\n  primary: '#00685f'\n  on-primary: '#ffffff'\n  primary-container: '#008378'\n  on-primary-container: '#f4fffc'\n  inverse-primary: '#6bd8cb'\n  secondary: '#006b5f'\n  on-secondary: '#ffffff'\n  secondary-container: '#6df5e1'\n  on-secondary-container: '#006f64'\n  tertiary: '#006860'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#248279'\n  on-tertiary-container: '#f3fffc'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#89f5e7'\n  primary-fixed-dim: '#6bd8cb'\n  on-primary-fixed: '#00201d'\n  on-primary-fixed-variant: '#005049'\n  secondary-fixed: '#71f8e4'\n  secondary-fixed-dim: '#4fdbc8'\n  on-secondary-fixed: '#00201c'\n  on-secondary-fixed-variant: '#005048'\n  tertiary-fixed: '#9cf2e8'\n  tertiary-fixed-dim: '#80d5cb'\n  on-tertiary-fixed: '#00201d'\n  on-tertiary-fixed-variant: '#00504a'\n  background: '#f8f9ff'\n  on-background: '#0b1c30'\n  surface-variant: '#d3e4fe'\ntypography:\n  display:\n    fontFamily: Be Vietnam Pro\n    fontSize: 34px\n    fontWeight: '700'\n    lineHeight: 41px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 28px\n    fontWeight: '700'\n    lineHeight: 34px\n    letterSpacing: -0.015em\n  headline-lg-mobile:\n    fontFamily: Be Vietnam Pro\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 30px\n    letterSpacing: -0.01em\n  headline-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 26px\n    letterSpacing: -0.01em\n  headline-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 17px\n    fontWeight: '600'\n    lineHeight: 22px\n    letterSpacing: -0.005em\n  body-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 17px\n    fontWeight: '400'\n    lineHeight: 24px\n    letterSpacing: -0.005em\n  body-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 15px\n    fontWeight: '400'\n    lineHeight: 21px\n  body-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 13px\n    fontWeight: '400'\n    lineHeight: 18px\n  label-lg:\n    fontFamily: Be Vietnam Pro\n    fontSize: 15px\n    fontWeight: '600'\n    lineHeight: 20px\n  label-md:\n    fontFamily: Be Vietnam Pro\n    fontSize: 13px\n    fontWeight: '600'\n    lineHeight: 18px\n  label-sm:\n    fontFamily: Be Vietnam Pro\n    fontSize: 11px\n    fontWeight: '600'\n    lineHeight: 14px\n    letterSpacing: 0.02em\n  mono-timestamp:\n    fontFamily: JetBrains Mono\n    fontSize: 12px\n    fontWeight: '500'\n    lineHeight: 16px\n    letterSpacing: -0.01em\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-sm: 0.75rem\n  gutter-lg: 1.25rem\n  margin: 1rem\n  margin-sm: 0.75rem\n  margin-lg: 1.5rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2rem\n---\n\n## Brand & Style\nThe design system delivers an ultra-refined, Cupertino-grade civic utility tailored for everyday commuters, motorbike navigators, and urban transit travelers in Ho Chi Minh City (TP.HCM). The aesthetic bridges pure Apple Human Interface Guidelines (HIG) restraint with modern Liquid Glass optics, transforming heavy real-time traffic monitoring, CCTV feeds, and flood-level warnings into an effortless, serene daily companion.\n\nKey design principles:\n- **Calm Civic Authority:** Avoid aggressive or alarmist design patterns. Real-time city incidents, choke points (kẹt xe), and rain floods (ngập nước) are delivered with measured, reliable clarity.\n- **Optic Liquid Glass:** Translucent floating navigation surfaces, frosted camera viewing docks, and luminous rim highlights that mimic physical polished glass overlaying the dynamic map surface.\n- **Ergonomic Transit Utility:** Optimized for single-hand thumb reach on scooters and street curbs, enforcing 48px touch barriers, prominent live indicators, and immediate scannability under direct daylight.\n\n## Colors\nThe palette pairs pristine light-mode surfaces with an oceanic teal spectrum, providing clear visual contrast against satellite maps, road vectors, and high-density video feeds without eye fatigue.\n\n### Palette Architecture\n- **Primary Teal (`#0D9488`):** The operational core. Governs primary CTAs, active camera states, selected tab capsules, and key interactive paths.\n- **Secondary Teal (`#14B8A6`):** Vibrancy highlight used for live streaming badges, glowing border accents, dynamic speed vectors, and active search focus rings.\n- **Tertiary Deep Teal (`#0F766E`):** Grounded anchor for high-contrast icon accents, active pressed states, and semantic badge typography on tinted backdrops.\n- **Neutral Slate (`#64748B`):** Supporting metadata, secondary street nomenclature, camera timestamp readouts, and passive divider outlines.\n\n### Background & Surface Hierarchy\n- **Canvas Base:** `#F8F9FA` (Clean, cool-tinted off-white avoiding pure #FFFFFF glare under sunlight).\n- **Surface Card:** `#FFFFFF` with ultra-fine 1px `#E2E8F0` border.\n- **Liquid Glass Chrome:** `rgba(255, 255, 255, 0.78)` coupled with `backdrop-filter: blur(24px) saturate(180%)`.\n- **Inner Glass Rim Highlight:** `inset 0 1px 1px 0 rgba(255, 255, 255, 0.9)`, creating a polished chamfered edge.\n\n### Semantic Transit System\n- **Traffic Smooth (Thông thoáng):** `#059669` (Emerald 600) / Tint `#ECFDF5`\n- **Traffic Moderate (Đông xe):** `#D97706` (Amber 600) / Tint `#FFFBEB`\n- **Traffic Congested (Kẹt xe):** `#DC2626` (Red 600) / Tint `#FEF2F2`\n- **Tide / Rain Flood (Ngập nước):** `#0284C7` (Sky 600) / Tint `#F0F9FF`\n\n## Typography\nTypographic precision is powered by **Be Vietnam Pro**, engineered explicitly with flawless diacritic mark positioning for Vietnamese vowels and tonal accents (e.g., ệ, ở, ừ, ỗ). It maintains strict San Francisco-like neo-grotesque structural clarity, tight tracking, and optical legibility at speed.\n\n- **Numerics & Camera Telemetry:** Camera FPS, millisecond stream latencies, and CCTV timestamps adopt **JetBrains Mono** to guarantee tabular stability without layout jitter during live updates.\n- **Diacritic Protection:** Headings incorporate generous line-height ratios (1.25x - 1.35x) to prevent stacked Vietnamese tone marks from touching upper boundaries or baseline descenders.\n\n## Layout & Spacing\nThe layout relies on a fluid mobile-first grid anchored by fixed safe-area insets (iOS Dynamic Island and Home Indicator).\n\n- **Mobile Canvas (375px - 428px):** 4-column layout, 16px screen margins (`margin: 1rem`), and 12px gutters. Floating controls sit 16px from screen perimeters.\n- **Bottom Navigation Anchor:** The bottom tab capsule floats 24px above the screen edge, reserving 34px for the iOS home indicator safe area.\n- **Touch Target Enclosure:** All interactive touch points (filter chips, map re-center toggles, camera playback triggers) enforce a strict 48x48px hit target regardless of visual footprint.\n\n## Elevation & Depth\nElevation is achieved using ambient light diffusion, Liquid Glass refraction, and delicate specular rim highlights rather than opaque drop shadows.\n\n### Glass Stack Hierarchy\n- **Level 0 (Map Surface / Base Viewport):** Deep canvas background `#F8F9FA`.\n- **Level 1 (Docked Cards & Modal Drawers):** `#FFFFFF` with `box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06)`, bounded by a 1px solid border in `#E2E8F0`.\n- **Level 2 (Floating Glass Chrome - Search, Chips, App Bar):**\n  - Surface: `rgba(255, 255, 255, 0.82)`\n  - Filter: `backdrop-filter: blur(20px) saturate(180%)`\n  - Shadow: `0 8px 32px 0 rgba(15, 23, 42, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.04)`\n  - Edge Rim: `1px solid rgba(255, 255, 255, 0.65)` plus `inset 0 1px 0 rgba(255, 255, 255, 0.95)`\n- **Level 3 (Floating Pill Navigation Capsule & Modal Sheets):**\n  - Surface: `rgba(255, 255, 255, 0.88)`\n  - Filter: `backdrop-filter: blur(32px) saturate(200%)`\n  - Shadow: `0 16px 40px -4px rgba(13, 148, 136, 0.12), 0 12px 28px -6px rgba(15, 23, 42, 0.1)`\n  - Edge Rim: `1px solid rgba(255, 255, 255, 0.9)` with a soft outer rim `ring-1 ring-slate-900/5`\n\n## Shapes\nThe visual identity implements Apple-inspired squircle geometry. Roundedness level `2` sets the base scale, heavily emphasizing `rounded-2xl` for grouped content panels and full pill geometries (`rounded-full`) for all transient, floating navigation elements.\n\n- **Interactive Pills (`rounded-full`):** Floating bottom navigation bar, search capsules, traffic filter chips, and live status badges.\n- **Feed & Surface Cards (`rounded-2xl` / 16px - 20px):** Camera preview rectangles, district selection sheets, and weather/tide alert dialogs.\n- **Video Viewports (`rounded-xl` / 12px - 14px):** Direct video embeds within feed cards, matching the natural curvature of mobile phone displays.\n\n## Components\n\n### Floating Navigation Capsule (Bottom Tab Bar)\n- **Geometry:** Height 64px, `rounded-full`, floating 20px above viewport bottom.\n- **Materials:** Level 3 Liquid Glass (`rgba(255, 255, 255, 0.88)`), dual specular border rim (`rgba(255, 255, 255, 0.95)` top highlight).\n- **Items:** 4 primary destinations (Bản đồ, Camera, Cảnh báo, Yêu thích). Active icon tinted `#0D9488` resting on an elastic `#0D9488/10` rounded-full highlight.\n\n### Floating Search & Quick-Filter Bar\n- **Search Header:** Pill capsule (`h-12`, `rounded-full`), glass backplate, leading search icon, trailing microphone / district selector (\"Quận 1, Bình Thạnh...\").\n- **Filter Chips:** Horizontal scrolling shelf. Inactive chips use translucent white `rgba(255, 255, 255, 0.75)` with slate typography (`#475569`). Active chips transition to solid `#0D9488` with crisp white text and a soft teal glow shadow (`0 4px 12px rgba(13, 148, 136, 0.3)`).\n\n### Camera Stream Cards (CCTV Feeds)\n- **Container:** `rounded-2xl`, background `#FFFFFF`, border `1px solid #E2E8F0`.\n- **Header:** Location title (`label-lg`), district tag, and a live pill badge displaying a pulsing red/green beacon accompanied by \"TRỰC TIẾP\" and JetBrains Mono timestamp.\n- **Video Window:** `16:9` ratio, `rounded-xl`, subtle inner vignette.\n- **Footer Toolbar:** 48px touch targets for snapshot, favorite (bookmark), zoom fullscreen, and reporting road incidents.\n\n### Incident Alert Banners\n- **Style:** Compact floating cards anchored below search bar with soft semantic fills (e.g., `#F0FDF4` for smooth, `#FEF2F2` for severe congestion, `#F0F9FF` for tide flooding/Triều cường).\n- **Typography:** `label-md` bold prefix + `body-sm` description with high-contrast text to remain completely legible against sunny background reflections.\n\n### Buttons & Controls\n- **Primary Action Button:** Solid `#0D9488` background, `#FFFFFF` text, `rounded-full`, `min-h-[48px]`, active press state scaling down to `0.97` with `#0F766E` transition.\n- **Secondary Action Button:** `rgba(255, 255, 255, 0.85)` surface, `1px solid #0D9488/30`, `#0D9488` text.\n- **Map Control Floating Action Buttons (FAB):** 48x48px circle, glass backplate, centered vector glyph (GPS location, layers toggle, traffic heat map).",
+        "font": "BE_VIETNAM_PRO",
+        "headlineFont": "BE_VIETNAM_PRO",
+        "headlineFontFamily": "Be Vietnam Pro",
+        "labelFont": "BE_VIETNAM_PRO",
+        "labelFontFamily": "Be Vietnam Pro",
+        "namedColors": {
+          "background": "#f8f9ff",
+          "error": "#ba1a1a",
+          "error_container": "#ffdad6",
+          "inverse_on_surface": "#eaf1ff",
+          "inverse_primary": "#6bd8cb",
+          "inverse_surface": "#213145",
+          "on_background": "#0b1c30",
+          "on_error": "#ffffff",
+          "on_error_container": "#93000a",
+          "on_primary": "#ffffff",
+          "on_primary_container": "#f4fffc",
+          "on_primary_fixed": "#00201d",
+          "on_primary_fixed_variant": "#005049",
+          "on_secondary": "#ffffff",
+          "on_secondary_container": "#006f64",
+          "on_secondary_fixed": "#00201c",
+          "on_secondary_fixed_variant": "#005048",
+          "on_surface": "#0b1c30",
+          "on_surface_variant": "#3d4947",
+          "on_tertiary": "#ffffff",
+          "on_tertiary_container": "#f3fffc",
+          "on_tertiary_fixed": "#00201d",
+          "on_tertiary_fixed_variant": "#00504a",
+          "outline": "#6d7a77",
+          "outline_variant": "#bcc9c6",
+          "primary": "#00685f",
+          "primary_container": "#008378",
+          "primary_fixed": "#89f5e7",
+          "primary_fixed_dim": "#6bd8cb",
+          "secondary": "#006b5f",
+          "secondary_container": "#6df5e1",
+          "secondary_fixed": "#71f8e4",
+          "secondary_fixed_dim": "#4fdbc8",
+          "surface": "#f8f9ff",
+          "surface_bright": "#f8f9ff",
+          "surface_container": "#e5eeff",
+          "surface_container_high": "#dce9ff",
+          "surface_container_highest": "#d3e4fe",
+          "surface_container_low": "#eff4ff",
+          "surface_container_lowest": "#ffffff",
+          "surface_dim": "#cbdbf5",
+          "surface_tint": "#006a61",
+          "surface_variant": "#d3e4fe",
+          "tertiary": "#006860",
+          "tertiary_container": "#248279",
+          "tertiary_fixed": "#9cf2e8",
+          "tertiary_fixed_dim": "#80d5cb"
+        },
+        "overrideNeutralColor": "#64748b",
+        "overridePrimaryColor": "#0d9488",
+        "overrideSecondaryColor": "#14b8a6",
+        "overrideTertiaryColor": "#0f766e",
+        "roundness": "ROUND_EIGHT",
+        "spacing": {
+          "gutter": "1rem",
+          "gutter-lg": "1.25rem",
+          "gutter-sm": "0.75rem",
+          "margin": "1rem",
+          "margin-lg": "1.5rem",
+          "margin-sm": "0.75rem",
+          "space-lg": "1.5rem",
+          "space-md": "1rem",
+          "space-sm": "0.5rem",
+          "space-xl": "2rem",
+          "space-xs": "0.25rem"
+        },
+        "spacingScale": 2,
+        "typography": {
+          "body-lg": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "17px",
+            "fontWeight": "400",
+            "letterSpacing": "-0.005em",
+            "lineHeight": "24px"
+          },
+          "body-md": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "15px",
+            "fontWeight": "400",
+            "lineHeight": "21px"
+          },
+          "body-sm": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "13px",
+            "fontWeight": "400",
+            "lineHeight": "18px"
+          },
+          "display": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "34px",
+            "fontWeight": "700",
+            "letterSpacing": "-0.02em",
+            "lineHeight": "41px"
+          },
+          "headline-lg": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "28px",
+            "fontWeight": "700",
+            "letterSpacing": "-0.015em",
+            "lineHeight": "34px"
+          },
+          "headline-lg-mobile": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "24px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.01em",
+            "lineHeight": "30px"
+          },
+          "headline-md": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "20px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.01em",
+            "lineHeight": "26px"
+          },
+          "headline-sm": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "17px",
+            "fontWeight": "600",
+            "letterSpacing": "-0.005em",
+            "lineHeight": "22px"
+          },
+          "label-lg": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "15px",
+            "fontWeight": "600",
+            "lineHeight": "20px"
+          },
+          "label-md": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "13px",
+            "fontWeight": "600",
+            "lineHeight": "18px"
+          },
+          "label-sm": {
+            "fontFamily": "Be Vietnam Pro",
+            "fontSize": "11px",
+            "fontWeight": "600",
+            "letterSpacing": "0.02em",
+            "lineHeight": "14px"
+          },
+          "mono-timestamp": {
+            "fontFamily": "JetBrains Mono",
+            "fontSize": "12px",
+            "fontWeight": "500",
+            "letterSpacing": "-0.01em",
+            "lineHeight": "16px"
+          }
+        }
+      }
+    },
+    "name": "assets/32c8b266fcc94714b8d0522fba8714f7",
+    "version": "1"
+  },
+  "deviceType": "MOBILE",
+  "generatedBy": "figaro_agent",
+  "height": "1768",
+  "htmlCode": {
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sX2ZiOTUyZGM4M2Y2MzRhMzQ4ZGI0ZThiZGJmNzkxZWQwEgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+    "mimeType": "text/html",
+    "name": "projects/15634181901662145156/files/954c424d6457428486f760b74d16b984"
+  },
+  "id": "9cb3658f975e4cf3b73702f8d8cebdcd",
+  "name": "projects/15634181901662145156/screens/9cb3658f975e4cf3b73702f8d8cebdcd",
+  "prompt": "Create Mobile screen (390x844 viewport): 'Camera — Bottom sheet snapshot'.\nKey Architecture & Requirements:\n1. BACKDROP:\n   - The exact same 'Camera — Quan tâm ngay trong danh sách' screen is visible behind a subtle dim scrim (backdrop-blur-sm bg-black/40).\n2. DRAGGABLE LIQUID GLASS MODAL BOTTOM SHEET:\n   - Anchored to bottom, occupying approx 55-65% screen height (responsive bottom sheet with safe-area padding at bottom).\n   - Rounded top corners (rounded-t-[32px]), subtle drag pill handle at top center.\n   - Genuine Cupertino Liquid Glass styling: frosted optical translucency (bg-white/85 dark:bg-slate-900/85 backdrop-blur-2xl border-t border-white/60 shadow-2xl), subtle cyan rim highlight.\n3. SHEET HEADER:\n   - 48px touch target Close button (circle with '✕' / close icon) on left.\n   - Full camera title: 'Huỳnh Tấn Phát - Phú Thuận' (or 'Pasteur – Lê Thánh Tôn') wrapping naturally up to 2 lines, subtitle 'Phường Phú Thuận · TTH 320'.\n   - Right side: 48px glass pill containing a solid filled yellow star (★ Đã lưu). NO edit pencil button.\n4. HERO CAMERA SNAPSHOT:\n   - Large snapshot photo preserving FULL 16:9 aspect ratio, NO crop, NO blur.\n   - Use verified road CCTV snapshot URL: https://api.notis.vn/v4/cameras/5deb576d1dc17d7c5515ad13/snapshot\n   - Overlay badge top-left: 'Ảnh chụp' on subtle translucent black glass pill.\n5. METADATA & STATUS INFO:\n   - Under the photo: 'Nhận ảnh lúc 13:54 · Dữ liệu mẫu', secondary 'Chưa rõ thời điểm chụp từ nguồn'.\n   - Inline stale notice or status indicator if appropriate, but compact and clean.\n6. SHEET ACTION TOOLBAR:\n   - Frosted liquid glass action toolbar with 48px buttons:\n     * 'Làm mới' (refresh icon)\n     * 'Toàn màn hình' (fullscreen expand icon - opens viewer overlay, no new route).\n   - Clean spacing, NO huge empty blank bottom container, no related list, no download/report/share/ad/VIP buttons.\n7. Focus is fast, fluid peek & inspect for comparing multiple traffic cameras. High fidelity Vietnamese UI.",
+  "screenMetadata": {
+    "agentType": "PRO_AGENT",
+    "status": "COMPLETE"
+  },
+  "screenType": "DESIGN",
+  "screenshot": {
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VmwRIsAfYG_9fH8jNL8kBlBO9wNUYk_8dJGkNarJZPmWF98gyJUUWde0IB-EKjOGixADyoGiBdxuLCfwhqssvuufWKuONRL4hUgrqsEBGijsmS5xbGylPXwtVJ_dREP4-JDWDZP4Apa4Pv_gu4OlxlRBVYlVWIPrFwRX69ybplTJqkgwEV0gOKIsm18e_4mHeVz0MX4Fuk07hTjySYjrgx-wQvE9azbcySAbbeRHXCUFImY5eZzmQi5FA",
+    "name": "projects/15634181901662145156/files/872abc617c354251bd476143f7447c4e"
+  },
+  "theme": {
+    "bodyFont": "BE_VIETNAM_PRO",
+    "bodyFontFamily": "Be Vietnam Pro",
+    "colorMode": "LIGHT",
+    "colorVariant": "FIDELITY",
+    "customColor": "#0d9488",
+    "font": "BE_VIETNAM_PRO",
+    "headlineFont": "BE_VIETNAM_PRO",
+    "headlineFontFamily": "Be Vietnam Pro",
+    "labelFont": "BE_VIETNAM_PRO",
+    "labelFontFamily": "Be Vietnam Pro",
+    "namedColors": {
+      "background": "#f8f9ff",
+      "error": "#ba1a1a",
+      "error_container": "#ffdad6",
+      "inverse_on_surface": "#eaf1ff",
+      "inverse_primary": "#6bd8cb",
+      "inverse_surface": "#213145",
+      "on_background": "#0b1c30",
+      "on_error": "#ffffff",
+      "on_error_container": "#93000a",
+      "on_primary": "#ffffff",
+      "on_primary_container": "#f4fffc",
+      "on_primary_fixed": "#00201d",
+      "on_primary_fixed_variant": "#005049",
+      "on_secondary": "#ffffff",
+      "on_secondary_container": "#006f64",
+      "on_secondary_fixed": "#00201c",
+      "on_secondary_fixed_variant": "#005048",
+      "on_surface": "#0b1c30",
+      "on_surface_variant": "#3d4947",
+      "on_tertiary": "#ffffff",
+      "on_tertiary_container": "#f3fffc",
+      "on_tertiary_fixed": "#00201d",
+      "on_tertiary_fixed_variant": "#00504a",
+      "outline": "#6d7a77",
+      "outline_variant": "#bcc9c6",
+      "primary": "#00685f",
+      "primary_container": "#008378",
+      "primary_fixed": "#89f5e7",
+      "primary_fixed_dim": "#6bd8cb",
+      "secondary": "#006b5f",
+      "secondary_container": "#6df5e1",
+      "secondary_fixed": "#71f8e4",
+      "secondary_fixed_dim": "#4fdbc8",
+      "surface": "#f8f9ff",
+      "surface_bright": "#f8f9ff",
+      "surface_container": "#e5eeff",
+      "surface_container_high": "#dce9ff",
+      "surface_container_highest": "#d3e4fe",
+      "surface_container_low": "#eff4ff",
+      "surface_container_lowest": "#ffffff",
+      "surface_dim": "#cbdbf5",
+      "surface_tint": "#006a61",
+      "surface_variant": "#d3e4fe",
+      "tertiary": "#006860",
+      "tertiary_container": "#248279",
+      "tertiary_fixed": "#9cf2e8",
+      "tertiary_fixed_dim": "#80d5cb"
+    },
+    "overrideNeutralColor": "#64748b",
+    "overridePrimaryColor": "#0d9488",
+    "overrideSecondaryColor": "#14b8a6",
+    "overrideTertiaryColor": "#0f766e",
+    "roundness": "ROUND_EIGHT",
+    "spacing": {
+      "gutter": "1rem",
+      "gutter-lg": "1.25rem",
+      "gutter-sm": "0.75rem",
+      "margin": "1rem",
+      "margin-lg": "1.5rem",
+      "margin-sm": "0.75rem",
+      "space-lg": "1.5rem",
+      "space-md": "1rem",
+      "space-sm": "0.5rem",
+      "space-xl": "2rem",
+      "space-xs": "0.25rem"
+    },
+    "spacingScale": 2,
+    "typography": {
+      "body-lg": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "17px",
+        "fontWeight": "400",
+        "letterSpacing": "-0.005em",
+        "lineHeight": "24px"
+      },
+      "body-md": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "15px",
+        "fontWeight": "400",
+        "lineHeight": "21px"
+      },
+      "body-sm": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "lineHeight": "18px"
+      },
+      "display": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "34px",
+        "fontWeight": "700",
+        "letterSpacing": "-0.02em",
+        "lineHeight": "41px"
+      },
+      "headline-lg": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "28px",
+        "fontWeight": "700",
+        "letterSpacing": "-0.015em",
+        "lineHeight": "34px"
+      },
+      "headline-lg-mobile": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "24px",
+        "fontWeight": "600",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "30px"
+      },
+      "headline-md": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "20px",
+        "fontWeight": "600",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "26px"
+      },
+      "headline-sm": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "17px",
+        "fontWeight": "600",
+        "letterSpacing": "-0.005em",
+        "lineHeight": "22px"
+      },
+      "label-lg": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "15px",
+        "fontWeight": "600",
+        "lineHeight": "20px"
+      },
+      "label-md": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "lineHeight": "18px"
+      },
+      "label-sm": {
+        "fontFamily": "Be Vietnam Pro",
+        "fontSize": "11px",
+        "fontWeight": "600",
+        "letterSpacing": "0.02em",
+        "lineHeight": "14px"
+      },
+      "mono-timestamp": {
+        "fontFamily": "JetBrains Mono",
+        "fontSize": "12px",
+        "fontWeight": "500",
+        "letterSpacing": "-0.01em",
+        "lineHeight": "16px"
+      }
+    }
+  },
+  "title": "Camera — Bottom sheet snapshot",
+  "width": "780"
+}

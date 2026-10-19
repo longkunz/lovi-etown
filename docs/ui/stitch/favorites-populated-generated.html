@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quan tâm — Camera đã lưu</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              teal: '#0d9488',
+              tealLight: '#14b8a6',
+              cyan: '#06b6d4',
+              surface: '#f8fafc',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Cupertino Liquid Glass optical properties */
+    .liquid-glass-dock {
+      background: rgba(255, 255, 255, 0.76);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 40px -6px rgba(13, 148, 136, 0.16), 0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+    }
+    .liquid-glass-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: 0 4px 20px -2px rgba(13, 148, 136, 0.06), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+    .liquid-glass-input {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+    }
+    .liquid-glass-segment {
+      background: rgba(226, 232, 240, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    .liquid-glass-overlay-star {
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-0 sm:p-4 text-slate-800 antialiased font-sans">
+<!-- iPhone 15 frame 390x844 -->
+<main class="w-[390px] h-[844px] bg-[#f8fafc] flex flex-col relative overflow-hidden shadow-2xl rounded-[46px] border-[8px] border-slate-900 select-none">
+<!-- iOS Status Bar -->
+<header class="w-full h-11 pt-2 px-6 flex justify-between items-center z-50 text-slate-800 text-[13px] font-semibold tracking-tight">
+<span>13:54</span>
+<div class="w-28 h-4 bg-black rounded-full mx-auto -mt-1"></div>
+<div class="flex items-center space-x-1.5">
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19.4c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0l1.9-1.9C9.28 19.58 10.59 20 12 20c4.97 0 9-4.03 9-9s-4.03-9-9-9z"></path></svg>
+<svg class="w-3.5 h-3.5" fill="currentColor" viewbox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4z"></path></svg>
+<div class="w-5 h-2.5 border border-slate-800 rounded-sm p-0.5 flex items-center">
+<div class="w-3 h-1.5 bg-slate-800 rounded-2xs"></div>
+</div>
+</div>
+</header>
+<!-- Header Section -->
+<div class="px-4 pt-1 pb-2 space-y-3 z-30">
+<div class="flex items-center justify-between">
+<div>
+<div class="flex items-center space-x-2">
+<h1 class="text-xl font-bold text-slate-900 tracking-tight">Quan tâm</h1>
+<span class="text-[10px] font-semibold text-teal-700 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded-full">Dữ liệu mẫu</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Camera bạn đã lưu trên thiết bị (4 camera)</p>
+</div>
+</div>
+<!-- Search in saved -->
+<div class="relative flex items-center">
+<div class="absolute left-3.5 text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<input class="w-full min-h-[48px] pl-10 pr-4 rounded-2xl liquid-glass-input text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500/30 transition" placeholder="Tìm trong mục quan tâm..." type="text"/>
+</div>
+<!-- Segmented Mode Control (Card | Grid | List) with Grid selected -->
+<div class="liquid-glass-segment p-1 rounded-2xl flex items-center justify-between text-xs font-semibold">
+<button class="flex-1 min-h-[38px] rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Card</span>
+</button>
+<button class="flex-1 min-h-[38px] rounded-xl bg-white shadow-sm text-teal-800 font-bold border border-white/80 transition flex items-center justify-center space-x-1">
+<svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Grid</span>
+</button>
+<button class="flex-1 min-h-[38px] rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center justify-center space-x-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>List</span>
+</button>
+</div>
+</div>
+<!-- Scrollable 2-Column Grid (Exactly 4 cards) -->
+<div class="flex-1 overflow-y-auto px-4 pt-1 pb-32">
+<div class="grid grid-cols-2 gap-3">
+<!-- Tile 1: Pasteur – Lê Thánh Tôn -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+<div>
+<div class="relative w-full aspect-video bg-slate-900">
+<img alt="Camera Pasteur – Lê Thánh Tôn" class="w-full h-full object-cover" loading="lazy" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<!-- 48x48 hit target star overlay button -->
+<button aria-label="Đã lưu yêu thích" class="absolute top-1 right-1 w-12 h-12 flex items-center justify-center active:scale-90 transition">
+<div class="w-8 h-8 rounded-full liquid-glass-overlay-star flex items-center justify-center">
+<svg class="w-4 h-4 text-amber-400 drop-shadow" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+</svg>
+</div>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2">Pasteur – Lê Thánh Tôn</h3>
+<p class="text-[10px] text-slate-500 mt-1 truncate">Phường Bến Nghé • Q.1</p>
+</div>
+</div>
+</article>
+<!-- Tile 2: 11B Nguyễn Bỉnh Khiêm -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+<div>
+<div class="relative w-full aspect-video bg-slate-900">
+<img alt="Camera 11B Nguyễn Bỉnh Khiêm" class="w-full h-full object-cover" loading="lazy" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<button aria-label="Đã lưu yêu thích" class="absolute top-1 right-1 w-12 h-12 flex items-center justify-center active:scale-90 transition">
+<div class="w-8 h-8 rounded-full liquid-glass-overlay-star flex items-center justify-center">
+<svg class="w-4 h-4 text-amber-400 drop-shadow" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+</svg>
+</div>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2">11B Nguyễn Bỉnh Khiêm</h3>
+<p class="text-[10px] text-slate-500 mt-1 truncate">Phường Bến Nghé • Q.1</p>
+</div>
+</div>
+</article>
+<!-- Tile 3: Quốc lộ 1 – KCX Linh Trung -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+<div>
+<div class="relative w-full aspect-video bg-slate-900">
+<img alt="Camera Quốc lộ 1 – KCX Linh Trung" class="w-full h-full object-cover" loading="lazy" src="https://www.gstatic.com/labs-code/stitch/stitch-placeholder-300x300.svg"/>
+<button aria-label="Đã lưu yêu thích" class="absolute top-1 right-1 w-12 h-12 flex items-center justify-center active:scale-90 transition">
+<div class="w-8 h-8 rounded-full liquid-glass-overlay-star flex items-center justify-center">
+<svg class="w-4 h-4 text-amber-400 drop-shadow" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
+</svg>
+</div>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2">Quốc lộ 1 – KCX Linh Trung</h3>
+<p class="text-[10px] text-slate-500 mt-1 truncate">Linh Trung • TP. Thủ Đức</p>
+</div>
+</div>
+</article>
+<!-- Tile 4: Muted 404 Catalog State (Camera đã ngừng cung cấp) -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm border border-slate-200/90 bg-slate-50/70 flex flex-col justify-between">
+<div>
+<!-- Muted Placeholder Image Area -->
+<div class="relative w-full aspect-video bg-slate-200/80 flex flex-col items-center justify-center text-slate-400">
+<svg class="w-7 h-7 stroke-slate-400" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24">
+<path d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="text-[9px] font-semibold text-slate-500 mt-1">Đã ngừng hoạt động</span>
+</div>
+<div class="p-2.5 space-y-1">
+<h3 class="text-xs font-semibold text-slate-500 line-clamp-2 leading-snug">Camera đã ngừng cung cấp</h3>
+<p class="text-[10px] text-slate-400 font-medium">Không còn trong danh mục</p>
+</div>
+</div>
+<!-- Explicit Action: Bỏ quan tâm (48px hit target) -->
+<div class="p-2 pt-0">
+<button class="w-full min-h-[36px] py-1 px-2 rounded-xl bg-slate-200/70 hover:bg-rose-50 hover:text-rose-600 text-[11px] font-semibold text-slate-600 border border-slate-300/50 transition flex items-center justify-center space-x-1 active:scale-95">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Bỏ quan tâm</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Helper info footer -->
+<div class="mt-4 text-center space-y-1">
+<p class="text-[11px] text-slate-500">Đã hiển thị 4 camera quan tâm</p>
+<p class="text-[10px] text-slate-400">Dữ liệu được lưu trữ trên bộ nhớ máy • Không cần đăng nhập</p>
+</div>
+</div>
+<!-- Floating Cupertino Liquid Glass Bottom Capsule (EXACTLY TWO TABS, active: Quan tâm) -->
+<div class="absolute bottom-6 left-0 w-full flex justify-center items-center pointer-events-none z-50 px-6">
+<nav class="liquid-glass-dock rounded-full p-1.5 flex items-center space-x-1 pointer-events-auto shadow-2xl">
+<!-- Tab 1: Camera (Inactive) -->
+<button class="min-h-[48px] px-5 py-2 rounded-full text-slate-700 hover:text-teal-700 transition flex items-center space-x-2 text-xs font-semibold active:scale-95">
+<svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Camera</span>
+</button>
+<!-- Tab 2: Quan tâm (Active Pill) -->
+<button class="min-h-[48px] px-5 py-2 rounded-full bg-teal-600 text-white shadow-md transition flex items-center space-x-2 text-xs font-bold active:scale-95">
+<svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+</svg>
+<span>Quan tâm</span>
+</button>
+</nav>
+</div>
+<!-- Home Indicator Bar -->
+<div class="w-full h-5 flex justify-center items-center pb-2 z-50 bg-[#f8fafc]">
+<div class="w-32 h-1 bg-slate-800/70 rounded-full"></div>
+</div>
+</main>
+</body>
+</html>

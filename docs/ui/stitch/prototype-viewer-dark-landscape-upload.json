@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/prototype-viewer-dark-landscape.html",
+    "project": "15634181901662145156",
+    "title": "Prototype A1 - viewer-dark-landscape",
+    "screenIds": [
+      "13172309405925922911"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=13172309405925922911"
+  }
+}

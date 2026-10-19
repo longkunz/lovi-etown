@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/references/grid-compact.jpg",
+    "project": "15634181901662145156",
+    "title": "Reference - compact camera grid",
+    "screenIds": [
+      "3793399605126619314"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=3793399605126619314"
+  }
+}

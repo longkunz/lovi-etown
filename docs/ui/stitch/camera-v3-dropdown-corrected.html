@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Camera TP.HCM - Dropdown Khu Vực</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 CDN with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#00685f',
+            'primary-container': '#008378',
+            secondary: '#006b5f',
+            teal: {
+              500: '#008378',
+              600: '#00685f',
+            }
+          },
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* iOS Liquid Glass Tokens */
+    .liquid-glass-card {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+    }
+    .liquid-glass-dock {
+      background: rgba(255, 255, 255, 0.70);
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.60);
+      box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.15), 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.85);
+    }
+    .optically-frosted-popover {
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(28px) saturate(210%);
+      -webkit-backdrop-filter: blur(28px) saturate(210%);
+      border: 1px solid rgba(255, 255, 255, 0.60);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.20), 0 1px 0 rgba(255, 255, 255, 0.80) inset;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 3.5px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(0, 104, 95, 0.25);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    body {
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-200 text-slate-900 flex justify-center items-center min-h-screen p-0 sm:p-4 select-none font-sans">
+<!-- BEGIN: iPhone Frame Shell (390 x 844 px) -->
+<div class="relative w-[390px] h-[844px] bg-[#f8f9fc] overflow-hidden rounded-[48px] shadow-2xl border-[6px] border-slate-900 flex flex-col">
+<!-- BEGIN: iOS Status Bar -->
+<header class="h-11 pt-1.5 px-7 flex items-center justify-between text-slate-950 font-semibold text-[15px] tracking-tight z-30 shrink-0">
+<span class="font-bold text-[14.5px]">13:44</span>
+<div class="flex items-center space-x-1.5">
+<!-- Cellular Signal -->
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<rect height="4" rx="0.5" width="3" x="2" y="16"></rect>
+<rect height="7" rx="0.5" width="3" x="7" y="13"></rect>
+<rect height="11" rx="0.5" width="3" x="12" y="9"></rect>
+<rect height="15" rx="0.5" width="3" x="17" y="5"></rect>
+</svg>
+<!-- Wi-Fi -->
+<svg class="w-4 h-4 fill-current" viewbox="0 0 24 24">
+<path d="M12 4c4.3 0 8.2 1.6 11.2 4.3l-2.1 2.4C18.6 8.5 15.4 7.2 12 7.2c-3.4 0-6.6 1.3-9.1 3.5L.8 8.3C3.8 5.6 7.7 4 12 4zm0 6c2.8 0 5.4 1.1 7.4 2.8l-2.1 2.4c-1.5-1.3-3.3-2-5.3-2s-3.8.7-5.3 2L4.6 12.8C6.6 11.1 9.2 10 12 10zm0 6c1.3 0 2.5.5 3.5 1.4L12 21.2 8.5 17.4c1-.9 2.2-1.4 3.5-1.4z"></path>
+</svg>
+<!-- Battery Icon -->
+<div class="flex items-center pl-0.5">
+<div class="w-[23px] h-[11.5px] border-[1.2px] border-slate-900 rounded-[3.5px] p-[1.5px] flex items-center">
+<div class="h-full bg-slate-900 rounded-[1.5px] w-full"></div>
+</div>
+<div class="w-[1.5px] h-[4px] bg-slate-900 rounded-r-sm ml-[0.5px]"></div>
+</div>
+</div>
+</header>
+<!-- END: iOS Status Bar -->
+<!-- BEGIN: Exact Compact Header & Controls -->
+<section class="px-4 pt-0.5 pb-2.5 space-y-2.5 shrink-0 z-30" data-purpose="top-navigation-header">
+<!-- Top Bar: Compact title 'Camera TP.HCM' with teal videocam + 'Dữ liệu mẫu' pill -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[20px] text-teal-600">videocam</span>
+<h1 class="text-[17px] font-bold text-slate-900 tracking-tight">Camera TP.HCM</h1>
+</div>
+<span class="px-2 py-0.5 text-[11px] font-semibold text-teal-800 bg-teal-50 border border-teal-200/70 rounded-full tracking-wide">
+        Dữ liệu mẫu
+      </span>
+</div>
+<!-- Search Input & Location Pill (Anchor for Popover) -->
+<div class="flex items-center gap-2">
+<!-- Search Input with Liquid Glass -->
+<div class="flex-1 h-10 px-3 bg-white/70 backdrop-blur-md border border-white/80 rounded-full flex items-center shadow-sm">
+<span class="material-symbols-outlined text-[19px] text-slate-400 mr-2 shrink-0">search</span>
+<input class="w-full bg-transparent text-[13.5px] text-slate-800 placeholder-slate-400 border-none p-0 focus:outline-none focus:ring-0 truncate" placeholder="Tìm tên đường hoặc camera" type="text"/>
+</div>
+<!-- Location Pill: OPEN / ACTIVE state with 'Tân Mỹ' + highlighted teal border/text & chevron-up -->
+<button class="h-10 px-3.5 rounded-full bg-teal-500/15 border border-teal-500/40 text-teal-800 text-[13px] font-semibold flex items-center gap-1 shadow-sm shrink-0 active:scale-95 transition-all" id="location-pill-btn">
+<span class="material-symbols-outlined text-[16px] text-teal-600">location_on</span>
+<span>Tân Mỹ</span>
+<span class="material-symbols-outlined text-[16px] text-teal-600 ml-0.5">expand_less</span>
+</button>
+</div>
+<!-- Segmented Mode Switch (Card, Grid [Active], List) + Density Option -->
+<div class="flex items-center justify-between gap-2">
+<!-- 3-Tab Glass Segmented Control -->
+<div class="flex-1 bg-slate-200/60 p-0.5 rounded-full flex items-center border border-white/40">
+<button class="flex-1 py-1 rounded-full text-[12px] font-medium text-slate-600 text-center hover:text-slate-900 transition-colors">Card</button>
+<button class="flex-1 py-1 rounded-full text-[12px] font-bold text-teal-900 bg-white shadow-sm text-center">Grid</button>
+<button class="flex-1 py-1 rounded-full text-[12px] font-medium text-slate-600 text-center hover:text-slate-900 transition-colors">List</button>
+</div>
+<!-- Density Toggle Option -->
+<button class="h-8 w-8 rounded-full bg-white/70 border border-white/80 flex items-center justify-center text-slate-600 shadow-sm shrink-0 active:scale-95">
+<span class="material-symbols-outlined text-[17px]">density_medium</span>
+</button>
+</div>
+</section>
+<!-- END: Exact Compact Header & Controls -->
+<!-- BEGIN: Base Content Grid (Visible behind & around dropdown) -->
+<main class="flex-1 overflow-y-auto px-4 pb-28 pt-1" data-purpose="camera-grid-feed">
+<!-- Section Title: Yêu thích -->
+<div class="flex items-center gap-1.5 mb-2.5">
+<span class="material-symbols-outlined text-[18px] text-amber-500 fill-1">star</span>
+<h2 class="text-[14px] font-bold text-slate-900 tracking-tight">Yêu thích</h2>
+</div>
+<!-- 2-Column Camera Grid using strictly the requested 3 official road CCTV snapshot URLs -->
+<div class="grid grid-cols-2 gap-3" data-purpose="camera-cards-list">
+<!-- Card 1 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Huỳnh Tấn Phát - Phú Thuận" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnCEctgis87e38DeMP_bssjltso2TSJq8qtWj0GudzdYNdZysbI6nHe9kOI9RnovfG28f-i4uHrg21sn8WGSik9A7bWXMwNvdpe8c70jReoFSNsHI7sk1bCb5DxcFDid1vSMIxQDA19ujOk_p7jPwSa-HTYEwJRcefVhoTTuB9S3oCMCDiSde8k6_RCfo8f7U-7dTcx2prsUsZTbCHgc4IB1VgmX9MCTjbrKm8FQvtUiq_lC0RtvG2z8IQWSouhcTKMpvomaRDW95I"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Huỳnh Tấn Phát - Phú Thuận</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Phú Thuận · TTH 320</p>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Nguyễn Thị Thập - Tân Mỹ" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0KgtyeW1uaT2H17fwduJX437XoHsQrLxyzEXsU5NG62vVSGm2zaovnl6NewBNPEn7F6Hp7DAqHCKTID7iMfejNcyM9IC_Vhv8Fzp5MFF-7FAvAolNGJpGg7cteXbsNrKvlBkgXiGX7_aWxroka6O_U5TZK-OFXN7flXzeDziX69PlepfnvopSJSkw-E8JkuR5JBtoo3hiwvtgsCVKRHK8ggWMmfsDgV34g6sEOl_bjNLz2NyCZEuSa_iyZ93RZB7KDxde4s_exjt5"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Nguyễn Thị Thập - Tân Mỹ</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Tân Mỹ · TTH 322</p>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Huỳnh Tấn Phát - Nguyễn Thị Thập" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA75MjUHTR1fBDesJYvaNiGrTCOpw55DPr_wLClrnWtGmgxPBvPp5UPWQnUa9EO6-j51OU4GoumF1DLImMBNSC0pSChMnsx-WpSfJ7M8wrMhtyZ2ieJdpkSNS6Wmq6557DFpJ8HZ7hmLNr_eIAWxYgD_2qELZGvU1xCJeRwuyOMSu3OEJoi4oQzsau-5_x2vQLQExUCQwbTsK-3RP1mn03W2sIBi3ZVWE_WMz14g0SOkwEXGi3dKOU9T8k2Qa-OTDJJHX11M7gR8SuR"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Huỳnh Tấn Phát - N.T.Thập</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Tân Thuận · TTH 246</p>
+</div>
+</article>
+<!-- Card 4 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Nguyễn Thị Thập - Lê Văn Lương" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrRWbUqqpYrpE0cKfp2mXzOvZTbcd95s6x5tnKMCVsKPxH1XprQxntS4NVRJqMXkp1CH70q7-uU_F6AeF7xUve-ueBniLJMSIrfmXfJC3VWYfNWG9eul-MpDe-J1h6tyPRciKdvlYDWxzd7u1nK7q7AQ7Q1oPERq0sn1U3YyeCHVuT1hFH7hR_XR6B8ElijwNhTv7jTEfoLUTYMj07RE38Zvk2SGPIg6ZZTyGKqQQwa5L04aLpLK9v-f5wm4_UDJC8BXZrdvBfch0K"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Nguyễn Thị Thập - L.V.Lương</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Tân Hưng · TTH 327</p>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Nguyễn Hữu Thọ - Tân Hưng" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD03jU3kQpR83r6a7rjM30ixZMv8M5arNgaz3TaK3QaXTx6a1v2h8ke5oFajGFAPTBvc0eTZ2RGFvUR2xDBSstpCzcskCTfBQFxyqIg64S9vmsATGBBOP4fWSJZh6yBthrP91C8g0h4NZTIc1KAxS7PoaF9nY0wEA612yR5zMl2rrmVtiNO6hrColj8OqgSm_fJWAsh9V94DYNrPwqrrCmxvGn3gsxhKs6GS2QoolzVNfMuKnmsXPmFwgl7k6zUw2I_XDB_qz4Xk4b_"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Nguyễn Hữu Thọ - Tân Hưng</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Tân Hưng · TTH 25.1</p>
+</div>
+</article>
+<!-- Card 6 -->
+<article class="liquid-glass-card rounded-2xl overflow-hidden shadow-sm flex flex-col group">
+<div class="relative w-full h-28 bg-slate-200 overflow-hidden">
+<img alt="Nguyễn Văn Linh - Nguyễn Thị Thập" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIW3zY-RLi9mmRguhdx6qOOa0tGQw_DSzQkoAUP6KbF0yptzSBiA3QY114bnrU3xSYtZsCG0vPKUlUufNlZvL2cdAW9-evRhsMTBH6hK49SY1551bdbQo6mUcdtjQpn9RUSM19iP7jEAvDKnfVuGvrtFG4c5gfb3f5uXv05zIRlT6VxQv1_CoXnWysY96FyHeasb8lg3zcKwgym1NWg8oFgHcOzvk89y90uM18doJK1aHX23qZTvQp6AtFpO7dFU0ecXeFN5gZjgLA"/>
+<button class="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-amber-400">
+<span class="material-symbols-outlined text-[16px] fill-1">star</span>
+</button>
+</div>
+<div class="p-2.5">
+<h3 class="text-[12.5px] font-bold text-slate-900 truncate">Nguyễn Văn Linh - N.T.Thập</h3>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Phường Tân Mỹ · TTH 324.1</p>
+</div>
+</article>
+</div>
+<!-- Footer Infinite Scroll Indicator -->
+<div class="py-6 flex items-center justify-center gap-2 text-slate-500 text-[13px] font-medium" data-purpose="infinite-scroll-status">
+<svg class="animate-spin h-4 w-4 text-teal-600" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3.5"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+<span>Đang tải thêm…</span>
+</div>
+</main>
+<!-- END: Base Content Grid -->
+<!-- BEGIN: Optically Frosted Liquid Glass Location Dropdown Popover -->
+<!-- Anchored directly under the location pill on the right side -->
+<section class="absolute top-[96px] right-3.5 w-[252px] max-h-[460px] rounded-[28px] optically-frosted-popover z-40 flex flex-col overflow-hidden" data-purpose="liquid-glass-dropdown">
+<!-- Popover Search Header -->
+<div class="p-2.5 pb-2 border-b border-white/50 bg-white/20">
+<div class="relative flex items-center bg-white/60 backdrop-blur-md rounded-xl px-2.5 py-1.5 border border-white/70 shadow-sm">
+<span class="material-symbols-outlined text-[17px] text-slate-500 mr-1.5 shrink-0">search</span>
+<input class="bg-transparent text-[13px] w-full text-slate-800 placeholder-slate-500 focus:outline-none border-none p-0" placeholder="Tìm khu vực..." type="text"/>
+</div>
+</div>
+<!-- Popover Scrollable Options List -->
+<div class="custom-scrollbar overflow-y-auto p-1.5 space-y-0.5" data-purpose="dropdown-options">
+<!-- Option 1: Tất cả khu vực -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Tất cả khu vực</span>
+</button>
+<!-- Option 2: Phường Tân Mỹ (ACTIVE / SELECTED) -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl bg-teal-500/15 border border-teal-500/30 text-teal-950 font-bold transition-colors">
+<span class="text-[13.5px] text-teal-950 font-bold">Phường Tân Mỹ</span>
+<span class="material-symbols-outlined text-[18px] text-teal-600 font-bold">check</span>
+</button>
+<!-- Option 3: Phường Tân Thuận -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường Tân Thuận</span>
+</button>
+<!-- Option 4: Phường Tân Hưng -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường Tân Hưng</span>
+</button>
+<!-- Option 5: Phường Phú Thuận -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường Phú Thuận</span>
+</button>
+<!-- Option 6: Phường Bến Thành -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường Bến Thành</span>
+</button>
+<!-- Option 7: Phường Bàn Cờ -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường Bàn Cờ</span>
+</button>
+<!-- Option 8: Phường An Đông -->
+<button class="w-full min-h-[44px] px-3.5 py-2 flex items-center justify-between text-left rounded-xl hover:bg-white/40 active:bg-white/60 transition-colors">
+<span class="text-[13.5px] font-medium text-slate-800">Phường An Đông</span>
+</button>
+</div>
+</section>
+<!-- END: Optically Frosted Liquid Glass Location Dropdown Popover -->
+<!-- BEGIN: Floating iOS Liquid Glass Bottom Dock -->
+<!-- Exactly TWO destinations: Camera (Active) and Quan tâm (Inactive) -->
+<nav class="absolute bottom-6 inset-x-0 mx-auto w-[240px] h-[54px] rounded-full liquid-glass-dock px-1.5 flex items-center justify-between z-30" data-purpose="bottom-navigation-dock">
+<!-- Destination 1: Camera (Active) -->
+<button class="flex-1 h-[44px] rounded-full bg-gradient-to-r from-teal-600 to-teal-500 text-white flex items-center justify-center gap-1.5 shadow-md active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[19px] fill-1">videocam</span>
+<span class="text-[13px] font-bold tracking-tight">Camera</span>
+</button>
+<!-- Destination 2: Quan tâm (Inactive) -->
+<button class="flex-1 h-[44px] rounded-full text-slate-700 flex items-center justify-center gap-1.5 hover:text-slate-900 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[19px]">favorite</span>
+<span class="text-[13px] font-medium tracking-tight">Quan tâm</span>
+</button>
+</nav>
+<!-- END: Floating iOS Liquid Glass Bottom Dock -->
+<!-- BEGIN: iOS Home Indicator Bar -->
+<div class="absolute bottom-1.5 inset-x-0 flex justify-center z-40 pointer-events-none">
+<div class="w-32 h-1 bg-slate-900/60 rounded-full"></div>
+</div>
+<!-- END: iOS Home Indicator Bar -->
+</div>
+<!-- END: iPhone Frame Shell -->
+<!-- Minimal script for location pill toggle -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const locationBtn = document.getElementById('location-pill-btn');
+    const popover = document.querySelector('[data-purpose="liquid-glass-dropdown"]');
+    if (locationBtn && popover) {
+      locationBtn.addEventListener('click', () => {
+        popover.classList.toggle('hidden');
+      });
+    }
+  });
+</script>
+</body></html>

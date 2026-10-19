@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<title>Camera TP.HCM — Giao Thông Trực Tiếp</title>
+<!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-container": "#6df5e1",
+            "tertiary-container": "#248279",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#3d4947",
+            "on-secondary-fixed-variant": "#005048",
+            "primary-fixed-dim": "#6bd8cb",
+            "surface-tint": "#006a61",
+            "surface-container-highest": "#d3e4fe",
+            "primary": "#00685f",
+            "on-secondary-fixed": "#00201c",
+            "surface-variant": "#d3e4fe",
+            "surface": "#f8f9ff",
+            "inverse-on-surface": "#eaf1ff",
+            "tertiary": "#006860",
+            "on-error-container": "#93000a",
+            "on-error": "#ffffff",
+            "tertiary-fixed-dim": "#80d5cb",
+            "primary-fixed": "#89f5e7",
+            "on-background": "#0b1c30",
+            "on-tertiary-fixed": "#00201d",
+            "on-tertiary-fixed-variant": "#00504a",
+            "on-tertiary": "#ffffff",
+            "outline": "#6d7a77",
+            "on-primary-fixed": "#00201d",
+            "on-secondary": "#ffffff",
+            "background": "#f8f9ff",
+            "inverse-surface": "#213145",
+            "secondary": "#006b5f",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#f3fffc",
+            "on-secondary-container": "#006f64",
+            "surface-dim": "#cbdbf5",
+            "surface-bright": "#f8f9ff",
+            "inverse-primary": "#6bd8cb",
+            "error": "#ba1a1a",
+            "outline-variant": "#bcc9c6",
+            "on-primary-fixed-variant": "#005049",
+            "primary-container": "#008378",
+            "surface-container-low": "#eff4ff",
+            "secondary-fixed": "#71f8e4",
+            "error-container": "#ffdad6",
+            "on-primary-container": "#f4fffc",
+            "secondary-fixed-dim": "#4fdbc8",
+            "on-surface": "#0b1c30",
+            "surface-container-high": "#dce9ff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#9cf2e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-sm": "0.75rem",
+            "space-md": "1rem",
+            "margin": "1rem",
+            "margin-sm": "0.75rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "margin-lg": "1.5rem",
+            "gutter-lg": "1.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "label-sm": ["Be Vietnam Pro"],
+            "headline-lg-mobile": ["Be Vietnam Pro"],
+            "headline-md": ["Be Vietnam Pro"],
+            "body-lg": ["Be Vietnam Pro"],
+            "body-sm": ["Be Vietnam Pro"],
+            "label-md": ["Be Vietnam Pro"],
+            "label-lg": ["Be Vietnam Pro"],
+            "mono-timestamp": ["JetBrains Mono"],
+            "headline-sm": ["Be Vietnam Pro"],
+            "display": ["Be Vietnam Pro"],
+            "headline-lg": ["Be Vietnam Pro"],
+            "body-md": ["Be Vietnam Pro"]
+          },
+          "fontSize": {
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["17px", { "lineHeight": "24px", "letterSpacing": "-0.005em", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "fontWeight": "600" }],
+            "label-lg": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "mono-timestamp": ["12px", { "lineHeight": "16px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-sm": ["17px", { "lineHeight": "22px", "letterSpacing": "-0.005em", "fontWeight": "600" }],
+            "display": ["34px", { "lineHeight": "41px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-md": ["15px", { "lineHeight": "21px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Material Symbols Styling Support */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined[data-weight="fill"],
+    .icon-filled {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* iOS Native & Cupertino Optics */
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    /* Specular Liquid Glass Highlights */
+    .liquid-glass-header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(24px) saturate(190%);
+      -webkit-backdrop-filter: blur(24px) saturate(190%);
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid rgba(188, 201, 198, 0.25);
+    }
+
+    .liquid-card {
+      background: #ffffff;
+      box-shadow: 0 4px 16px -2px rgba(11, 28, 48, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+      border: 1px solid rgba(188, 201, 198, 0.4);
+    }
+
+    .liquid-chip {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 2px 8px rgba(11, 28, 48, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* 48px Touch Barrier Guarantee */
+    .touch-target-48 {
+      min-width: 48px;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary-container">
+<!-- Mobile Viewport Canvas (390px max-width container matching Apple standard) -->
+<main class="w-full max-w-[430px] min-h-screen flex flex-col relative bg-surface shadow-2xl">
+<!-- TOP LIQUID GLASS HEADER BAR (Docked, Translucent, Specular Edge) -->
+<header class="sticky top-0 z-40 w-full liquid-glass-header px-4 pt-3 pb-3.5 transition-all">
+<!-- Status & Brand Row -->
+<div class="flex items-center justify-between mb-2.5">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[19px]">videocam</span>
+</div>
+<div class="flex items-center gap-1.5">
+<h1 class="text-headline-sm font-headline-sm text-on-surface tracking-tight">Camera TP.HCM</h1>
+<span class="text-label-sm font-label-sm bg-surface-container-high/80 text-primary px-2 py-0.5 rounded-full border border-primary/15">Dữ liệu mẫu</span>
+</div>
+</div>
+<button aria-label="Tùy chọn hiển thị" class="touch-target-48 -mr-2 text-on-surface-variant hover:text-primary transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[22px]">tune</span>
+</button>
+</div>
+<!-- Search Input & District Selector Pill Cluster -->
+<div class="flex items-center gap-2">
+<!-- Search Input with Liquid Plate -->
+<div class="relative flex-1 flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-on-surface-variant/70 text-[20px] pointer-events-none">search</span>
+<input class="w-full h-11 pl-10 pr-3 rounded-full bg-surface-container-lowest/90 border border-outline-variant/40 text-on-surface placeholder:text-on-surface-variant/60 text-body-sm font-body-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all shadow-sm" placeholder="Tìm tên đường hoặc camera" type="text"/>
+</div>
+<!-- Location Dropdown Pill (Tân Mỹ) -->
+<button class="h-11 px-3.5 rounded-full bg-secondary-container/30 border border-secondary-container text-on-secondary-container flex items-center gap-1.5 active:scale-95 transition-transform shadow-xs shrink-0">
+<span class="material-symbols-outlined text-[18px] text-primary">location_on</span>
+<span class="text-label-md font-label-md">Tân Mỹ</span>
+<span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+</div>
+</header>
+<!-- SUB-CONTROLS STRIP (Segmented Mode Switcher + Inline Filter Toggle) -->
+<section class="px-4 pt-3 pb-2 flex items-center justify-between gap-2 z-10">
+<!-- Segmented View Mode: Card / Grid / List -->
+<div class="liquid-chip p-1 rounded-full flex items-center shadow-xs">
+<button class="px-3 py-1.5 rounded-full text-label-sm font-label-sm text-on-surface-variant transition-colors hover:text-on-surface" id="view-card">
+          Card
+        </button>
+<button class="px-3 py-1.5 rounded-full text-label-sm font-label-sm bg-primary text-on-primary shadow-sm font-semibold transition-all" id="view-grid">
+          Grid
+        </button>
+<button class="px-3 py-1.5 rounded-full text-label-sm font-label-sm text-on-surface-variant transition-colors hover:text-on-surface" id="view-list">
+          List
+        </button>
+</div>
+<!-- Quick Local Filter Toggle: '★ Chỉ quan tâm' -->
+<button class="h-9 px-3.5 rounded-full flex items-center gap-1.5 border border-outline-variant/60 bg-surface-container-lowest text-on-surface-variant text-label-sm font-label-sm active:scale-95 transition-all shadow-xs" id="toggle-starred-only" onclick="toggleStarredFilter()">
+<span class="material-symbols-outlined text-[16px] text-amber-500 icon-filled" data-weight="fill">star</span>
+<span>Chỉ quan tâm</span>
+</button>
+</section>
+<!-- MAIN FEEDS CANVAS (No bottom tab bar, expansive vertical space, pb-8 safe area) -->
+<div class="flex-1 px-4 pt-1 pb-8 flex flex-col gap-5">
+<!-- SECTION 1: YÊU THÍCH (Collapsible 2-Card Grid) -->
+<section class="flex flex-col gap-2.5" id="section-favorites">
+<div class="flex items-center justify-between py-1 cursor-pointer" onclick="toggleSection('fav-content', 'fav-chevron')">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-amber-500 text-[20px] icon-filled" data-weight="fill">star</span>
+<h2 class="text-label-lg font-label-lg text-on-surface">Yêu thích</h2>
+<span class="text-body-sm font-body-sm text-on-surface-variant/80 font-normal">(2 camera)</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant transition-transform duration-200" id="fav-chevron">expand_less</span>
+</div>
+<!-- 2 Favorite Camera Tiles Side-by-Side -->
+<div class="grid grid-cols-2 gap-3 transition-all duration-300" id="fav-content">
+<!-- Favorite Tile 1: Huỳnh Tấn Phát - Phú Thuận -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-slate-900 overflow-hidden">
+<img alt="Giao thông Huỳnh Tấn Phát - Phú Thuận" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 text-center\'&gt;&lt;span class=\'material-symbols-outlined text-2xl\'&gt;broken_image&lt;/span&gt;&lt;/div&gt;'" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAv0Kn5VhweAktOOS2gJdW0UG_UQVkUEXKm6CYgeBCkaY_6_bDF6tKMjwy1AxdTk4frBJUkfNpWFVujX_KAk5tWKuy2uyzJzhtBgb_pk_ZIl_Udz7yFs9CyaXvGZeCzujMPQHjvSQWlhJVA_F-JrNpITe3o7fzIxP9CRorrpodrcQdV71TxVJ7rU0vnq6Af4-pEnIQK_rrbOLs47TWczrub1rDViUe1q_24bsmpLpBdLjaQ6d8Fj1TEgonz8WR_Q8mvKMR6tII2TBHx"/>
+<!-- Specular 48px Frosted Star Button (Active / Yellow) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Bỏ quan tâm">
+<div class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-md border border-white/30 flex items-center justify-center text-amber-400 shadow-sm">
+<span class="material-symbols-outlined text-[19px] icon-filled" data-weight="fill">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-1 leading-snug">Huỳnh Tấn Phát - Phú Thuận</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-0.5">Phường Phú Thuận</p>
+</div>
+</article>
+<!-- Favorite Tile 2: Nguyễn Thị Thập - Tân Mỹ -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-slate-900 overflow-hidden">
+<img alt="Giao thông Nguyễn Thị Thập - Tân Mỹ" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 text-center\'&gt;&lt;span class=\'material-symbols-outlined text-2xl\'&gt;broken_image&lt;/span&gt;&lt;/div&gt;'" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBjHd_WUoowbmFrLkN8NLWQFfyApkGEJXcnTfBYJ_ZQickyc9nd2XbIQfEP5-to9KA3VZ3y261cJ7My6-0w58ZUIvAW4IaHV1Mq-EqCTwFUMIZw6UoU9WcqODfTVFloIsqe8HYi7QhVF1jLanM_qiXVkcomamuARloMhXGaqBdEVxkEqGtyNzKhjRytevyf7N1hO7wAp5bzIwKle8wvT0XtcL24Y4sU6U-iAfyCF4TZgcgDvMNolYb5jvvyomdtJwJ9yw_lypCzMqr"/>
+<!-- Specular 48px Frosted Star Button (Active / Yellow) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Bỏ quan tâm">
+<div class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-md border border-white/30 flex items-center justify-center text-amber-400 shadow-sm">
+<span class="material-symbols-outlined text-[19px] icon-filled" data-weight="fill">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-1 leading-snug">Nguyễn Thị Thập - Tân Mỹ</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-0.5">Phường Tân Mỹ</p>
+</div>
+</article>
+</div>
+</section>
+<!-- SECTION 2: PHƯỜNG TÂN MỸ (2-Column Grid of live camera road nodes) -->
+<section class="flex flex-col gap-2.5">
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">explore</span>
+<h2 class="text-label-lg font-label-lg text-on-surface">Phường Tân Mỹ</h2>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-normal">Quận 7</span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<!-- Card A: Pasteur – Lê Thánh Tôn -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-slate-900 overflow-hidden">
+<img alt="Giao thông Pasteur - Lê Thánh Tôn" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 text-center\'&gt;&lt;span class=\'material-symbols-outlined text-2xl\'&gt;broken_image&lt;/span&gt;&lt;/div&gt;'" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwLA3ih-7YVK0ad7hYXs1z-l-VUFKINsB4XJjECQqdrcRCF_CEw6eF72g-eY4ehWI7M72WURizobz1ZGmj3lnq50999MwGPyTEdaILdcyFTaUjxdbiu_zmlM_obhTQAb80EmuBzQmEg7evKgizAPOC3c1FbMx1RGj70DvJFXFAYbHDmpO2iYfyFbH46JV2Vq5ztXh5nw8PG5vbagV7wNVmtfA_hALQExjF3iQ15MrYzV5RVZhV4KwKWkJsemgxWoXOTlKMY7s_Rlbz"/>
+<!-- 48px Star Button (Unsaved Outline) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Lưu vào yêu thích">
+<div class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-md border border-white/30 flex items-center justify-center text-white/90 shadow-sm">
+<span class="material-symbols-outlined text-[19px]">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-2 leading-snug">Pasteur – Lê Thánh Tôn</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-1">Trục kết nối chính</p>
+</div>
+</article>
+<!-- Card B: Huỳnh Tấn Phát - Nguyễn Thị Thập -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-slate-900 overflow-hidden">
+<img alt="Giao thông Huỳnh Tấn Phát - Nguyễn Thị Thập" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 text-center\'&gt;&lt;span class=\'material-symbols-outlined text-2xl\'&gt;broken_image&lt;/span&gt;&lt;/div&gt;'" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLwN3E2qb5TO9Nhb4ZfYAa1DKlIPZsfZ914aK9JPeDXN1Q_Lu9wUiq3u38BMA2tff7hh7ZQ8nzSHvs3SQ8D-BrPdACqeoOjHi59blIocKVTJRA1qzVrEJTzWweRFf38lrDmZH4CfABS6EHUSAfI0Au1Gs4SbE0COlU_HStrHB5uDbDrkwtLvZiBuDCBRh8Fz3eSoI3D6fKzXI10-sTGgvSBkTJLS9BmZYV0k9U7KGqdkFUhzFF0QniPsRbrXd3MrtmWu3dc2EUy3E5"/>
+<!-- 48px Star Button (Filled Active) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Bỏ quan tâm">
+<div class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-md border border-white/30 flex items-center justify-center text-amber-400 shadow-sm">
+<span class="material-symbols-outlined text-[19px] icon-filled" data-weight="fill">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-2 leading-snug">Huỳnh Tấn Phát - Nguyễn Thị Thập</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-1">Nút giao Tân Mỹ</p>
+</div>
+</article>
+<!-- Card C: Nguyễn Hữu Thọ - ERROR STATE CARD (Exact Requirement) -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-surface-container-low flex flex-col items-center justify-center px-2 py-3 text-center border-b border-outline-variant/30">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest/60 flex items-center justify-center text-on-surface-variant mb-1.5">
+<span class="material-symbols-outlined text-[22px]">videocam_off</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Không tải được ảnh</p>
+<button class="mt-1.5 px-3 py-1 bg-surface-container-lowest border border-outline-variant/60 rounded-full text-label-sm font-label-sm text-primary flex items-center gap-1 shadow-2xs hover:bg-surface-container transition-colors" onclick="retryFeed(this)">
+<span class="material-symbols-outlined text-[14px]">refresh</span>
+<span>Thử lại</span>
+</button>
+<!-- 48px Star Button (Unsaved Outline) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Lưu vào yêu thích">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/40 flex items-center justify-center text-on-surface-variant shadow-sm">
+<span class="material-symbols-outlined text-[18px]">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-2 leading-snug">Nguyễn Hữu Thọ - Nguyễn Văn Linh</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-1">Cầu vượt Tân Hưng</p>
+</div>
+</article>
+<!-- Card D: Nguyễn Thị Thập - Lê Văn Lương -->
+<article class="liquid-card rounded-2xl overflow-hidden flex flex-col transition-transform active:scale-[0.98]">
+<div class="relative aspect-[16/10] bg-slate-900 overflow-hidden">
+<img alt="Giao thông Nguyễn Thị Thập - Lê Văn Lương" class="w-full h-full object-cover" loading="lazy" onerror="this.parentElement.innerHTML='&lt;div class=\'w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 p-2 text-center\'&gt;&lt;span class=\'material-symbols-outlined text-2xl\'&gt;broken_image&lt;/span&gt;&lt;/div&gt;'" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC61CGNsFEV-FJDDNyOGJAYCeFSsvTRPXSIO8C6ocArdF5V7aqxUU0ys9VKhpmTz0z6u5jh7gTXRNRGuFq-aguES2GRlu4QcWv-1zVdtUzVItM1RNj-wmgVtYRE5sLKP-Mzj5aebgeaCcgl1IV4dsyj9GndVq8EGfpyxLgkZ_fqrNXZRaUmkY7Zl0URGVt8SehCFtpf1OglG442la6FsicZTg2MpAMwC7Ai9AWNzK-bBvXI8KeBpBdYYVr_3U_W36OtqPiBI9Fc_eQU"/>
+<!-- 48px Star Button (Unsaved Outline) -->
+<button class="absolute top-1 right-1 touch-target-48 rounded-full z-10 active:scale-90 transition-transform" onclick="event.stopPropagation(); toggleStar(this)" title="Lưu vào yêu thích">
+<div class="w-8 h-8 rounded-full bg-black/45 backdrop-blur-md border border-white/30 flex items-center justify-center text-white/90 shadow-sm">
+<span class="material-symbols-outlined text-[19px]">star</span>
+</div>
+</button>
+</div>
+<div class="p-2.5 flex flex-col justify-between flex-1 bg-surface-container-lowest">
+<h3 class="text-label-md font-label-md text-on-surface line-clamp-2 leading-snug">Nguyễn Thị Thập - Lê Văn Lương</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant font-normal mt-1">Giao lộ Tân Quy</p>
+</div>
+</article>
+</div>
+</section>
+<!-- INFINITE SCROLL FOOTER INDICATOR (Compact spinner & 'Đang tải thêm…', NO Button) -->
+<footer class="pt-4 pb-6 flex items-center justify-center gap-2 text-on-surface-variant">
+<svg class="animate-spin h-4 w-4 text-primary" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" fill="currentColor"></path>
+</svg>
+<span class="text-label-sm font-label-sm text-on-surface-variant tracking-wide">Đang tải thêm…</span>
+</footer>
+</div>
+</main>
+<!-- Interactive Logic: Micro-interactions, Favorites Toggle, Filters -->
+<script>
+    // Collapsible Favorite Section
+    function toggleSection(contentId, chevronId) {
+      const content = document.getElementById(contentId);
+      const chevron = document.getElementById(chevronId);
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+      } else {
+        content.classList.add('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+      }
+    }
+
+    // Toggle individual star status with frosted feedback
+    function toggleStar(btn) {
+      const iconSpan = btn.querySelector('.material-symbols-outlined');
+      const innerContainer = btn.firstElementChild;
+      const isFilled = iconSpan.classList.contains('icon-filled') || iconSpan.getAttribute('data-weight') === 'fill';
+
+      if (isFilled) {
+        iconSpan.classList.remove('icon-filled');
+        iconSpan.removeAttribute('data-weight');
+        iconSpan.style.fontVariationSettings = "'FILL' 0, 'wght' 400";
+        innerContainer.classList.remove('text-amber-400');
+        innerContainer.classList.add('text-white/90');
+      } else {
+        iconSpan.classList.add('icon-filled');
+        iconSpan.setAttribute('data-weight', 'fill');
+        iconSpan.style.fontVariationSettings = "'FILL' 1, 'wght' 400";
+        innerContainer.classList.remove('text-white/90');
+        innerContainer.classList.add('text-amber-400');
+      }
+    }
+
+    // Toggle '★ Chỉ quan tâm' local filter pill
+    let filterStarredActive = false;
+    function toggleStarredFilter() {
+      filterStarredActive = !filterStarredActive;
+      const btn = document.getElementById('toggle-starred-only');
+      if (filterStarredActive) {
+        btn.classList.add('bg-primary', 'text-on-primary', 'border-primary');
+        btn.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant', 'border-outline-variant/60');
+      } else {
+        btn.classList.remove('bg-primary', 'text-on-primary', 'border-primary');
+        btn.classList.add('bg-surface-container-lowest', 'text-on-surface-variant', 'border-outline-variant/60');
+      }
+    }
+
+    // Interactive Retry Feedback for Error Card
+    function retryFeed(retryBtn) {
+      const parent = retryBtn.parentElement;
+      retryBtn.innerHTML = '<span class="material-symbols-outlined text-[14px] animate-spin">refresh</span> Đang kết nối...';
+      setTimeout(() => {
+        retryBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">refresh</span> Thử lại';
+      }, 1200);
+    }
+  </script>
+</body></html>

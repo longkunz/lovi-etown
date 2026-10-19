@@ -1,0 +1,47 @@
+[
+  {
+    "mode": "grid",
+    "uploadSuccess": true,
+    "screenId": "8278298733313211302",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=8278298733313211302",
+    "png": "camera-v3-grid-review.png",
+    "html": "camera-v3-grid-review.html",
+    "imageCount": 7,
+    "embeddedVerifiedImages": 7,
+    "hasInfiniteLoadingLabel": true,
+    "hasLoadMoreButton": false,
+    "hasFakeLive": false,
+    "hasFalse718Count": false,
+    "pngBytes": 1429669
+  },
+  {
+    "mode": "card",
+    "uploadSuccess": true,
+    "screenId": "5363005408800856859",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=5363005408800856859",
+    "png": "camera-v3-card-review.png",
+    "html": "camera-v3-card-review.html",
+    "imageCount": 3,
+    "embeddedVerifiedImages": 3,
+    "hasInfiniteLoadingLabel": true,
+    "hasLoadMoreButton": false,
+    "hasFakeLive": false,
+    "hasFalse718Count": false,
+    "pngBytes": 1509953
+  },
+  {
+    "mode": "dropdown",
+    "uploadSuccess": true,
+    "screenId": "18241151456201549198",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=18241151456201549198",
+    "png": "camera-v3-dropdown-review.png",
+    "html": "camera-v3-dropdown-review.html",
+    "imageCount": 6,
+    "embeddedVerifiedImages": 6,
+    "hasInfiniteLoadingLabel": true,
+    "hasLoadMoreButton": false,
+    "hasFakeLive": false,
+    "hasFalse718Count": false,
+    "pngBytes": 881952
+  }
+]

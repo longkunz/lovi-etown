@@ -1,0 +1,25 @@
+{
+  "deviceType": "MOBILE",
+  "generatedBy": "HatterAgent",
+  "height": "3124",
+  "htmlCode": {
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzE5NjFmMGUwOTI0NDQ3ODA5YmE3OTkyODBiNDM3ZmNmEgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+    "mimeType": "text/html",
+    "name": "projects/15634181901662145156/files/830df4520d5e4cd0b230e28d1dd78ac8"
+  },
+  "id": "9a66f399f9d244a0bb4069365d4e701e",
+  "name": "projects/15634181901662145156/screens/9a66f399f9d244a0bb4069365d4e701e",
+  "prompt": "Recreate screen B: 'Camera — Card'. Mobile viewport 390x844.\nArt Direction: Identical Authentic Cupertino Apple-like LIQUID GLASS visual system as screen A, but showing LARGE SINGLE-COLUMN PHOTO CARDS (Card mode selected).\n\n- Background: Clean soft near-white (#f8fafc) with subtle cool cyan rim.\n- Header:\n  - Top line: 'Camera TP.HCM' with small videocam glyph and glass badge 'Dữ liệu mẫu'.\n  - Search & Location row: Translucent glass search bar ('Tìm tên đường hoặc camera') with cyan-tinted Liquid Glass location pill: pin icon, 'Tân Mỹ', chevron-down.\n  - Mode Switcher: Glass segmented bar with:\n    - 'Card' (ACTIVE, highlighted with crisp translucent glass white pill with soft specular highlight)\n    - 'Grid' (inactive)\n    - 'List' (inactive)\n- Content Area (Large single-column full-width photo cards):\n  - Section '★ Quan tâm' (or 'Yêu thích'):\n    - Card 1: Large 16:9 photo thumbnail of traffic at 'Huỳnh Tấn Phát - Phú Thuận'. Top right of photo has a 48px round frosted liquid-glass button with a FILLED yellow star. Below photo: title 'Huỳnh Tấn Phát - Phú Thuận' (bold, wrap 2 lines readable), subtitle 'Phường Phú Thuận • TTH 320'.\n    - Card 2: Large 16:9 photo thumbnail of 'Nguyễn Thị Thập - Tân Mỹ'. Round glass button with FILLED yellow star. Title 'Nguyễn Thị Thập - Tân Mỹ', subtitle 'Phường Tân Mỹ • TTH 322'.\n    - Card 3 (Error State): 16:9 neutral gray card placeholder with camera-off icon, text 'Không tải được ảnh', retry action pill 'Thử lại'. Title 'Nguyễn Hữu Thọ - Nguyễn Thị Thập', subtitle 'Phường Tân Hưng • TTH 25.1'. Glass star button top-right.\n    - Card 4: Large 16:9 photo thumbnail of 'Nguyễn Văn Linh - Nguyễn Thị Thập'. Title 'Nguyễn Văn Linh - Nguyễn Thị Thập', subtitle 'Phường Tân Mỹ • TTH 324.1'. Unsaved outline star.\n  - Infinite scroll indicator: subtle spinner + 'Đang tải thêm... • Đã tải 4 camera'.\n- Floating Liquid Glass Dock:\n  - Fixed above bottom safe area:\n  - EXACTLY TWO destinations: 'Camera' (active: filled teal videocam + 'Camera' label) and 'Quan tâm' (outline heart + 'Quan tâm' label).\n  - Authentic Liquid Glass: backdrop-blur-2xl, translucent white with cyan rim glow, specular edge. Content visibly passes and blurs behind the dock.\n- Touch targets >= 48px. Crisp Vietnamese typography.",
+  "screenMetadata": {
+    "agentType": "PRO_AGENT",
+    "status": "COMPLETE"
+  },
+  "screenType": "DESIGN",
+  "screenshot": {
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1UGS8YrM_xAMQTx32qkcNAjRFKa2fvtO9tjySGkcuyZwawBqFDLmCWjjXPTF40iQO8FB8w-5LY1O47Xci628DMbU8q1YyXJqMoOooIhGSKYY7_sE7BQoKdw3bbUbHYS-7s_Aw93iyw6ZGmbX3HVBdlyQhv6xC6YhKEq3mQ15TnDyW6ugLNx16PBb3CmFARhB0coEhn3QUTq6tMEY21X0Jbd1LLN8KVWcia9wCwZWpZfieuBV_wstYeOFkH0",
+    "name": "projects/15634181901662145156/files/992f9e092dec4037ac84cf9016fc3d0f"
+  },
+  "theme": {},
+  "title": "Camera — Card (Cupertino Liquid Glass)",
+  "width": "780"
+}

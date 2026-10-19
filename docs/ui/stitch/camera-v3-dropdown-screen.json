@@ -1,0 +1,25 @@
+{
+  "deviceType": "MOBILE",
+  "generatedBy": "HatterAgent",
+  "height": "1768",
+  "htmlCode": {
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzg5NWM5NjdhMzIzNTQyNDdiMGE2MDgzOGRlOTUzMWYxEgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+    "mimeType": "text/html",
+    "name": "projects/15634181901662145156/files/7e909c2c834c446fbf42b89e6ba2d678"
+  },
+  "id": "9c223b427cbd4d13846f76ee8aac9959",
+  "name": "projects/15634181901662145156/screens/9c223b427cbd4d13846f76ee8aac9959",
+  "prompt": "Recreate screen C: 'Camera — Dropdown'. Mobile viewport 390x844.\nArt Direction: Exactly identical 2-column photo grid as screen A, but with the LOCATION DROPDOWN POPOVER OPEN, anchored directly under the 'Tân Mỹ' pill, showcasing authentic Apple-like LIQUID GLASS optical frosting.\n\n- Reference: Closely inspect {{DATA:IMAGE:IMAGE_3}}.\n- Backdrop / Base screen: The 2-column camera grid is active underneath (Huỳnh Tấn Phát, Nguyễn Thị Thập, etc.).\n- Dropdown Popover:\n  - Anchored directly under the cyan location pill ('Tân Mỹ').\n  - Shape: Smooth rounded pill / card with 28px-32px border radius.\n  - Optical Liquid Glass Material: Deep translucent frosted glass with backdrop-blur-3xl, specular top/side rim highlights (bright translucent white border), soft cool cyan light diffusion, and ambient drop shadow.\n  - Camera photos and road colors visibly bleed softly through the translucent frosted glass behind the menu rows!\n  - Popover Content:\n    - Search input: compact glass search field 'Tìm khu vực...' with magnifying glass.\n    - Option 1: 'Tất cả khu vực' (subtle icon or clean row).\n    - Option 2: 'Phường Tân Mỹ' (ACTIVE / SELECTED with bold text and a crisp teal/cyan checkmark icon).\n    - Option 3: 'Phường Tân Thuận'.\n    - Option 4: 'Phường Tân Hưng'.\n    - Option 5: 'Phường Phú Thuận'.\n    - Option 6: 'Phường Bến Thành'.\n    - Option 7: 'Phường Bàn Cờ'.\n    - Option 8: 'Phường An Đông'.\n    - High contrast dark text floating above the glass surface. Subtle scroll indicator line on the right.\n  - Popover does not cover the entire screen — it stays neatly floating in the upper-right / center area so the backdrop camera grid remains clearly visible around and softly through it.\n- Floating Liquid Glass Dock:\n  - Fixed at the bottom with exactly TWO destinations: 'Camera' (active) and 'Quan tâm' (inactive). Translucent frosted glass over the bottom photos.\n- Vietnamese typography, 48px hit targets, flawless iOS aesthetic.",
+  "screenMetadata": {
+    "agentType": "PRO_AGENT",
+    "status": "COMPLETE"
+  },
+  "screenType": "DESIGN",
+  "screenshot": {
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1VMj0qtEnOKAtNI2ai6wEWV806QcmhWZqLZwO0idyVxg9MLq06YDFWA_VzMneREXQk3uoOxaot-p5lVpjEFz-hxlWbOhVnlku_Pyt_cKYQXFA1rlQq9VUJQQISth0kLQ7hLfNhsmbxQBBOM8N9DojHtdIrFivUcUOhfqpl1_J78fEqMIOn3VKWHhbseNAro9KjEynxSPsaWl5PxVo2Awn5fHRaLEz6Z08K3rjEdV7WnleVlTH7UZ9KYvUzQ",
+    "name": "projects/15634181901662145156/files/cdf2888afb2442b98958d3118debc6f1"
+  },
+  "theme": {},
+  "title": "Camera — Dropdown (Cupertino Liquid Glass)",
+  "width": "780"
+}

@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/camera-v3-grid-review.html",
+    "project": "15634181901662145156",
+    "title": "Camera v3 - Grid - verified camera assets",
+    "screenIds": [
+      "8278298733313211302"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=8278298733313211302"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "success": false,
+  "error": {
+    "code": "AUTH_FAILED",
+    "message": "Stitch couldn't authenticate the upload: HTTP 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The caller does not have permission\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n",
+    "recoverable": true,
+    "remediation": "Run 'stitch login' or pass a valid token via STITCH_ACCESS_TOKEN.",
+    "isRecoverable": true,
+    "suggestion": "Run 'stitch login' or pass a valid token via STITCH_ACCESS_TOKEN."
+  }
+}

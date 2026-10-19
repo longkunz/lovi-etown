@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-16T08:11:29.802Z",
+  "environment": "Headless Edge, emulated touch; not physical device",
+  "checks": [
+    "two-touch pinch increases zoom to 3x",
+    "viewport rotate 390x844 -> 844x390 fits viewer",
+    "close viewer returns sheet",
+    "close sheet preserves area selection",
+    "background becomes interactive after dismiss"
+  ],
+  "physicalDeviceVerified": false
+}

@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "status": "uploaded",
+    "file": "docs/ui/stitch/camera-inline-favorites-review.html",
+    "project": "15634181901662145156",
+    "title": "Camera A1 - camera-inline-favorites - single screen flow",
+    "screenIds": [
+      "17833083762628583982"
+    ],
+    "canvasUrl": "https://stitch.google.com/projects/15634181901662145156?node-id=17833083762628583982"
+  }
+}

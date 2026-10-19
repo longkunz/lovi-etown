@@ -1,0 +1,134 @@
+[
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_01",
+    "name": "Camera Cầu Sài Gòn",
+    "provinceId": "tp_hcm",
+    "district": "Bình Thạnh",
+    "address": "Đầu cầu Sài Gòn hướng Điện Biên Phủ",
+    "location": { "lat": 10.7992, "lng": 106.7214 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_01"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_02",
+    "name": "Camera Ngã tư Hàng Xanh",
+    "provinceId": "tp_hcm",
+    "district": "Bình Thạnh",
+    "address": "Giao lộ Điện Biên Phủ - Xô Viết Nghệ Tĩnh",
+    "location": { "lat": 10.8015, "lng": 106.7118 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_02"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_03",
+    "name": "Camera Ngã tư Hàng Xanh",
+    "provinceId": "tp_hcm",
+    "district": "Bình Thạnh",
+    "address": "Hướng Bạch Đằng đi Hàng Xanh",
+    "location": { "lat": 10.8021, "lng": 106.7125 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_03"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_04",
+    "name": "Camera Vòng xoay Dân Chủ",
+    "provinceId": "tp_hcm",
+    "district": "Quận 3",
+    "address": "Vòng xoay Cách Mạng Tháng 8 - Ba Tháng Hai",
+    "location": { "lat": 10.7788, "lng": 106.6795 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_04"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_05",
+    "name": "Camera Hồ Con Rùa",
+    "provinceId": "tp_hcm",
+    "district": "Quận 3",
+    "address": "Công trường Quốc Tế",
+    "location": { "lat": 10.7827, "lng": 106.6958 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_05"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_06",
+    "name": "Camera Phố đi bộ Nguyễn Huệ",
+    "provinceId": "tp_hcm",
+    "district": "Quận 1",
+    "address": "Nguyễn Huệ - Mạc Thị Bưởi",
+    "location": { "lat": 10.7745, "lng": 106.7032 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_06"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_07",
+    "name": "Camera Bến Bạch Đằng",
+    "provinceId": "tp_hcm",
+    "district": "Quận 1",
+    "address": "Tôn Đức Thắng",
+    "location": { "lat": 10.7712, "lng": 106.7061 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_07"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_08",
+    "name": "Camera Chợ Bến Thành",
+    "provinceId": "tp_hcm",
+    "district": "Quận 1",
+    "address": null,
+    "location": { "lat": 10.7725, "lng": 106.6980 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_08"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_09",
+    "name": "Camera Cầu Khánh Hội",
+    "provinceId": "tp_hcm",
+    "district": "Quận 4",
+    "address": "Đoàn Như Hài",
+    "location": { "lat": 10.7679, "lng": 106.7058 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_09"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_10",
+    "name": "Camera Cầu Kênh Tẻ",
+    "provinceId": "tp_hcm",
+    "district": "Quận 7",
+    "address": "Nguyễn Hữu Thọ",
+    "location": { "lat": 10.7511, "lng": 106.7012 },
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_10"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_11",
+    "name": "Camera Tuyến Vành Đai Tự Do",
+    "provinceId": "tp_hcm",
+    "district": null,
+    "address": null,
+    "location": null,
+    "sourceKind": "snapshot",
+    "sourceRef": "fix_snap_11"
+  },
+  {
+    "provider": "fixture",
+    "providerCameraId": "fix_cam_12",
+    "name": "Camera Trực Tiếp Kênh Youtube",
+    "provinceId": "tp_hcm",
+    "district": "Quận 1",
+    "address": "Công viên 23 Tháng 9",
+    "location": { "lat": 10.7692, "lng": 106.6931 },
+    "sourceKind": "youtube",
+    "sourceRef": "https://youtube.com/watch?v=sample"
+  }
+]

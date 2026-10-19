@@ -1,0 +1,205 @@
+{
+  "total": 18,
+  "catalogVersion": "fixture-v1",
+  "dataMode": "fixture",
+  "items": [
+    {
+      "id": "c0000001-0000-0000-0000-000000000001",
+      "name": "Nguyễn Huệ - Lê Lợi",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": "Bến Nghé, Quận 1",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000001-0000-0000-0000-000000000001/playback"
+    },
+    {
+      "id": "c0000002-0000-0000-0000-000000000002",
+      "name": "Đồng Khởi - Mạc Thị Bưởi",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": "Bến Nghé, Quận 1",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000002-0000-0000-0000-000000000002/playback"
+    },
+    {
+      "id": "c0000003-0000-0000-0000-000000000003",
+      "name": "Lê Duẩn - Pasteur",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": null,
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000003-0000-0000-0000-000000000003/playback"
+    },
+    {
+      "id": "c0000004-0000-0000-0000-000000000004",
+      "name": "Nam Kỳ Khởi Nghĩa - Điện Biên Phủ",
+      "provinceId": "tp_hcm",
+      "district": "Quận 3",
+      "address": "Phường Võ Thị Sáu, Quận 3",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000004-0000-0000-0000-000000000004/playback"
+    },
+    {
+      "id": "c0000005-0000-0000-0000-000000000005",
+      "name": "Cách Mạng Tháng 8 - Võ Văn Tần",
+      "provinceId": "tp_hcm",
+      "district": "Quận 3",
+      "address": null,
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000005-0000-0000-0000-000000000005/playback"
+    },
+    {
+      "id": "c0000006-0000-0000-0000-000000000006",
+      "name": "Cộng Hòa - Hoàng Hoa Thám",
+      "provinceId": "tp_hcm",
+      "district": "Tân Bình",
+      "address": "Phường 12, Tân Bình",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000006-0000-0000-0000-000000000006/playback"
+    },
+    {
+      "id": "c0000007-0000-0000-0000-000000000007",
+      "name": "Trường Chinh - Tây Thạnh",
+      "provinceId": "tp_hcm",
+      "district": "Tân Bình",
+      "address": "Phường 15, Tân Bình",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000007-0000-0000-0000-000000000007/playback"
+    },
+    {
+      "id": "c0000008-0000-0000-0000-000000000008",
+      "name": "Hoàng Văn Thụ - Phan Đình Phùng",
+      "provinceId": "tp_hcm",
+      "district": "Tân Bình",
+      "address": null,
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000008-0000-0000-0000-000000000008/playback"
+    },
+    {
+      "id": "c0000009-0000-0000-0000-000000000009",
+      "name": "Hàng Xanh (Xô Viết Nghệ Tĩnh - ĐBP)",
+      "provinceId": "tp_hcm",
+      "district": "Bình Thạnh",
+      "address": "Phường 25, Bình Thạnh",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000009-0000-0000-0000-000000000009/playback"
+    },
+    {
+      "id": "c0000010-0000-0000-0000-000000000010",
+      "name": "Phạm Văn Đồng - Phan Văn Trị",
+      "provinceId": "tp_hcm",
+      "district": "Bình Thạnh",
+      "address": "Phường 11, Bình Thạnh",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000010-0000-0000-0000-000000000010/playback"
+    },
+    {
+      "id": "c0000011-0000-0000-0000-000000000011",
+      "name": "Võ Văn Kiệt - Hải Thượng Lãn Ông",
+      "provinceId": "tp_hcm",
+      "district": "Quận 5",
+      "address": "Phường 10, Quận 5",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000011-0000-0000-0000-000000000011/playback"
+    },
+    {
+      "id": "c0000012-0000-0000-0000-000000000012",
+      "name": "An Dương Vương - Nguyễn Tri Phương",
+      "provinceId": "tp_hcm",
+      "district": "Quận 5",
+      "address": "Phường 9, Quận 5",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000012-0000-0000-0000-000000000012/playback"
+    },
+    {
+      "id": "c0000013-0000-0000-0000-000000000013",
+      "name": "Cầu Chữ Y (Dạ Nam - Hưng Phú)",
+      "provinceId": "tp_hcm",
+      "district": null,
+      "address": "Ranh giới Quận 5 - Quận 8",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000013-0000-0000-0000-000000000013/playback"
+    },
+    {
+      "id": "c0000014-0000-0000-0000-000000000014",
+      "name": "Hầm vượt sông Sài Gòn (Cửa Hầm Q1)",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": "Bến Nghé, Quận 1",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000014-0000-0000-0000-000000000014/playback"
+    },
+    {
+      "id": "c0000015-0000-0000-0000-000000000015",
+      "name": "Ngã 6 Phù Đổng (Nguyễn Thị Nghĩa - CMT8)",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": "Bến Thành, Quận 1",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/5deb576d1dc17d7c5515ad13.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000015-0000-0000-0000-000000000015/playback"
+    },
+    {
+      "id": "c0000016-0000-0000-0000-000000000016",
+      "name": "Vòng xoay Dân Chủ (Võ Thị Sáu - CMT8)",
+      "provinceId": "tp_hcm",
+      "district": "Quận 3",
+      "address": null,
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/662b7f651afb9c00172dc992.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000016-0000-0000-0000-000000000016/playback"
+    },
+    {
+      "id": "c0000017-0000-0000-0000-000000000017",
+      "name": "Quốc lộ 1A - An Sương",
+      "provinceId": "tp_hcm",
+      "district": null,
+      "address": null,
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/sample1.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000017-0000-0000-0000-000000000017/playback"
+    },
+    {
+      "id": "c0000018-0000-0000-0000-000000000018",
+      "name": "Đinh Tiên Hoàng - Điện Biên Phủ",
+      "provinceId": "tp_hcm",
+      "district": "Quận 1",
+      "address": "Đa Kao, Quận 1",
+      "snapshotCapable": true,
+      "thumbnailEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "snapshotEndpoint": "assets/fixtures/snapshots/586e28a0f9fab7001111b0b3.jpg",
+      "playbackEndpoint": "/api/v1/cameras/c0000018-0000-0000-0000-000000000018/playback"
+    }
+  ]
+}

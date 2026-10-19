@@ -1,0 +1,35 @@
+[
+  {
+    "mode": "camera-detail",
+    "id": "12538486518867795532",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=12538486518867795532",
+    "imageCount": 3,
+    "embeddedVerifiedImages": 3,
+    "hasSampleLabel": true,
+    "hasLiveBadge": false,
+    "png": "camera-detail-final.png",
+    "html": "camera-detail-review.html"
+  },
+  {
+    "mode": "favorites-populated",
+    "id": "6984728961356815463",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=6984728961356815463",
+    "imageCount": 3,
+    "embeddedVerifiedImages": 3,
+    "hasSampleLabel": true,
+    "hasLiveBadge": false,
+    "png": "favorites-populated-final.png",
+    "html": "favorites-populated-review.html"
+  },
+  {
+    "mode": "favorites-empty",
+    "id": "13088157116766237497",
+    "url": "https://stitch.google.com/projects/15634181901662145156?node-id=13088157116766237497",
+    "imageCount": 0,
+    "embeddedVerifiedImages": 0,
+    "hasSampleLabel": true,
+    "hasLiveBadge": false,
+    "png": "favorites-empty-viewport.png",
+    "html": "favorites-empty-review.html"
+  }
+]

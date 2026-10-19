@@ -1,0 +1,25 @@
+{
+  "deviceType": "MOBILE",
+  "generatedBy": "HatterAgent",
+  "height": "1768",
+  "htmlCode": {
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJ8Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpbCiVodG1sXzc2MjVmMzA4ZDE4ZjQ5ZWY4MDI5MTAxYzRjYjU5OWU0EgsSBxDM4YHMgA4YAZIBJAoKcHJvamVjdF9pZBIWQhQxNTYzNDE4MTkwMTY2MjE0NTE1Ng&filename=&opi=96797242",
+    "mimeType": "text/html",
+    "name": "projects/15634181901662145156/files/350b43789d7c45c89bddb0a7bf81c15b"
+  },
+  "id": "fdc61b0a8a57454c97bbfaba56c79ed3",
+  "name": "projects/15634181901662145156/screens/fdc61b0a8a57454c97bbfaba56c79ed3",
+  "prompt": "Recreate the Saigon Traffic Camera app screen A: 'Camera — Grid'. Mobile viewport 390x844.\n\nArt Direction: Authentic Cupertino Apple-like LIQUID GLASS.\n- Warm near-white background (#f8fafc) with subtle cool cyan/teal illumination.\n- Compact Header:\n  - Top line: 'Camera TP.HCM' with small camera glyph and tiny subtle glass badge 'Dữ liệu mẫu'.\n  - Search & Location row: Translucent glass search bar capsule (placeholder 'Tìm tên đường hoặc camera', glass search icon) with an integrated or adjacent cyan-tinted Liquid Glass location pill: map pin icon, 'Tân Mỹ', and chevron down icon (min-h-[48px]).\n  - Mode Switcher: Liquid glass segmented control with 3 segments: 'Card', 'Grid' (ACTIVE, highlighted with crisp translucent white pill), 'List'. To the right, a compact 3-column density button (grid icon).\n- Content Area (scrollable 2-column photo grid):\n  - Section '★ Quan tâm' (or 'Yêu thích'):\n    - Camera 1: 'Huỳnh Tấn Phát - Phú Thuận', subtitle 'Phường Phú Thuận • TTH 320'. Photo shows Saigon street traffic (scooters, road, daylight). Top right: translucent glass circle with FILLED yellow star icon.\n    - Camera 2: 'Nguyễn Thị Thập - Tân Mỹ', subtitle 'Phường Tân Mỹ • TTH 322'. Photo showing street with shops and motorbikes. Top right: FILLED yellow star.\n    - Camera 3: 'Huỳnh Tấn Phát - Nguyễn Thị Thập', subtitle 'Phường Tân Thuận • TTH 246'. Photo showing bus and traffic. Top right: FILLED yellow star.\n    - Camera 4: 'Nguyễn Thị Thập - Lê Văn Lương', subtitle 'Phường Tân Hưng • TTH 327'. Photo with yellow truck and bikes. Top right: FILLED yellow star.\n    - Camera 5 (Error State Tile): Instead of offline, an opaque neutral light gray card with a camera-off/alert icon, clear title 'Nguyễn Hữu Thọ - Nguyễn Thị Thập', subtitle 'Phường Tân Hưng • TTH 25.1', text 'Không tải được ảnh' and a small retry button 'Thử lại' with reload icon. Translucent glass star button on top right.\n    - Camera 6: 'Nguyễn Văn Linh - Nguyễn Thị Thập', subtitle 'Phường Tân Mỹ • TTH 324.1'. Photo showing busy wide intersection. Top right: FILLED yellow star.\n  - Section 'Khu vực Tân Mỹ' (or remaining cameras):\n    - 2 more cards with unsaved outline star (star_border, dark gray/white stroke).\n  - Infinite scroll indicator at bottom: subtle compact spinner + 'Đang tải thêm... • Đã tải 6 camera (Dữ liệu mẫu)'.\n- Bottom Navigation Dock:\n  - Floating Liquid Glass capsule fixed above bottom safe area:\n  - Exactly TWO destinations: 'Camera' (active: filled teal videocam icon + 'Camera' label on one line, active glass pill) and 'Quan tâm' (inactive: outline favorite heart + 'Quan tâm' label).\n  - Authentic Liquid Glass: backdrop-blur-2xl, translucent white bg with cool cyan reflection, thin specular white highlight border, soft shadow. Content visibly blurs behind it.\n- All interactive touch targets are at least 48px. Typography in Be Vietnam Pro / SF Pro with crisp Vietnamese diacritics. Clean, professional, premium native iOS utility.",
+  "screenMetadata": {
+    "agentType": "PRO_AGENT",
+    "status": "COMPLETE"
+  },
+  "screenType": "DESIGN",
+  "screenshot": {
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1XsHKPs6W3jlOvDczdvdVrTNmFEwgsPyGPsp2NyNSu5z2pM5gXtR5roPB65HikdInnCDcZyvtQP4NErjxVSNu2vVEel_Z9G7SIfb8YLNTotwytYMeXKg7NNNNha0s9Ohzy1EoZSMnSmpa40Ktiai8yn895KAiQeMnGdRJptIE0d3D_GIh-6sU72a5aSl9-THRu-4edAJrEIhVYSCp5DSitkqKcvufVgXdPd6h-mlpc2pwOuAJMueAiOn9Y",
+    "name": "projects/15634181901662145156/files/38ba72b872cc415888ce192bc967b11a"
+  },
+  "theme": {},
+  "title": "Camera — Grid (Cupertino Liquid Glass)",
+  "width": "780"
+}

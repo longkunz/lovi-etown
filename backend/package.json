@@ -15,6 +15,7 @@
     "db:migrate": "npm run build && node dist/src/cli/migrate.js",
     "seed:fixture": "npm run build && node dist/src/cli/seed-fixture.js",
     "camera:sync": "npm run build && node dist/src/cli/sync.js",
+    "camera:probe": "npm run build && node dist/src/cli/probe-availability.js",
     "smoke:notis": "npm run test:compile && node .test-dist/test/smoke/notis-smoke.js",
     "start": "node dist/src/main.js",
     "dev": "npm run build && node dist/src/main.js"

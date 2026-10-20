@@ -1,6 +1,6 @@
 # Đặc tả — Lộ trình tính năng P0/P1 sau A1 (từ reverse-engineering Traffic Camera VN)
 
-Trạng thái: **ĐỀ XUẤT — chờ duyệt qua PR chứa đặc tả này.** Các quyết định D1–D9 dưới đây là đề xuất của agent dựa trên bằng chứng đã kiểm chứng; chỉ triển khai sau khi PR được merge (theo đúng tiền lệ T06 → T07/T08).
+Trạng thái: **ĐÃ DUYỆT — Long duyệt toàn bộ D1–D9 ngày 2026-10-20** (qua PR chứa đặc tả này, theo đúng tiền lệ T06 → T07/T08). Các câu hỏi mở ở cuối đặc tả đã chốt: D5 mở vùng phủ toàn TP.HCM; D7 duyệt ngoại lệ native cho widget; D8 duyệt lập project Firebase cho T16; D3 chấp nhận `dist` làm nhãn hiển thị.
 
 ## Bối cảnh và bằng chứng
 
@@ -75,7 +75,7 @@ Trong viewer, thêm thẻ tổng hợp từ dữ kiện sẵn có: trạng thái
 - Trợ lý lái xe kiểu VietDi (cảnh báo biển báo/tốc độ, HUD, PiP khi lái, crowdsourcing báo cáo giao thông) — là một sản phẩm thứ hai, cần đặc tả riêng nếu Long muốn đi hướng đó.
 - Phân tích ảnh suy luận ùn tắc; điều khiển PTZ; widget iOS; Firebase App Check cho API của Lovi (đã ghi nhận khác biệt với đối thủ, không làm đợt này).
 
-## Câu hỏi mở cần Long quyết khi review PR
+## Câu hỏi mở — ĐÃ CHỐT khi duyệt (2026-10-20)
 
 1. **D5:** duyệt mở vùng phủ ra toàn TP.HCM (504 camera) hay giữ trung tâm và chỉ bật live cho số ít camera hiện có?
 2. **D7:** duyệt ngoại lệ code native cho widget Android?

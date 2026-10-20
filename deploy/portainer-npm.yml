@@ -1,0 +1,69 @@
+# T08 — Portainer Stack variant for a VPS that already runs Nginx Proxy
+# Manager (NPM) as its public edge (domains + Let's Encrypt live in NPM).
+#
+# Differences from compose.prod.yml:
+#   - No caddy service: NPM already owns ports 80/443 on this VPS.
+#   - The backend also joins NPM's existing external docker network
+#     ("proxy") so NPM can proxy api.<domain> to it by container name:
+#       NPM Proxy Host -> http://lovi-backend:3000
+#     No backend/db port is published on the host.
+#
+# Usage: Portainer -> Stacks -> Add stack -> Repository
+#   Repository URL: https://github.com/longkunz/lovi-etown
+#   Compose path:   deploy/portainer-npm.yml
+#   Env vars are filled in the Portainer form (see .env.prod.example);
+#   start with CAMERA_PROVIDER_MODE=fixture to verify the pipeline,
+#   then switch to notis with a real NOTIS_AUTH_TOKEN.
+# After deploy, run once in the backend container console:
+#   npm run db:migrate && npm run seed:fixture   (fixture mode only)
+
+services:
+  db:
+    image: postgis/postgis:17-3.5
+    container_name: lovi-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-camera_catalog}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-camera_catalog}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+    networks:
+      - lovi-net
+
+  backend:
+    build:
+      context: ../backend
+    container_name: lovi-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 3000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-camera_catalog}
+      BACKEND_API_KEY: ${BACKEND_API_KEY:?BACKEND_API_KEY is required}
+      ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required}
+      BACKEND_API_KEY_PREVIOUS: ${BACKEND_API_KEY_PREVIOUS:-}
+      CAMERA_PROVIDER_MODE: ${CAMERA_PROVIDER_MODE:-fixture}
+      NOTIS_AUTH_TOKEN: ${NOTIS_AUTH_TOKEN:-}
+      RATE_LIMIT_MAX_PER_MINUTE: ${RATE_LIMIT_MAX_PER_MINUTE:-120}
+    networks:
+      - lovi-net
+      - npm-proxy
+
+networks:
+  lovi-net:
+  npm-proxy:
+    external: true
+    name: proxy
+
+volumes:
+  db-data:

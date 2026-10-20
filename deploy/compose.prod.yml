@@ -41,8 +41,11 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-camera_catalog}
       BACKEND_API_KEY: ${BACKEND_API_KEY:?BACKEND_API_KEY is required}
       ADMIN_API_KEY: ${ADMIN_API_KEY:?ADMIN_API_KEY is required}
-      # Set only while a key-rotation window is open (T06-D3), then remove.
-      BACKEND_API_KEY_PREVIOUS: ${BACKEND_API_KEY_PREVIOUS:-}
+      # BACKEND_API_KEY_PREVIOUS is deliberately NOT listed here: while a
+      # key-rotation window is open (T06-D3), add the line
+      #   BACKEND_API_KEY_PREVIOUS: ${BACKEND_API_KEY_PREVIOUS}
+      # and set the value in .env.prod. An always-present ${...:-} line
+      # injects an empty string when unset, which used to crash startup.
       CAMERA_PROVIDER_MODE: ${CAMERA_PROVIDER_MODE:-notis}
       NOTIS_AUTH_TOKEN: ${NOTIS_AUTH_TOKEN:-}
       RATE_LIMIT_MAX_PER_MINUTE: ${RATE_LIMIT_MAX_PER_MINUTE:-120}

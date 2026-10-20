@@ -106,6 +106,27 @@ export class NotisProvider extends CameraProvider {
         let location: { lat: number; lng: number } | null = null;
         if (typeof item.lat === 'number' && typeof item.lng === 'number' && isFinite(item.lat) && isFinite(item.lng)) {
           location = { lat: item.lat, lng: item.lng };
+        } else if (
+          item.loc &&
+          typeof item.loc === 'object' &&
+          Array.isArray(item.loc.coordinates) &&
+          item.loc.coordinates.length === 2
+        ) {
+          // The live Notis API returns GeoJSON: loc.coordinates = [lng, lat]
+          // (verified against api.notis.vn on 2026-10-20; no lat/lng fields).
+          const [geoLng, geoLat] = item.loc.coordinates;
+          if (
+            typeof geoLng === 'number' &&
+            typeof geoLat === 'number' &&
+            isFinite(geoLng) &&
+            isFinite(geoLat) &&
+            geoLng >= -180 &&
+            geoLng <= 180 &&
+            geoLat >= -90 &&
+            geoLat <= 90
+          ) {
+            location = { lat: geoLat, lng: geoLng };
+          }
         }
 
         const address = typeof item.address === 'string' && item.address.trim() ? item.address.trim() : null;

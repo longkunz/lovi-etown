@@ -96,6 +96,10 @@ describe('Notis Camera Provider (Unit)', () => {
     assert.equal(cameras[0].sourceRef, '58af8eb2bd82540010390c30');
     // Out-of-range GeoJSON coordinates degrade to a null location, not a failure
     assert.equal(cameras[1].location, null);
+    // D3: `dist` is mapped through as the display district label;
+    // a missing `dist` degrades to null.
+    assert.equal(cameras[0].district, 'Quận 3');
+    assert.equal(cameras[1].district, null);
   });
 
   it('rejects cameras with invalid 24-hex ID or missing required name', async () => {

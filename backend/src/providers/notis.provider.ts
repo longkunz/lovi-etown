@@ -137,7 +137,10 @@ export class NotisProvider extends CameraProvider {
           name: name.trim(),
           provinceId: 'tp_hcm',
           address,
-          district: null, // dist is not trusted as official administrative district
+          // D3 (spec 2026-10-20, approved): Notis `dist` is kept as a
+          // display label only — it follows pre-merger district names and
+          // must not be treated as an official administrative key.
+          district: typeof item.dist === 'string' && item.dist.trim() ? item.dist.trim() : null,
           location,
           sourceKind: 'snapshot',
           sourceRef: id, // derived strictly from 24-hex ID

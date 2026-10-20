@@ -11,6 +11,7 @@
 // Usage:
 //   BACKEND_URL=https://api.example.com READER_KEY=<key> node load-test.mjs
 // Optional: VIEWERS=20 DURATION_S=120 POLL_MS=12000 P95_LIMIT_MS=500
+//           PROVINCE_ID=tp_hcm (catalog list requires a province)
 //
 // No dependencies (Node 18+ global fetch). The reader key is read from the
 // environment only and is never printed.
@@ -21,6 +22,7 @@ const viewers = Number(process.env.VIEWERS || 20);
 const durationS = Number(process.env.DURATION_S || 120);
 const pollMs = Number(process.env.POLL_MS || 12000);
 const p95LimitMs = Number(process.env.P95_LIMIT_MS || 500);
+const provinceId = process.env.PROVINCE_ID || 'tp_hcm';
 
 if (!baseUrl || !readerKey) {
   console.error('BACKEND_URL and READER_KEY are required.');
@@ -59,7 +61,7 @@ function percentile(values, p) {
 
 async function main() {
   // Pick the first snapshot-capable camera from the real catalog.
-  const listRes = await fetch(`${baseUrl}/v1/cameras?limit=50`, { headers });
+  const listRes = await fetch(`${baseUrl}/v1/cameras?provinceId=${encodeURIComponent(provinceId)}&limit=50`, { headers });
   if (!listRes.ok) {
     console.error(`Catalog list failed: HTTP ${listRes.status}. Is READER_KEY valid?`);
     process.exit(2);

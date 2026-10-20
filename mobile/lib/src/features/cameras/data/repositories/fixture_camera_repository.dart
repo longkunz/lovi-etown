@@ -35,6 +35,7 @@ class FixtureCameraRepository implements CameraRepository {
       final itemsRaw = jsonMap['items'] as List<dynamic>? ?? [];
       _cachedCameras = itemsRaw.map((item) {
         final map = item as Map<String, dynamic>;
+        final location = map['location'] as Map<String, dynamic>?;
         return Camera(
           id: map['id'] as String,
           name: map['name'] as String,
@@ -45,6 +46,8 @@ class FixtureCameraRepository implements CameraRepository {
           thumbnailEndpoint: map['thumbnailEndpoint'] as String?,
           snapshotEndpoint: map['snapshotEndpoint'] as String?,
           playbackEndpoint: map['playbackEndpoint'] as String? ?? '',
+          latitude: (location?['lat'] as num?)?.toDouble(),
+          longitude: (location?['lng'] as num?)?.toDouble(),
         );
       }).toList();
 

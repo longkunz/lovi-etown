@@ -11,6 +11,8 @@ class CameraDto {
     this.thumbnailEndpoint,
     this.snapshotEndpoint,
     required this.playbackEndpoint,
+    this.latitude,
+    this.longitude,
   });
 
   final String id;
@@ -22,6 +24,8 @@ class CameraDto {
   final String? thumbnailEndpoint;
   final String? snapshotEndpoint;
   final String playbackEndpoint;
+  final double? latitude;
+  final double? longitude;
 
   factory CameraDto.fromJson(Map<String, dynamic> json) {
     final capabilities = json['capabilities'] as Map<String, dynamic>?;
@@ -33,6 +37,9 @@ class CameraDto {
     final playback = json['playbackEndpoint'] as String? ?? '/v1/cameras/$id/playback';
     final snapshot = json['snapshotEndpoint'] as String? ??
         (isSnapshotCapable ? '/v1/cameras/$id/snapshot' : null);
+    final location = json['location'] as Map<String, dynamic>?;
+    final latitude = (location?['lat'] as num?)?.toDouble();
+    final longitude = (location?['lng'] as num?)?.toDouble();
 
     return CameraDto(
       id: id,
@@ -44,6 +51,8 @@ class CameraDto {
       thumbnailEndpoint: json['thumbnailEndpoint'] as String?,
       snapshotEndpoint: snapshot,
       playbackEndpoint: playback,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 
@@ -58,6 +67,8 @@ class CameraDto {
       thumbnailEndpoint: thumbnailEndpoint,
       snapshotEndpoint: snapshotEndpoint,
       playbackEndpoint: playbackEndpoint,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }

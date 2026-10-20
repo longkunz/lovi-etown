@@ -54,6 +54,50 @@ describe('Notis Camera Provider (Unit)', () => {
     assert.notEqual(cam.sourceRef, 'http://malicious-origin.com/stream.m3u8');
   });
 
+  it('maps GeoJSON loc.coordinates ([lng, lat]) from the live Notis payload shape', async () => {
+    const mockAgent = new MockAgent();
+    mockAgent.disableNetConnect();
+    const mockPool = mockAgent.get(origin);
+
+    mockPool
+      .intercept({ path: (p) => p.startsWith('/v4/cameras/bybbox'), method: 'GET' })
+      .reply(
+        200,
+        [
+          {
+            // Shape verified against api.notis.vn on 2026-10-20: no lat/lng
+            // fields, coordinates live in loc.coordinates as [lng, lat].
+            _id: '58af8eb2bd82540010390c30',
+            id: 'TTH 35.6',
+            name: 'Nam Kỳ Khởi Nghĩa -Nguyễn Thị Minh Khai 1',
+            dist: 'Quận 3',
+            angle: 210,
+            loc: { type: 'Point', coordinates: [106.69508278369902, 10.779754243901596] },
+            ptz: false,
+            liveviewUrl: 'cameras/58af8eb2bd82540010390c30', // must be discarded
+            values: { ip: '180.1.1.39' }, // must be discarded
+          },
+          {
+            _id: '58af8eb2bd82540010390c31',
+            name: 'Camera Broken Coordinates',
+            loc: { type: 'Point', coordinates: [106.695, 107.79] }, // lat out of range
+          },
+        ],
+        { headers: { 'content-type': 'application/json' } }
+      );
+
+    const provider = new NotisProvider({ dispatcher: mockAgent });
+    const cameras = await provider.fetchCatalog([106.69, 10.76, 106.71, 10.78]);
+
+    assert.equal(cameras.length, 2);
+    assert.equal(cameras[0].location?.lng, 106.69508278369902);
+    assert.equal(cameras[0].location?.lat, 10.779754243901596);
+    assert.equal(cameras[0].address, null);
+    assert.equal(cameras[0].sourceRef, '58af8eb2bd82540010390c30');
+    // Out-of-range GeoJSON coordinates degrade to a null location, not a failure
+    assert.equal(cameras[1].location, null);
+  });
+
   it('rejects cameras with invalid 24-hex ID or missing required name', async () => {
     const mockAgent = new MockAgent();
     mockAgent.disableNetConnect();

@@ -29,7 +29,7 @@ Trạng thái: bộ triển khai đã sẵn sàng và đã kiểm tra cú pháp,
 cd /opt/lovi-etown/deploy
 cp .env.prod.example .env.prod   # điền giá trị thật, gồm DOMAIN
 docker compose -f compose.prod.yml --env-file .env.prod up -d --build
-docker compose -f compose.prod.yml --env-file .env.prod exec backend npm run db:migrate
+docker compose -f compose.prod.yml --env-file .env.prod exec backend node dist/src/cli/migrate.js
 # Nạp catalog: đồng bộ từ nguồn (giới hạn theo cấu hình) bằng key quản trị
 docker compose -f compose.prod.yml --env-file .env.prod exec backend npm run camera:sync
 curl https://<DOMAIN>/health/live

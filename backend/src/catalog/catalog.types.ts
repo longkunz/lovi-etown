@@ -1,5 +1,13 @@
 export type Bbox = [number, number, number, number]; // [west, south, east, north]
 
+/**
+ * City-wide Ho Chi Minh City sync window (D5, spec 2026-10-20 — T13).
+ * Sized from the full Notis crawl of 2026-10-20 (656 cameras, all inside
+ * this box with margin). The previous default was a small central
+ * observation window ([106.69, 10.76, 106.71, 10.78]).
+ */
+export const HCMC_CITY_BBOX: Bbox = [106.45, 10.6, 107.05, 11.05];
+
 export interface ProviderCamera {
   provider: string;
   providerCameraId: string;

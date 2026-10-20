@@ -4,17 +4,19 @@ import { createDatabasePool } from '../database/pool.js';
 import { PgCatalogRepository } from '../catalog/catalog.repository.js';
 import { NotisProvider } from '../providers/notis.provider.js';
 import { FixtureProvider } from '../providers/fixture.provider.js';
-import { SyncService } from '../sync/sync.service.js';
+import { SyncService, coverageForBbox } from '../sync/sync.service.js';
 import { validateBbox } from '../sync/sync.controller.js';
-import { Bbox } from '../catalog/catalog.types.js';
+import { Bbox, HCMC_CITY_BBOX } from '../catalog/catalog.types.js';
 
 dotenv.config();
 
 async function main() {
   const config = loadConfig(process.env);
 
-  // Parse --bbox argument
-  let bbox: Bbox = [106.69, 10.76, 106.71, 10.78]; // default bounded TP.HCM observation window
+  // Parse --bbox argument. Default (T13/D5): the city-wide HCMC window;
+  // an explicit narrower --bbox syncs a partial window and the catalog
+  // coverage claim degrades accordingly (see coverageForBbox).
+  let bbox: Bbox = HCMC_CITY_BBOX;
   for (const arg of process.argv.slice(2)) {
     if (arg.startsWith('--bbox=')) {
       const parts = arg
@@ -42,6 +44,7 @@ async function main() {
     const result = await syncService.sync({
       provinceId: 'tp_hcm',
       bbox,
+      coverage: coverageForBbox(bbox),
     });
 
     console.log(

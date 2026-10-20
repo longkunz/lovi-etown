@@ -72,6 +72,7 @@ docs/
   - Phong cách Liquid Glass sử dụng package `liquid_glass_widgets: 1.13.0`.
 - [superpowers/plans/2026-10-16-camera-mobile-a1.md](superpowers/plans/2026-10-16-camera-mobile-a1.md): Kế hoạch 7 tác vụ xây dựng BLoC/Cubit, Repository, Scheduler thumbnail, và bộ widget.
 - [superpowers/specs/2026-10-19-trial-access-operations-spec.md](superpowers/specs/2026-10-19-trial-access-operations-spec.md): Đặc tả T06 (đã chốt 2026-10-19): hợp đồng truy cập bản dùng thử (reader key chung + rate limit 120/phút/IP, xoay key có cửa sổ chồng lấp 7 ngày, màn hình "cần cập nhật app" khi 401/403) và vận hành (một VPS + Docker Compose + Caddy, nhóm kín ~20 người, tải mục tiêu 20 người xem đồng thời với p95 snapshot < 500 ms, log 7 ngày/backup 3 bản) — căn cứ triển khai T07/T08.
+- [superpowers/specs/2026-10-20-p0-p1-feature-backlog-spec.md](superpowers/specs/2026-10-20-p0-p1-feature-backlog-spec.md): Đặc tả lộ trình tính năng P0/P1 sau A1 (đã duyệt 2026-10-20): rút ra từ reverse-engineering Traffic Camera VN 9.21.1 và kiểm chứng trực tiếp trên Notis — Notis có sẵn HLS `videoUrl` ở 28/504 camera nhưng Lovi đang hardcode `live: false`; 9 quyết định D1–D9 (kiểm chứng HLS, nút chỉ đường, nhóm quận + thời tiết, lưới đa camera, mở rộng vùng phủ, live HLS, widget Android, thông báo theo camera, traffic brief) làm căn cứ cho các ticket T09–T17.
 - [ui/mobile-a1-verification.md](ui/mobile-a1-verification.md): Nghiệm thu 14 findings kỹ thuật (khóa đồng bộ Mutex lưu Quan tâm, chống rò rỉ token qua chuyển hướng, quản lý generation token khi vào background, v.v.).
 
 ---

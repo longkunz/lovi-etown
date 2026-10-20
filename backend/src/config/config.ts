@@ -41,7 +41,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     ADMIN_API_KEY: z.string({
       error: 'ADMIN_API_KEY is required',
     }).min(1, 'ADMIN_API_KEY is required'),
-    BACKEND_API_KEY_PREVIOUS: z.string().min(1, 'BACKEND_API_KEY_PREVIOUS must not be empty').optional(),
+    // Optional rotation-window key (T06-D3). Orchestrators inject an unset
+    // variable as an empty string (Docker Compose ${VAR:-}, Portainer), so
+    // empty/whitespace means "no rotation window", not a fatal error.
+    BACKEND_API_KEY_PREVIOUS: z
+      .string()
+      .optional()
+      .transform((v) => (v === undefined || v.trim() === '' ? undefined : v)),
     CAMERA_PROVIDER_MODE: z.enum(['notis', 'fixture'], {
       error: 'CAMERA_PROVIDER_MODE must be either "notis" or "fixture"',
     }).default('notis'),

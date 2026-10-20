@@ -48,12 +48,24 @@ describe('Config previous reader key (Unit)', () => {
     );
   });
 
-  it('rejects an empty previous key', () => {
-    assert.throws(() =>
-      loadConfig({
-        ...baseValidEnv,
-        BACKEND_API_KEY_PREVIOUS: '',
-      }),
-    );
+  // Behavior change (T08 deploy fix): orchestrators such as Docker Compose
+  // (${VAR:-}) and Portainer materialize an unset variable as an EMPTY
+  // string inside the container, which is indistinguishable from "no
+  // rotation window". Empty/whitespace is therefore treated as unset
+  // instead of a fatal error; a non-empty value is still fully validated.
+  it('treats an empty previous key as unset', () => {
+    const config = loadConfig({
+      ...baseValidEnv,
+      BACKEND_API_KEY_PREVIOUS: '',
+    });
+    assert.equal(config.backendApiKeyPrevious, undefined);
+  });
+
+  it('treats a whitespace-only previous key as unset', () => {
+    const config = loadConfig({
+      ...baseValidEnv,
+      BACKEND_API_KEY_PREVIOUS: '   ',
+    });
+    assert.equal(config.backendApiKeyPrevious, undefined);
   });
 });

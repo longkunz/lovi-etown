@@ -51,6 +51,11 @@ class InMemoryFavoritesRepository implements FavoritesRepository {
 }
 
 class FakeIntegrationCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   FakeIntegrationCameraRepository({List<Camera>? items})
       : _items = items ?? _defaultItems;
 

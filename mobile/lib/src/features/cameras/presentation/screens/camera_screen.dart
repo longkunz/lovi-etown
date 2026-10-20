@@ -66,6 +66,7 @@ class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   late final CameraCatalogCubit _catalogCubit;
   late final CameraPreviewCubit _previewCubit;
+  late final CameraRepository _repository;
   late final FavoritesRepository _favoritesRepository;
   late final SnapshotMemoryCache _cache;
   late final ThumbnailScheduler _thumbnailScheduler;
@@ -82,6 +83,7 @@ class _CameraScreenState extends State<CameraScreen>
     _favoritesRepository =
         widget.favoritesRepository ?? const _NoOpFavoritesRepository();
     final repo = widget.cameraRepository ?? FixtureCameraRepository();
+    _repository = repo;
     _cache = widget.cache ?? SnapshotMemoryCache();
     _previewCubit = CameraPreviewCubit(repository: repo, cache: _cache);
     _thumbnailScheduler = widget.thumbnailScheduler ??
@@ -263,6 +265,7 @@ class _CameraScreenState extends State<CameraScreen>
         cameraId: camera.id,
         preview: _previewCubit,
         favorites: _favoritesRepository,
+        repository: _repository,
       ).whenComplete(() {
         _thumbnailScheduler.setPreviewCamera(null);
         _updateThumbnailWindow();

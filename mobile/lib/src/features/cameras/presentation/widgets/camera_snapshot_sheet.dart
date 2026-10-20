@@ -3,12 +3,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
@@ -17,6 +19,7 @@ Future<void> showCameraSnapshotSheet(
   required String cameraId,
   required CameraPreviewCubit preview,
   required FavoritesRepository favorites,
+  CameraRepository? repository,
 }) {
   preview.open(cameraId);
 
@@ -28,6 +31,7 @@ Future<void> showCameraSnapshotSheet(
       return CameraSnapshotSheet(
         preview: preview,
         favorites: favorites,
+        repository: repository,
       );
     },
   );
@@ -37,11 +41,15 @@ class CameraSnapshotSheet extends StatefulWidget {
   const CameraSnapshotSheet({
     required this.preview,
     required this.favorites,
+    this.repository,
     super.key,
   });
 
   final CameraPreviewCubit preview;
   final FavoritesRepository favorites;
+
+  /// Optional: enables the traffic brief card (T17) when provided.
+  final CameraRepository? repository;
 
   @override
   State<CameraSnapshotSheet> createState() => _CameraSnapshotSheetState();
@@ -55,6 +63,10 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
   // T14: live HLS mode for cameras whose DTO carries a stream URL.
   bool _liveMode = false;
   bool _liveFailed = false;
+
+  // T17: switching cameras inside the sheet (via the brief card) resets
+  // the live-mode state for the newly opened camera.
+  String? _mediaCameraId;
 
   void _handleLiveUnavailable() {
     if (!mounted) return;
@@ -132,6 +144,17 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
             final camera = state.camera;
             final isFavorite =
                 camera != null && _favoriteIds.contains(camera.id);
+            if (camera != null && _mediaCameraId != camera.id) {
+              _mediaCameraId = camera.id;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    _liveMode = false;
+                    _liveFailed = false;
+                  });
+                }
+              });
+            }
 
             return SingleChildScrollView(
               child: Column(
@@ -298,6 +321,17 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                         icon: const Icon(Icons.directions),
                         label: const Text('Chỉ đường'),
                       ),
+                    ),
+
+                  // Traffic brief (T17) — rendered when a repository is
+                  // available; the card hides itself without data.
+                  if (camera != null && widget.repository != null)
+                    TrafficBriefCard(
+                      key: ValueKey('traffic_brief_${camera.id}'),
+                      camera: camera,
+                      repository: widget.repository!,
+                      onSelectCamera: (related) =>
+                          widget.preview.open(related.id),
                     ),
                 ],
               ),

@@ -64,6 +64,11 @@ class FakePreviewClock implements PreviewClock {
 }
 
 class ControlledCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   FutureEither<Camera> Function(String id, CancelToken? token)? onDetail;
   FutureEither<PlaybackDescriptor> Function(String id, CancelToken? token)?
       onPlayback;

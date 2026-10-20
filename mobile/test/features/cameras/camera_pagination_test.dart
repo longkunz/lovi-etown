@@ -8,6 +8,11 @@ import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 class FakePagingRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   int listCalls = 0;
   String currentVersion = 'v1';
   bool failNextPage = false;

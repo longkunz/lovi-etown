@@ -14,6 +14,11 @@ import 'package:fpdart/fpdart.dart';
 import 'package:dio/dio.dart';
 
 class FakeScreenCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   final List<Camera> cameras = [
     const Camera(
       id: '00000000-0000-0000-0000-000000000001',

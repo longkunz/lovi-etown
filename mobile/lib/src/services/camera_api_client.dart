@@ -254,6 +254,52 @@ class CameraApiClient {
     }
   }
 
+  FutureEither<List<Camera>> getRelated(
+    String id, {
+    int limit = 6,
+    CancelToken? cancelToken,
+  }) async {
+    if (!_isConfigValid) {
+      return const Left(ApiFailure('Chưa cấu hình máy chủ', statusCode: 0));
+    }
+
+    try {
+      final response = await _dio.get<dynamic>(
+        '${_config.baseUrl}/v1/cameras/$id/related',
+        queryParameters: {'limit': limit},
+        options: Options(
+          headers: _buildHeaders(),
+          followRedirects: false,
+          sendTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 15),
+        ),
+        cancelToken: cancelToken,
+      );
+
+      final data = response.data;
+      final dynamic decoded = data is String ? jsonDecode(data) : data;
+      final List<dynamic> rawItems;
+      if (decoded is Map<String, dynamic> && decoded['data'] is List<dynamic>) {
+        rawItems = decoded['data'] as List<dynamic>;
+      } else if (decoded is List<dynamic>) {
+        rawItems = decoded;
+      } else {
+        return const Left(
+            ApiFailure('Phản hồi camera liên quan không hợp lệ', statusCode: 500));
+      }
+
+      final cameras = rawItems
+          .map((item) =>
+              CameraDto.fromJson(item as Map<String, dynamic>).toDomain())
+          .toList();
+      return Right(cameras);
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (e) {
+      return Left(ApiFailure('Lỗi không xác định: $e', statusCode: 500));
+    }
+  }
+
   FutureEither<SnapshotReply> getSnapshot(
     String endpoint, {
     String? etag,

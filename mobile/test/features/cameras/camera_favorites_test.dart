@@ -10,6 +10,11 @@ import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 class FakeRevalidationCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   int activeConcurrentCalls = 0;
   int maxConcurrentCallsObserved = 0;
   final Map<String, Camera> knownCameras = {};

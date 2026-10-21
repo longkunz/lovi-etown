@@ -35,7 +35,6 @@ class FixtureCameraRepository implements CameraRepository {
       final itemsRaw = jsonMap['items'] as List<dynamic>? ?? [];
       _cachedCameras = itemsRaw.map((item) {
         final map = item as Map<String, dynamic>;
-        final location = map['location'] as Map<String, dynamic>?;
         return Camera(
           id: map['id'] as String,
           name: map['name'] as String,
@@ -46,8 +45,6 @@ class FixtureCameraRepository implements CameraRepository {
           thumbnailEndpoint: map['thumbnailEndpoint'] as String?,
           snapshotEndpoint: map['snapshotEndpoint'] as String?,
           playbackEndpoint: map['playbackEndpoint'] as String? ?? '',
-          latitude: (location?['lat'] as num?)?.toDouble(),
-          longitude: (location?['lng'] as num?)?.toDouble(),
         );
       }).toList();
 
@@ -127,6 +124,29 @@ class FixtureCameraRepository implements CameraRepository {
     } catch (_) {
       return Left(ServerFailure('Không tìm thấy camera $id'));
     }
+  }
+
+  @override
+  FutureEither<List<Camera>> related(
+    String id, {
+    int limit = 6,
+    CancelToken? cancelToken,
+  }) async {
+    final all = await _loadCameras();
+    Camera? self;
+    for (final camera in all) {
+      if (camera.id == id) self = camera;
+    }
+    if (self == null) {
+      return Left(ServerFailure('Không tìm thấy camera $id'));
+    }
+    final district = self.district;
+    if (district == null) return const Right([]);
+    final related = all
+        .where((c) => c.id != id && c.district == district)
+        .take(limit)
+        .toList();
+    return Right(related);
   }
 
   @override

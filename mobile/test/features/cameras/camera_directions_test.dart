@@ -167,6 +167,11 @@ void main() {
 }
 
 class _Repo implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   _Repo(this.camera);
   final Camera camera;
 

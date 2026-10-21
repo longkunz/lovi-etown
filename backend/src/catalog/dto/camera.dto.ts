@@ -11,6 +11,8 @@ export interface CameraDto {
     snapshot: boolean;
     live: boolean;
   };
+  /** Public HLS playlist URL when `capabilities.live` is true (T14). */
+  streamUrl: string | null;
   availability: string;
   checkedAt: string | null;
   thumbnailEndpoint: string | null;
@@ -41,6 +43,7 @@ export function toCameraDto(record: CameraRecord): CameraDto {
       snapshot: isSnapshotCapable,
       live: Boolean(record.capabilities?.live),
     },
+    streamUrl: record.capabilities?.live ? (record.streamUrl ?? null) : null,
     availability: record.availability,
     checkedAt: record.checkedAt ? record.checkedAt.toISOString() : null,
     thumbnailEndpoint: snapshotEndpoint,

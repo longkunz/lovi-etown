@@ -6,6 +6,7 @@ import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
@@ -208,6 +209,24 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                     padding: const EdgeInsets.all(CameraUiTokens.spacing16),
                     child: _buildSnapshotContent(context, state),
                   ),
+
+                  // Directions handoff (T10) — only when the catalog
+                  // provided coordinates for this camera.
+                  if (camera != null && camera.hasLocation)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        CameraUiTokens.spacing16,
+                        0,
+                        CameraUiTokens.spacing16,
+                        CameraUiTokens.spacing16,
+                      ),
+                      child: OutlinedButton.icon(
+                        key: const ValueKey('directions_button'),
+                        onPressed: () => openCameraDirections(camera),
+                        icon: const Icon(Icons.directions),
+                        label: const Text('Chỉ đường'),
+                      ),
+                    ),
                 ],
               ),
             );

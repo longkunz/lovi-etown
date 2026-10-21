@@ -15,6 +15,11 @@ class Camera extends Equatable {
   final String? snapshotEndpoint;
   final String playbackEndpoint;
 
+  /// Geographic coordinates from the catalog API (`location`), when known.
+  /// Used by the "Chỉ đường" (directions) action — see T10.
+  final double? latitude;
+  final double? longitude;
+
   const Camera({
     required this.id,
     required this.name,
@@ -25,7 +30,11 @@ class Camera extends Equatable {
     this.thumbnailEndpoint,
     this.snapshotEndpoint,
     required this.playbackEndpoint,
+    this.latitude,
+    this.longitude,
   });
+
+  bool get hasLocation => latitude != null && longitude != null;
 
   Camera copyWith({
     String? id,
@@ -37,6 +46,8 @@ class Camera extends Equatable {
     String? thumbnailEndpoint,
     String? snapshotEndpoint,
     String? playbackEndpoint,
+    double? latitude,
+    double? longitude,
   }) {
     return Camera(
       id: id ?? this.id,
@@ -48,6 +59,8 @@ class Camera extends Equatable {
       thumbnailEndpoint: thumbnailEndpoint ?? this.thumbnailEndpoint,
       snapshotEndpoint: snapshotEndpoint ?? this.snapshotEndpoint,
       playbackEndpoint: playbackEndpoint ?? this.playbackEndpoint,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
     );
   }
 
@@ -62,6 +75,8 @@ class Camera extends Equatable {
         thumbnailEndpoint,
         snapshotEndpoint,
         playbackEndpoint,
+        latitude,
+        longitude,
       ];
 }
 

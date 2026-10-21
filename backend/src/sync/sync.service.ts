@@ -3,10 +3,23 @@ import pg from 'pg';
 import { CATALOG_REPOSITORY, CatalogRepository } from '../catalog/catalog.repository.js';
 import { CAMERA_PROVIDER, CameraProvider } from '../providers/camera-provider.js';
 import { DATABASE_POOL } from '../database/pool.js';
-import { Bbox, ImportResult } from '../catalog/catalog.types.js';
+import { Bbox, HCMC_CITY_BBOX, ImportResult } from '../catalog/catalog.types.js';
 import { ApiError } from '../http/api-error.js';
 
 export const SYNC_ADVISORY_LOCK_ID = 17001401;
+
+/**
+ * Coverage claim for a sync (T13): a sync whose window fully contains the
+ * city-wide HCMC window supports the `verified` coverage claim; anything
+ * narrower only supports `partial`. Kept pure/unit-testable on purpose.
+ */
+export function coverageForBbox(bbox: Bbox): 'partial' | 'verified' {
+  const [west, south, east, north] = bbox;
+  const [cityWest, citySouth, cityEast, cityNorth] = HCMC_CITY_BBOX;
+  return west <= cityWest && south <= citySouth && east >= cityEast && north >= cityNorth
+    ? 'verified'
+    : 'partial';
+}
 
 @Injectable()
 export class SyncService {
@@ -17,7 +30,12 @@ export class SyncService {
     @Optional() private readonly schemaName?: string
   ) {}
 
-  async sync(input: { provinceId: string; bbox: Bbox; signal?: AbortSignal }): Promise<ImportResult> {
+  async sync(input: {
+    provinceId: string;
+    bbox: Bbox;
+    coverage?: 'partial' | 'verified';
+    signal?: AbortSignal;
+  }): Promise<ImportResult> {
     const client = await this.pool.connect();
     if (this.schemaName) {
       await client.query(`SET search_path TO "${this.schemaName}", public`);
@@ -50,6 +68,7 @@ export class SyncService {
           bbox: input.bbox,
           cameras,
           fetchedAt: startedAt,
+          coverage: input.coverage ?? coverageForBbox(input.bbox),
         });
 
         return result;

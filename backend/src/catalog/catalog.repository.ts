@@ -91,7 +91,8 @@ export class PgCatalogRepository implements CatalogRepository {
         const districtNorm = cam.district ? normalizeText(cam.district) : null;
         const capabilities = JSON.stringify({
           snapshot: cam.sourceKind === 'snapshot',
-          live: false,
+          // T14: live exactly when the provider gave a public HLS URL.
+          live: typeof cam.streamUrl === 'string' && cam.streamUrl.length > 0,
         });
 
         let geomSql = 'NULL';
@@ -108,6 +109,7 @@ export class PgCatalogRepository implements CatalogRepository {
           capabilities,
           cam.sourceKind,
           cam.sourceRef,
+          cam.streamUrl ?? null,
         ];
 
         if (cam.location && typeof cam.location.lat === 'number' && typeof cam.location.lng === 'number') {
@@ -119,9 +121,9 @@ export class PgCatalogRepository implements CatalogRepository {
           INSERT INTO cameras (
             provider, provider_camera_id, name, name_normalized, province_id,
             address, address_normalized, district, district_normalized,
-            geom, capabilities, source_kind, source_ref, updated_at
+            geom, capabilities, source_kind, source_ref, stream_url, stream_url, updated_at
           ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9, ${geomSql}, $10, $11, $12, NOW()
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, ${geomSql}, $10, $11, $12, $13, NOW()
           )
           ON CONFLICT (provider, provider_camera_id) DO UPDATE SET
             name = EXCLUDED.name,
@@ -134,6 +136,7 @@ export class PgCatalogRepository implements CatalogRepository {
             capabilities = EXCLUDED.capabilities,
             source_kind = EXCLUDED.source_kind,
             source_ref = EXCLUDED.source_ref,
+            stream_url = EXCLUDED.stream_url,
             updated_at = NOW()
           RETURNING id;
         `;
@@ -274,7 +277,7 @@ export class PgCatalogRepository implements CatalogRepository {
           address, address_normalized, district, district_normalized,
           CASE WHEN geom IS NOT NULL THEN ST_Y(geom::geometry) ELSE NULL END as lat,
           CASE WHEN geom IS NOT NULL THEN ST_X(geom::geometry) ELSE NULL END as lng,
-          capabilities, availability, checked_at, updated_at, source_kind, source_ref
+          capabilities, availability, checked_at, updated_at, source_kind, source_ref, stream_url
         FROM cameras
         WHERE ${whereSql}
         ORDER BY name_normalized ASC, id ASC
@@ -299,7 +302,7 @@ export class PgCatalogRepository implements CatalogRepository {
            address, address_normalized, district, district_normalized,
            CASE WHEN geom IS NOT NULL THEN ST_Y(geom::geometry) ELSE NULL END as lat,
            CASE WHEN geom IS NOT NULL THEN ST_X(geom::geometry) ELSE NULL END as lng,
-           capabilities, availability, checked_at, updated_at, source_kind, source_ref
+           capabilities, availability, checked_at, updated_at, source_kind, source_ref, stream_url
          FROM cameras WHERE id = $1`,
         [id]
       );
@@ -319,7 +322,7 @@ export class PgCatalogRepository implements CatalogRepository {
            address, address_normalized, district, district_normalized,
            CASE WHEN geom IS NOT NULL THEN ST_Y(geom::geometry) ELSE NULL END as lat,
            CASE WHEN geom IS NOT NULL THEN ST_X(geom::geometry) ELSE NULL END as lng,
-           capabilities, availability, checked_at, updated_at, source_kind, source_ref
+           capabilities, availability, checked_at, updated_at, source_kind, source_ref, stream_url
          FROM cameras WHERE provider = $1 AND provider_camera_id = $2`,
         [provider, providerCameraId]
       );
@@ -366,7 +369,7 @@ export class PgCatalogRepository implements CatalogRepository {
            address, address_normalized, district, district_normalized,
            CASE WHEN geom IS NOT NULL THEN ST_Y(geom::geometry) ELSE NULL END as lat,
            CASE WHEN geom IS NOT NULL THEN ST_X(geom::geometry) ELSE NULL END as lng,
-           capabilities, availability, checked_at, updated_at, source_kind, source_ref
+           capabilities, availability, checked_at, updated_at, source_kind, source_ref, stream_url
          FROM cameras
          WHERE province_id = $1 AND district_normalized = $2 AND id <> $3
          ORDER BY name_normalized ASC, id ASC
@@ -420,6 +423,7 @@ export class PgCatalogRepository implements CatalogRepository {
       updatedAt: new Date(row.updated_at),
       sourceKind: row.source_kind,
       sourceRef: row.source_ref,
+      streamUrl: row.stream_url ?? null,
     };
   }
 }

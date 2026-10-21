@@ -130,6 +130,29 @@ class FixtureCameraRepository implements CameraRepository {
   }
 
   @override
+  FutureEither<List<Camera>> related(
+    String id, {
+    int limit = 6,
+    CancelToken? cancelToken,
+  }) async {
+    final all = await _loadCameras();
+    Camera? self;
+    for (final camera in all) {
+      if (camera.id == id) self = camera;
+    }
+    if (self == null) {
+      return Left(ServerFailure('Không tìm thấy camera $id'));
+    }
+    final district = self.district;
+    if (district == null) return const Right([]);
+    final related = all
+        .where((c) => c.id != id && c.district == district)
+        .take(limit)
+        .toList();
+    return Right(related);
+  }
+
+  @override
   FutureEither<PlaybackDescriptor> playback(String id, {CancelToken? cancelToken}) async {
     final all = await _loadCameras();
     try {

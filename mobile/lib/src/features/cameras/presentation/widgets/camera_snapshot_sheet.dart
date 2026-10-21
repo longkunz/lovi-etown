@@ -3,11 +3,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
@@ -16,6 +19,7 @@ Future<void> showCameraSnapshotSheet(
   required String cameraId,
   required CameraPreviewCubit preview,
   required FavoritesRepository favorites,
+  CameraRepository? repository,
 }) {
   preview.open(cameraId);
 
@@ -27,6 +31,7 @@ Future<void> showCameraSnapshotSheet(
       return CameraSnapshotSheet(
         preview: preview,
         favorites: favorites,
+        repository: repository,
       );
     },
   );
@@ -36,11 +41,15 @@ class CameraSnapshotSheet extends StatefulWidget {
   const CameraSnapshotSheet({
     required this.preview,
     required this.favorites,
+    this.repository,
     super.key,
   });
 
   final CameraPreviewCubit preview;
   final FavoritesRepository favorites;
+
+  /// Optional: enables the traffic brief card (T17) when provided.
+  final CameraRepository? repository;
 
   @override
   State<CameraSnapshotSheet> createState() => _CameraSnapshotSheetState();
@@ -50,6 +59,22 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
     with WidgetsBindingObserver {
   StreamSubscription<List<FavoriteCamera>>? _favSub;
   Set<String> _favoriteIds = {};
+
+  // T14: live HLS mode for cameras whose DTO carries a stream URL.
+  bool _liveMode = false;
+  bool _liveFailed = false;
+
+  // T17: switching cameras inside the sheet (via the brief card) resets
+  // the live-mode state for the newly opened camera.
+  String? _mediaCameraId;
+
+  void _handleLiveUnavailable() {
+    if (!mounted) return;
+    setState(() {
+      _liveFailed = true;
+      _liveMode = false;
+    });
+  }
 
   @override
   void initState() {
@@ -119,6 +144,17 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
             final camera = state.camera;
             final isFavorite =
                 camera != null && _favoriteIds.contains(camera.id);
+            if (camera != null && _mediaCameraId != camera.id) {
+              _mediaCameraId = camera.id;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  setState(() {
+                    _liveMode = false;
+                    _liveFailed = false;
+                  });
+                }
+              });
+            }
 
             return SingleChildScrollView(
               child: Column(
@@ -204,10 +240,69 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
 
                   const SizedBox(height: CameraUiTokens.spacing8),
 
-                  // Snapshot display area
+                  // Media area: snapshot polling by default; a live HLS
+                  // player when the camera supports it and the user
+                  // switches to "Trực tiếp" (T14). A live failure falls
+                  // back to the snapshot with a note.
                   Padding(
                     padding: const EdgeInsets.all(CameraUiTokens.spacing16),
-                    child: _buildSnapshotContent(context, state),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (camera != null && camera.canLive) ...[
+                          SegmentedButton<bool>(
+                            key: const ValueKey('live_mode_toggle'),
+                            segments: const [
+                              ButtonSegment(
+                                value: false,
+                                icon: Icon(Icons.image_outlined),
+                                label: Text('Ảnh tĩnh'),
+                              ),
+                              ButtonSegment(
+                                value: true,
+                                icon: Icon(Icons.live_tv_outlined),
+                                label: Text('Trực tiếp'),
+                              ),
+                            ],
+                            selected: {_liveMode},
+                            onSelectionChanged: (selection) {
+                              setState(() => _liveMode = selection.first);
+                            },
+                          ),
+                          const SizedBox(height: CameraUiTokens.spacing12),
+                        ],
+                        if (_liveFailed) ...[
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 16,
+                                color: CameraUiTokens.errorRed,
+                              ),
+                              SizedBox(width: CameraUiTokens.spacing4),
+                              Expanded(
+                                child: Text(
+                                  'Không phát được trực tiếp — đang hiện ảnh tĩnh',
+                                  style: TextStyle(
+                                    color: CameraUiTokens.errorRed,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: CameraUiTokens.spacing8),
+                        ],
+                        if (_liveMode && camera != null && camera.canLive)
+                          CameraLivePlayer(
+                            key: ValueKey('live_player_${camera.id}'),
+                            streamUrl: camera.streamUrl!,
+                            onUnavailable: _handleLiveUnavailable,
+                          )
+                        else
+                          _buildSnapshotContent(context, state),
+                      ],
+                    ),
                   ),
 
                   // Directions handoff (T10) — only when the catalog
@@ -226,6 +321,17 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                         icon: const Icon(Icons.directions),
                         label: const Text('Chỉ đường'),
                       ),
+                    ),
+
+                  // Traffic brief (T17) — rendered when a repository is
+                  // available; the card hides itself without data.
+                  if (camera != null && widget.repository != null)
+                    TrafficBriefCard(
+                      key: ValueKey('traffic_brief_${camera.id}'),
+                      camera: camera,
+                      repository: widget.repository!,
+                      onSelectCamera: (related) =>
+                          widget.preview.open(related.id),
                     ),
                 ],
               ),

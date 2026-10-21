@@ -8,6 +8,11 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 class FakeCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   Completer<CatalogPage>? nextListCompleter;
   int listCallCount = 0;
   String? lastQuery;

@@ -9,6 +9,7 @@ class CameraFavoritesSection extends StatelessWidget {
     this.onSelectCamera,
     this.onToggleFavorite,
     this.onExploreCameras,
+    this.onViewGrid,
     super.key,
   });
 
@@ -16,6 +17,9 @@ class CameraFavoritesSection extends StatelessWidget {
   final ValueChanged<Camera>? onSelectCamera;
   final ValueChanged<Camera>? onToggleFavorite;
   final VoidCallback? onExploreCameras;
+
+  /// Opens the multi-camera grid (T12); shown when there are 2+ favorites.
+  final VoidCallback? onViewGrid;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +68,18 @@ class CameraFavoritesSection extends StatelessWidget {
                       fontSize: 12,
                     ),
                   ),
+                ),
+              if (onViewGrid != null && favorites.length >= 2)
+                IconButton(
+                  key: const ValueKey('view_grid_button'),
+                  icon: const Icon(
+                    Icons.grid_view,
+                    color: CameraUiTokens.primaryTeal,
+                    size: 20,
+                  ),
+                  tooltip: 'Xem lưới',
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onViewGrid,
                 ),
             ],
           ),

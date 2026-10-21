@@ -10,6 +10,7 @@ import 'package:flutter_starter/src/features/cameras/domain/favorites_repository
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_catalog_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_catalog_state.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/multi_camera_screen.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_favorites_section.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_filters.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
@@ -277,6 +278,18 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
+  void _openMultiCameraGrid(BuildContext context, List<FavoriteCamera> favorites) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => MultiCameraScreen(
+          favorites: favorites,
+          repository: _repository,
+          favoritesRepository: _favoritesRepository,
+        ),
+      ),
+    );
+  }
+
   Future<void> _handleToggleFavorite(Camera camera) async {
     final isFav = _favoriteIds.contains(camera.id);
     final res = await _favoritesRepository.setSaved(camera, !isFav);
@@ -442,6 +455,7 @@ class _CameraScreenState extends State<CameraScreen>
           favorites: favorites,
           onSelectCamera: _handleSelectCamera,
           onToggleFavorite: _handleToggleFavorite,
+          onViewGrid: () => _openMultiCameraGrid(context, favorites),
         );
       },
     );

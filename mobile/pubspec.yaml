@@ -73,6 +73,7 @@ dependencies:
 
   flutter_native_splash: ^2.4.7
   liquid_glass_widgets: 1.13.0
+  home_widget: ^0.10.0
 
 dev_dependencies:
   flutter_test:

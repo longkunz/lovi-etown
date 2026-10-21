@@ -20,6 +20,11 @@ class Camera extends Equatable {
   final double? latitude;
   final double? longitude;
 
+  /// Live HLS support from the catalog API (T14): [liveCapable] mirrors
+  /// `capabilities.live`; [streamUrl] is the public playlist URL.
+  final bool liveCapable;
+  final String? streamUrl;
+
   const Camera({
     required this.id,
     required this.name,
@@ -32,9 +37,14 @@ class Camera extends Equatable {
     required this.playbackEndpoint,
     this.latitude,
     this.longitude,
+    this.liveCapable = false,
+    this.streamUrl,
   });
 
   bool get hasLocation => latitude != null && longitude != null;
+
+  bool get canLive =>
+      liveCapable && streamUrl != null && streamUrl!.isNotEmpty;
 
   Camera copyWith({
     String? id,
@@ -48,6 +58,8 @@ class Camera extends Equatable {
     String? playbackEndpoint,
     double? latitude,
     double? longitude,
+    bool? liveCapable,
+    String? streamUrl,
   }) {
     return Camera(
       id: id ?? this.id,
@@ -61,6 +73,8 @@ class Camera extends Equatable {
       playbackEndpoint: playbackEndpoint ?? this.playbackEndpoint,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      liveCapable: liveCapable ?? this.liveCapable,
+      streamUrl: streamUrl ?? this.streamUrl,
     );
   }
 
@@ -77,6 +91,8 @@ class Camera extends Equatable {
         playbackEndpoint,
         latitude,
         longitude,
+        liveCapable,
+        streamUrl,
       ];
 }
 

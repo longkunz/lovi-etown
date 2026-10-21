@@ -271,6 +271,7 @@ class _CameraScreenState extends State<CameraScreen>
         cameraId: camera.id,
         preview: _previewCubit,
         favorites: _favoritesRepository,
+        repository: _repository,
       ).whenComplete(() {
         _thumbnailScheduler.setPreviewCamera(null);
         _updateThumbnailWindow();

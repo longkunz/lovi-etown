@@ -75,12 +75,14 @@ describe('Notis Camera Provider (Unit)', () => {
             loc: { type: 'Point', coordinates: [106.69508278369902, 10.779754243901596] },
             ptz: false,
             liveviewUrl: 'cameras/58af8eb2bd82540010390c30', // must be discarded
+            videoUrl: 'http://125.234.114.126:11984/api/stream.m3u8?src=cam1',
             values: { ip: '180.1.1.39' }, // must be discarded
           },
           {
             _id: '58af8eb2bd82540010390c31',
             name: 'Camera Broken Coordinates',
             loc: { type: 'Point', coordinates: [106.695, 107.79] }, // lat out of range
+            videoUrl: 'rtsp://internal.example/stream', // not http(s) HLS — must degrade to null
           },
         ],
         { headers: { 'content-type': 'application/json' } }
@@ -100,6 +102,10 @@ describe('Notis Camera Provider (Unit)', () => {
     // a missing `dist` degrades to null.
     assert.equal(cameras[0].district, 'Quận 3');
     assert.equal(cameras[1].district, null);
+    // T14: a plausible public HLS videoUrl is kept as streamUrl; a
+    // non-HTTP(S)/non-playlist value degrades to null (snapshot-only).
+    assert.equal(cameras[0].streamUrl, 'http://125.234.114.126:11984/api/stream.m3u8?src=cam1');
+    assert.equal(cameras[1].streamUrl, null);
   });
 
   it('rejects cameras with invalid 24-hex ID or missing required name', async () => {

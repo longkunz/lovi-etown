@@ -131,6 +131,25 @@ export class NotisProvider extends CameraProvider {
 
         const address = typeof item.address === 'string' && item.address.trim() ? item.address.trim() : null;
 
+        // T14: keep the provider's public HLS playlist when it is a
+        // plausible http(s) .m3u8 URL. Anything else (missing, not a URL,
+        // not a playlist) degrades to null and the camera stays
+        // snapshot-only. Internal addresses under `values` are never read.
+        let streamUrl: string | null = null;
+        if (typeof item.videoUrl === 'string' && item.videoUrl.trim()) {
+          try {
+            const parsed = new URL(item.videoUrl.trim());
+            if (
+              (parsed.protocol === 'http:' || parsed.protocol === 'https:') &&
+              parsed.pathname.includes('.m3u8')
+            ) {
+              streamUrl = parsed.toString();
+            }
+          } catch {
+            // Not a URL — snapshot-only.
+          }
+        }
+
         results.push({
           provider: 'notis',
           providerCameraId: id,
@@ -144,6 +163,7 @@ export class NotisProvider extends CameraProvider {
           location,
           sourceKind: 'snapshot',
           sourceRef: id, // derived strictly from 24-hex ID
+          streamUrl,
         });
       }
 

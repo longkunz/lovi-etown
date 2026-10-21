@@ -18,6 +18,11 @@ import 'package:flutter_starter/src/utils/typedefs.dart';
 import '../../support/camera_fakes.dart';
 
 class FailingCameraRepository implements CameraRepository {
+  @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
   FailingCameraRepository(this.statusCode);
 
   final int statusCode;

@@ -18,6 +18,8 @@ export interface ProviderCamera {
   location?: { lat: number; lng: number } | null;
   sourceKind: 'snapshot' | 'hls' | 'evup' | 'youtube' | 'unknown';
   sourceRef: string;
+  /** Public HLS playlist URL when the provider exposes one (T14). */
+  streamUrl?: string | null;
 }
 
 export interface CameraRecord {
@@ -41,6 +43,8 @@ export interface CameraRecord {
   updatedAt: Date;
   sourceKind: string;
   sourceRef: string;
+  /** Public HLS playlist URL, or null when the camera has no live stream. */
+  streamUrl: string | null;
 }
 
 export interface CatalogQuery {

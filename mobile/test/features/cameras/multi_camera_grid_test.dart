@@ -54,6 +54,11 @@ class _Repo implements CameraRepository {
       const Right([]);
 
   @override
+  FutureEither<List<Camera>> related(String id,
+          {int limit = 6, CancelToken? cancelToken}) async =>
+      const Right([]);
+
+  @override
   FutureEither<Camera> detail(String id, {CancelToken? cancelToken}) async =>
       Right(Camera(
         id: id,

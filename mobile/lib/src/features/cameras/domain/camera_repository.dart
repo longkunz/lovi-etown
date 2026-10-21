@@ -15,6 +15,13 @@ abstract interface class CameraRepository {
 
   FutureEither<Camera> detail(String id, {CancelToken? cancelToken});
 
+  /// Cameras related to [id] (same district), for the traffic brief (T17).
+  FutureEither<List<Camera>> related(
+    String id, {
+    int limit = 6,
+    CancelToken? cancelToken,
+  });
+
   FutureEither<PlaybackDescriptor> playback(String id, {CancelToken? cancelToken});
 
   FutureEither<SnapshotReply> snapshot(

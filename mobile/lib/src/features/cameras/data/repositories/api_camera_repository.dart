@@ -40,6 +40,15 @@ class ApiCameraRepository implements CameraRepository {
   }
 
   @override
+  FutureEither<List<Camera>> related(
+    String id, {
+    int limit = 6,
+    CancelToken? cancelToken,
+  }) {
+    return _apiClient.getRelated(id, limit: limit, cancelToken: cancelToken);
+  }
+
+  @override
   FutureEither<PlaybackDescriptor> playback(String id,
       {CancelToken? cancelToken}) {
     return _apiClient.getPlayback(id, cancelToken: cancelToken);

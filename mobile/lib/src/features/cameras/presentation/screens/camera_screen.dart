@@ -14,6 +14,8 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_filters.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/district_sections.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/weather_card.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memory_cache.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_scheduler.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -409,6 +411,12 @@ class _CameraScreenState extends State<CameraScreen>
                     ),
                   ),
 
+                // Weather header card (T11) — hides itself when the
+                // weather is unavailable; never blocks the catalog.
+                const SliverToBoxAdapter(
+                  child: WeatherCard(),
+                ),
+
                 // Inline Favorites Section
                 SliverToBoxAdapter(
                   child: _buildFavoritesSection(context),
@@ -550,19 +558,27 @@ class _CameraScreenState extends State<CameraScreen>
           ),
         );
       case CameraViewMode.list:
+        // T11: the list view groups cameras under district headers.
+        final entries = buildDistrictSections(state.items);
         contentSliver = SliverList.builder(
-          itemCount: state.items.length,
+          itemCount: entries.length,
           itemBuilder: (context, index) {
-            final cam = state.items[index];
-            return CameraTile(
-              key: ValueKey('cam_${cam.id}'),
-              camera: cam,
-              viewMode: CameraViewMode.list,
-              isFavorite: _favoriteIds.contains(cam.id),
-              thumbnailBytes: _cache.get(cam.id)?.bytes,
-              onTap: () => _handleSelectCamera(cam),
-              onToggleFavorite: () => _handleToggleFavorite(cam),
-            );
+            final entry = entries[index];
+            return switch (entry) {
+              DistrictHeaderEntry() => DistrictSectionHeader(
+                  name: entry.name,
+                  count: entry.count,
+                ),
+              CameraEntry() => CameraTile(
+                  key: ValueKey('cam_${entry.camera.id}'),
+                  camera: entry.camera,
+                  viewMode: CameraViewMode.list,
+                  isFavorite: _favoriteIds.contains(entry.camera.id),
+                  thumbnailBytes: _cache.get(entry.camera.id)?.bytes,
+                  onTap: () => _handleSelectCamera(entry.camera),
+                  onToggleFavorite: () => _handleToggleFavorite(entry.camera),
+                ),
+            };
           },
         );
     }

@@ -1,0 +1,118 @@
+{
+  // Hồ sơ chạy/debug cho Lovi Etown trong VS Code.
+  // Mở thư mục GỐC của repo trong VS Code → panel Run and Debug → chọn profile → F5.
+  // LƯU Ý: profile "Production API" chứa reader key (key này vốn đã nằm trong APK
+  // phát hành) — chỉ để chạy máy cá nhân, ĐỪNG commit thư mục .vscode này lên repo public.
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "App: Demo (dữ liệu mẫu)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/mobile/lib/main.dart",
+      "cwd": "${workspaceFolder}/mobile",
+      "args": ["--dart-define=CAMERA_DEMO_MODE=true"]
+    },
+    {
+      "name": "App: Backend local (Android emulator)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/mobile/lib/main.dart",
+      "cwd": "${workspaceFolder}/mobile",
+      "args": [
+        "--dart-define=CAMERA_API_BASE_URL=http://10.0.2.2:3000",
+        "--dart-define=CAMERA_READER_KEY=dev-reader-key",
+        "--dart-define=CAMERA_DEMO_MODE=false"
+      ]
+    },
+    {
+      "name": "App: Backend local (thiết bị thật / iOS)",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/mobile/lib/main.dart",
+      "cwd": "${workspaceFolder}/mobile",
+      "args": [
+        // Đổi 127.0.0.1 thành IP LAN của máy tính nếu chạy trên điện thoại thật.
+        "--dart-define=CAMERA_API_BASE_URL=http://127.0.0.1:3000",
+        "--dart-define=CAMERA_READER_KEY=dev-reader-key",
+        "--dart-define=CAMERA_DEMO_MODE=false"
+      ]
+    },
+    {
+      "name": "App: Production API",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/mobile/lib/main.dart",
+      "cwd": "${workspaceFolder}/mobile",
+      "args": [
+        "--dart-define=CAMERA_API_BASE_URL=https://api.capyai.site",
+        "--dart-define=CAMERA_READER_KEY=CHANGEME@123456789@CHANGEME",
+        "--dart-define=CAMERA_DEMO_MODE=false"
+      ]
+    },
+    {
+      "name": "Backend: API local",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/dist/src/main.js",
+      "cwd": "${workspaceFolder}/backend",
+      "preLaunchTask": "backend: build",
+      "console": "integratedTerminal",
+      "env": {
+        "PORT": "3000",
+        "HOST": "127.0.0.1",
+        // DB mặc định trỏ vào Postgres test (cổng 5433): bật bằng task
+        // "backend: bật DB test (docker)" trước khi chạy. Nếu dùng Postgres
+        // riêng thì sửa connection string này.
+        "DATABASE_URL": "postgres://postgres:postgres_test_password@127.0.0.1:5433/camera_catalog_test",
+        "BACKEND_API_KEY": "dev-reader-key",
+        "ADMIN_API_KEY": "dev-admin-key",
+        "CAMERA_PROVIDER_MODE": "notis"
+      }
+    },
+    {
+      "name": "Backend: chạy migration",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/dist/src/cli/migrate.js",
+      "cwd": "${workspaceFolder}/backend",
+      "preLaunchTask": "backend: build",
+      "console": "integratedTerminal",
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres_test_password@127.0.0.1:5433/camera_catalog_test"
+      }
+    },
+    {
+      "name": "Backend: đồng bộ camera (toàn TP)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/dist/src/cli/sync.js",
+      "cwd": "${workspaceFolder}/backend",
+      "preLaunchTask": "backend: build",
+      "console": "integratedTerminal",
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres_test_password@127.0.0.1:5433/camera_catalog_test",
+        "CAMERA_PROVIDER_MODE": "notis"
+      }
+    },
+    {
+      "name": "Backend: test unit (debug)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/backend/scripts/run-tests.js",
+      "args": ["unit"],
+      "cwd": "${workspaceFolder}/backend",
+      "preLaunchTask": "backend: test-compile",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full stack: Backend + App (local)",
+      "configurations": [
+        "Backend: API local",
+        "App: Backend local (Android emulator)"
+      ]
+    }
+  ]
+}

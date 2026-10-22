@@ -9,11 +9,10 @@ import 'package:flutter_starter/src/features/cameras/domain/camera_repository.da
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_catalog_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_catalog_state.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/multi_camera_screen.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_favorites_section.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_filters.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/district_sections.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/weather_card.dart';
@@ -69,7 +68,6 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   late final CameraCatalogCubit _catalogCubit;
-  late final CameraPreviewCubit _previewCubit;
   late final CameraRepository _repository;
   late final FavoritesRepository _favoritesRepository;
   late final SnapshotMemoryCache _cache;
@@ -78,6 +76,7 @@ class _CameraScreenState extends State<CameraScreen>
   final ScrollController _scrollController = ScrollController();
   StreamSubscription<List<FavoriteCamera>>? _favSub;
   Set<String> _favoriteIds = {};
+  List<FavoriteCamera> _latestFavorites = const [];
   bool _isCorruptFavorites = false;
 
   @override
@@ -89,7 +88,6 @@ class _CameraScreenState extends State<CameraScreen>
     final repo = widget.cameraRepository ?? FixtureCameraRepository();
     _repository = repo;
     _cache = widget.cache ?? SnapshotMemoryCache();
-    _previewCubit = CameraPreviewCubit(repository: repo, cache: _cache);
     _thumbnailScheduler = widget.thumbnailScheduler ??
         ThumbnailScheduler(repository: repo, cache: _cache);
 
@@ -108,6 +106,7 @@ class _CameraScreenState extends State<CameraScreen>
       if (mounted) {
         setState(() {
           _favoriteIds = favs.map((f) => f.id).toSet();
+          _latestFavorites = favs;
         });
       }
       // T15: keep the home-screen widget on the first favorite.
@@ -121,7 +120,6 @@ class _CameraScreenState extends State<CameraScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final isForeground = state == AppLifecycleState.resumed;
     _thumbnailScheduler.setForeground(isForeground);
-    _previewCubit.setForeground(isForeground);
     if (isForeground) {
       _updateThumbnailWindow();
     }
@@ -253,7 +251,6 @@ class _CameraScreenState extends State<CameraScreen>
     _favSub?.cancel();
     _cache.removeListener(_onCacheChanged);
     _thumbnailScheduler.dispose();
-    _previewCubit.close();
     if (_ownsCubit) {
       _catalogCubit.close();
     }
@@ -266,13 +263,19 @@ class _CameraScreenState extends State<CameraScreen>
     if (widget.onSelectCamera != null) {
       widget.onSelectCamera!(camera);
     } else {
-      showCameraSnapshotSheet(
-        context,
-        cameraId: camera.id,
-        preview: _previewCubit,
-        favorites: _favoritesRepository,
-        repository: _repository,
-      ).whenComplete(() {
+      Navigator.of(context)
+          .push(
+            MaterialPageRoute<void>(
+              builder: (_) => CameraViewerScreen(
+                cameraId: camera.id,
+                repository: _repository,
+                favoritesRepository: _favoritesRepository,
+                onOpenMultiCamera: () =>
+                    _openMultiCameraGrid(context, _latestFavorites),
+              ),
+            ),
+          )
+          .whenComplete(() {
         _thumbnailScheduler.setPreviewCamera(null);
         _updateThumbnailWindow();
       });

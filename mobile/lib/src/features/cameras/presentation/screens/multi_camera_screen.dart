@@ -5,8 +5,7 @@ import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_sch
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Picks the favorites shown in the multi-camera grid (T12): catalog-known
@@ -23,8 +22,9 @@ List<FavoriteCamera> selectGridFavorites(
 
 /// Multi-camera grid (T12): 4–6 favorite cameras side by side, refreshed on
 /// the snapshot cadence via the same ThumbnailScheduler/SnapshotMemoryCache
-/// machinery as the catalog. Tapping a cell opens the usual snapshot sheet.
-/// Refreshing stops when the screen is closed or the app is backgrounded.
+/// machinery as the catalog. Tapping a cell opens the full-screen camera
+/// viewer. Refreshing stops when the screen is closed or the app is
+/// backgrounded.
 class MultiCameraScreen extends StatefulWidget {
   const MultiCameraScreen({
     required this.favorites,
@@ -47,7 +47,6 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
     with WidgetsBindingObserver {
   late final SnapshotMemoryCache _cache;
   late final ThumbnailScheduler _scheduler;
-  late final CameraPreviewCubit _previewCubit;
   final Map<String, Camera> _cameras = {};
   final Set<String> _failed = {};
   Timer? _refreshTimer;
@@ -61,7 +60,6 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
     WidgetsBinding.instance.addObserver(this);
     _cache = SnapshotMemoryCache();
     _scheduler = ThumbnailScheduler(repository: widget.repository, cache: _cache);
-    _previewCubit = CameraPreviewCubit(repository: widget.repository, cache: _cache);
     _cache.addListener(_onCacheChanged);
     _resolveCameras();
     _refreshTimer = Timer.periodic(widget.refreshInterval, (_) => _refresh());
@@ -113,7 +111,6 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final isForeground = state == AppLifecycleState.resumed;
     _scheduler.setForeground(isForeground);
-    _previewCubit.setForeground(isForeground);
     if (isForeground) _refresh();
   }
 
@@ -124,7 +121,6 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
     _refreshTimer?.cancel();
     _cache.removeListener(_onCacheChanged);
     _scheduler.dispose();
-    _previewCubit.close();
     super.dispose();
   }
 
@@ -157,11 +153,15 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
                   failed: _failed.contains(favorite.id),
                   frame: _cache.get(favorite.id),
                   onTap: _cameras.containsKey(favorite.id)
-                      ? () => showCameraSnapshotSheet(
-                            context,
-                            cameraId: favorite.id,
-                            preview: _previewCubit,
-                            favorites: widget.favoritesRepository,
+                      ? () => Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => CameraViewerScreen(
+                                cameraId: favorite.id,
+                                repository: widget.repository,
+                                favoritesRepository:
+                                    widget.favoritesRepository,
+                              ),
+                            ),
                           )
                       : null,
                 );

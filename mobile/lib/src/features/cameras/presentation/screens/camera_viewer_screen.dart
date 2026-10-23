@@ -53,15 +53,21 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
   /// can stream, Ảnh otherwise.
   bool? _liveOverride;
   bool _liveFailed = false;
+  bool _routeIsCurrent = true;
+  bool _snapshotFullscreenOpen = false;
+  bool _appIsForeground = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _appIsForeground = WidgetsBinding.instance.lifecycleState == null ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     _previewCubit = CameraPreviewCubit(
       repository: widget.repository,
       cache: SnapshotMemoryCache(),
     );
+    _previewCubit.setForeground(_appIsForeground);
     _previewCubit.open(widget.cameraId);
     _favSub = widget.favoritesRepository.watch().listen((favs) {
       if (mounted) {
@@ -86,8 +92,24 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeIsCurrent = ModalRoute.isCurrentOf(context) ?? true;
+    _updatePreviewActivity();
+  }
+
+  void _updatePreviewActivity() {
+    _previewCubit.setForeground(
+      _appIsForeground && (_routeIsCurrent || _snapshotFullscreenOpen),
+    );
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _previewCubit.setForeground(state == AppLifecycleState.resumed);
+    setState(() {
+      _appIsForeground = state == AppLifecycleState.resumed;
+    });
+    _updatePreviewActivity();
   }
 
   @override
@@ -119,9 +141,11 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
     );
   }
 
-  void _openFullScreen(Camera camera, {required bool liveSelected}) {
+  Future<void> _openFullScreen(Camera camera,
+      {required bool liveSelected}) async {
     final showLive = liveSelected && camera.canLive && !_liveFailed;
-    Navigator.of(context).push(
+    _snapshotFullscreenOpen = !showLive;
+    await Navigator.of(context).push(
       PageRouteBuilder<void>(
         opaque: false,
         barrierColor: Colors.black.withValues(alpha: 0.97),
@@ -147,6 +171,9 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
         },
       ),
     );
+    if (!mounted) return;
+    _snapshotFullscreenOpen = false;
+    _updatePreviewActivity();
   }
 
   @override
@@ -182,8 +209,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
           }
 
           final isFavorite = _favoriteIds.contains(camera.id);
-          final liveSelected =
-              _liveOverride ?? camera.canLive;
+          final liveSelected = _liveOverride ?? camera.canLive;
 
           return SingleChildScrollView(
             child: Column(
@@ -337,6 +363,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             if (showLive)
               CameraLivePlayer(
                 key: ValueKey('viewer_live_player_${camera.id}'),
+                active: _routeIsCurrent && _appIsForeground,
                 streamUrl: camera.streamUrl!,
                 onUnavailable: _handleLiveUnavailable,
               )

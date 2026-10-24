@@ -95,7 +95,8 @@ void main() {
       expect(find.text('Bản đồ lưu lượng'), findsNothing);
     });
 
-    testWidgets('renders map card and controls when camera has location', (tester) async {
+    testWidgets('renders map card and controls when camera has location',
+        (tester) async {
       CameraTrafficMapConfig? capturedConfig;
 
       await tester.pumpWidget(
@@ -131,12 +132,16 @@ void main() {
       expect(capturedConfig!.markers.first.markerId.value, 'cam_hang_xanh');
 
       // Verify action buttons exist by key
-      expect(find.byKey(const ValueKey('traffic_map_recenter_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('traffic_layer_toggle_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('traffic_map_fullscreen_button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_map_recenter_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_layer_toggle_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_map_fullscreen_button')),
+          findsOneWidget);
     });
 
-    testWidgets('traffic toggle flips state and updates SharedPreferences', (tester) async {
+    testWidgets('traffic toggle flips state and updates SharedPreferences',
+        (tester) async {
       CameraTrafficMapConfig? capturedConfig;
 
       await tester.pumpWidget(
@@ -159,16 +164,19 @@ void main() {
       expect(capturedConfig!.trafficEnabled, isTrue);
 
       // Tap traffic toggle button
-      await tester.tap(find.byKey(const ValueKey('traffic_layer_toggle_button')));
+      await tester
+          .tap(find.byKey(const ValueKey('traffic_layer_toggle_button')));
       await tester.pumpAndSettle();
 
       expect(capturedConfig!.trafficEnabled, isFalse);
 
       final prefs = await SharedPreferences.getInstance();
-      expect(prefs.getBool(CameraTrafficMapCard.prefTrafficEnabledKey), isFalse);
+      expect(
+          prefs.getBool(CameraTrafficMapCard.prefTrafficEnabledKey), isFalse);
     });
 
-    testWidgets('fullscreen button triggers onOpenFullscreen callback', (tester) async {
+    testWidgets('fullscreen button triggers onOpenFullscreen callback',
+        (tester) async {
       var fullscreenTapped = false;
 
       await tester.pumpWidget(
@@ -186,13 +194,15 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byKey(const ValueKey('traffic_map_fullscreen_button')));
+      await tester
+          .tap(find.byKey(const ValueKey('traffic_map_fullscreen_button')));
       await tester.pumpAndSettle();
 
       expect(fullscreenTapped, isTrue);
     });
 
-    testWidgets('all map card action buttons have tap target size >= 48x48', (tester) async {
+    testWidgets('all map card action buttons have tap target size >= 48x48',
+        (tester) async {
       await tester.pumpWidget(
         buildTestApp(
           child: Scaffold(
@@ -207,9 +217,12 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final recenterFinder = find.byKey(const ValueKey('traffic_map_recenter_button'));
-      final toggleFinder = find.byKey(const ValueKey('traffic_layer_toggle_button'));
-      final fullscreenFinder = find.byKey(const ValueKey('traffic_map_fullscreen_button'));
+      final recenterFinder =
+          find.byKey(const ValueKey('traffic_map_recenter_button'));
+      final toggleFinder =
+          find.byKey(const ValueKey('traffic_layer_toggle_button'));
+      final fullscreenFinder =
+          find.byKey(const ValueKey('traffic_map_fullscreen_button'));
 
       expect(recenterFinder, findsOneWidget);
       expect(toggleFinder, findsOneWidget);
@@ -228,11 +241,14 @@ void main() {
 
       // Verify semantics
       expect(find.bySemanticsLabel('Về vị trí camera'), findsOneWidget);
-      expect(find.bySemanticsLabel('Bật/tắt lưu lượng giao thông'), findsOneWidget);
+      expect(find.bySemanticsLabel('Bật/tắt lưu lượng giao thông'),
+          findsOneWidget);
       expect(find.bySemanticsLabel('Xem bản đồ toàn màn hình'), findsOneWidget);
     });
 
-    testWidgets('map card adapts cleanly under high contrast and large text scale 2.0', (tester) async {
+    testWidgets(
+        'map card adapts cleanly under high contrast and large text scale 2.0',
+        (tester) async {
       tester.view.physicalSize = const Size(320, 640);
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
@@ -258,15 +274,19 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byKey(const ValueKey('traffic_map_recenter_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('traffic_layer_toggle_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('traffic_map_fullscreen_button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_map_recenter_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_layer_toggle_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('traffic_map_fullscreen_button')),
+          findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
 
   group('CameraTrafficMapViewerScreen', () {
-    testWidgets('renders fullscreen map and app bar with camera info', (tester) async {
+    testWidgets('renders fullscreen map and app bar with camera info',
+        (tester) async {
       CameraTrafficMapConfig? capturedConfig;
 
       await tester.pumpWidget(
@@ -286,16 +306,24 @@ void main() {
       expect(find.text('Điện Biên Phủ - Xô Viết Nghệ Tĩnh'), findsOneWidget);
       expect(find.byKey(const ValueKey('mock_fullscreen_map')), findsOneWidget);
       expect(capturedConfig?.trafficEnabled, isTrue);
-      expect(find.byKey(const ValueKey('fullscreen_directions_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('fullscreen_traffic_recenter_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('fullscreen_traffic_toggle_button')), findsOneWidget);
-      expect(find.byKey(const ValueKey('fullscreen_map_type_button')), findsOneWidget);
+      expect(find.byKey(const ValueKey('fullscreen_directions_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('fullscreen_traffic_recenter_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('fullscreen_traffic_toggle_button')),
+          findsOneWidget);
+      expect(find.byKey(const ValueKey('fullscreen_map_type_button')),
+          findsOneWidget);
 
       // Verify all floating action buttons have min touch target >= 48x48
-      final recenterSize = tester.getSize(find.byKey(const ValueKey('fullscreen_traffic_recenter_button')));
-      final toggleSize = tester.getSize(find.byKey(const ValueKey('fullscreen_traffic_toggle_button')));
-      final mapTypeSize = tester.getSize(find.byKey(const ValueKey('fullscreen_map_type_button')));
-      final directionsSize = tester.getSize(find.byKey(const ValueKey('fullscreen_directions_button')));
+      final recenterSize = tester.getSize(
+          find.byKey(const ValueKey('fullscreen_traffic_recenter_button')));
+      final toggleSize = tester.getSize(
+          find.byKey(const ValueKey('fullscreen_traffic_toggle_button')));
+      final mapTypeSize = tester
+          .getSize(find.byKey(const ValueKey('fullscreen_map_type_button')));
+      final directionsSize = tester
+          .getSize(find.byKey(const ValueKey('fullscreen_directions_button')));
 
       expect(recenterSize.width, greaterThanOrEqualTo(48.0));
       expect(recenterSize.height, greaterThanOrEqualTo(48.0));
@@ -318,7 +346,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final mapTypeButton = find.byKey(const ValueKey('fullscreen_map_type_button'));
+      final mapTypeButton =
+          find.byKey(const ValueKey('fullscreen_map_type_button'));
       expect(mapTypeButton, findsOneWidget);
 
       await tester.tap(mapTypeButton);
@@ -328,15 +357,18 @@ void main() {
       expect(find.byTooltip('Bản đồ chuẩn'), findsOneWidget);
     });
 
-    testWidgets('viewer displays fallback message if camera has no location', (tester) async {
+    testWidgets('viewer displays fallback message if camera has no location',
+        (tester) async {
       await tester.pumpWidget(
         buildTestApp(
-          child: const CameraTrafficMapViewerScreen(camera: testCameraNoLocation),
+          child:
+              const CameraTrafficMapViewerScreen(camera: testCameraNoLocation),
         ),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Chưa có dữ liệu vị trí cho camera này'), findsOneWidget);
+      expect(
+          find.text('Chưa có dữ liệu vị trí cho camera này'), findsOneWidget);
     });
   });
 }

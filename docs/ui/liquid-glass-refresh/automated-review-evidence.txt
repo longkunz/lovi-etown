@@ -1,0 +1,47 @@
+Review evidence — 2026-10-24
+Baseline main: a87f44c
+Prerequisite base: cc12d9c (includes SQL fix 89907ba)
+Worktree: /tmp/lovi-etown-liquid-glass-review
+macOS 15.6.1 (24G90), arm64
+Flutter 3.47.7 / Dart 3.13.5 / Node 24.16.0
+liquid_glass_widgets 1.13.0
+PostgreSQL/PostGIS: existing Docker test container 127.0.0.1:5433
+
+mobile: flutter analyze
+Analyzing mobile...
+No issues found! (ran in 4.3s)
+
+mobile: flutter test --reporter expanded
+00:14 +174: All tests passed!
+
+backend: npm run test:unit
+ℹ tests 56
+ℹ suites 14
+ℹ pass 56
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 437.51175
+
+backend: npm run test:api
+ℹ tests 18
+ℹ suites 6
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2251.874125
+
+backend: npm run test:db
+ℹ tests 12
+ℹ suites 2
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2117.56725
+
+Not run: app before/after screenshots; Android/iOS native Maps, live textures, rotation and shader walkthrough; TalkBack/VoiceOver; profile 20 cycles, UI/raster p95 and RAM. HTML mockups and mapBuilder widget tests do not establish these results.

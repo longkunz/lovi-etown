@@ -34,6 +34,13 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 - T02: `CameraPreviewCubit` được tách thành các stage detail → descriptor → snapshot; backoff tự động và retry thủ công làm lại đúng stage còn thiếu thay vì gọi snapshot khi chưa có endpoint, descriptor lỗi vẫn thử snapshot qua endpoint của camera và được khôi phục ở chu kỳ poll kế tiếp, lỗi refresh đánh dấu ảnh hiện tại là cũ (`isStale`) ngay cả trước ngưỡng 60 giây, và bộ đếm backoff đặt lại khi mỗi stage thành công.
 - Kiểm thử đã chạy lại trên môi trường agent (Flutter 3.47.7 / Dart 3.13.5): targeted tests cho T01/T02 đỏ trước khi sửa (8 test fail) và xanh sau khi sửa; `flutter test` toàn bộ **66/66 PASS**; `flutter analyze` không có issue. Backend không thay đổi mã nguồn; `npm run test:unit` **22/22 PASS**. `test:api`/`test:db` chưa chạy được trên môi trường agent vì không có Docker/PostgreSQL và kho gói hệ điều hành không truy cập được; cần chạy lại ở môi trường có PostgreSQL/PostGIS tại `127.0.0.1:5433` để hoàn tất bằng chứng backend.
 
+### Liquid Glass Refresh (review 2026-10-24)
+
+- [Báo cáo review](ui/liquid-glass-refresh-verification.md), [spec](superpowers/specs/2026-10-24-liquid-glass-refresh-design.md), [plan](superpowers/plans/2026-10-24-liquid-glass-refresh.md).
+- Có triển khai theme/policy và controls dùng chung cho catalog, sheet/viewers, favorites/lưới và bản đồ. Review đã sửa target/semantics/reduced-motion, keyboard focus, opaque header media, feed dưới AppBar và overflow map/favorites ở chữ lớn.
+- Kiểm thử worktree PR: `flutter analyze` 0 issues; **174/174 Flutter tests PASS**; backend chạy lần lượt **56 unit + 18 API + 12 DB PASS** với Node 24.16.0 và PostGIS local. Sửa SQL tiền đề nằm ở nhánh T18, ngoài diff Refresh.
+- **Chưa hoàn tất nghiệm thu**: 12 PNG là mockup HTML, thiếu screenshot app trước/sau, shader/native Maps/live trên thiết bị, TalkBack/VoiceOver và profile p95/RAM. PR Draft trên nhánh T18 tiền đề; không phải xác nhận sẵn sàng phát hành.
+
 ## Cách đọc và cập nhật tài liệu
 
 - Dùng [README gốc](../README.md) và [README backend](../backend/README.md) cho thao tác cài đặt/chạy hiện hành. Script thực tế nằm trong [backend/package.json](../backend/package.json); dependency Flutter nằm trong [pubspec.yaml](../mobile/pubspec.yaml) và [pubspec.lock](../mobile/pubspec.lock).

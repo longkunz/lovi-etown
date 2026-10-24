@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_traffic_map_viewer_screen.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Configuration passed to [CameraTrafficMapCard.mapBuilder] for testing or custom rendering.
@@ -43,7 +44,8 @@ class CameraTrafficMapCard extends StatefulWidget {
   final double height;
 
   /// Custom map builder used in widget tests to bypass native AndroidView/UiKitView.
-  final Widget Function(BuildContext context, CameraTrafficMapConfig config)? mapBuilder;
+  final Widget Function(BuildContext context, CameraTrafficMapConfig config)?
+      mapBuilder;
 
   /// Optional callback invoked when the fullscreen button is tapped.
   /// If null, navigates to [CameraTrafficMapViewerScreen].
@@ -148,153 +150,127 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: isDark ? CameraUiTokens.surfaceDark : CameraUiTokens.surfaceLight,
+        color:
+            isDark ? CameraUiTokens.surfaceDark : CameraUiTokens.surfaceLight,
         borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
         border: Border.all(
           color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
         ),
       ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: CameraUiTokens.spacing16,
-                vertical: CameraUiTokens.spacing8,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: CameraUiTokens.spacing16,
+              vertical: CameraUiTokens.spacing8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  const Icon(Icons.traffic,
+                      size: 18, color: CameraUiTokens.primaryTeal),
+                  const SizedBox(width: CameraUiTokens.spacing8),
+                  Expanded(
+                      child: Text(
+                    'camera.traffic_map_title'.tr(),
+                    style: theme.textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  )),
+                ]),
+                const SizedBox(height: CameraUiTokens.spacing4),
+                Text(
+                  _trafficEnabled ? 'Giao thông ON' : 'Giao thông OFF',
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
+            ),
+          ),
+
+          // Map Area
+          SizedBox(
+            height: widget.height,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(CameraUiTokens.radius16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Row(children: [
-                    const Icon(Icons.traffic, size: 18, color: CameraUiTokens.primaryTeal),
-                    const SizedBox(width: CameraUiTokens.spacing8),
-                    Expanded(child: Text(
-                      'camera.traffic_map_title'.tr(),
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
-                    )),
-                  ]),
-                  const SizedBox(height: CameraUiTokens.spacing4),
-                  Text(
-                    _trafficEnabled ? 'Giao thông ON' : 'Giao thông OFF',
-                    style: theme.textTheme.bodySmall,
+                  // Google Map View
+                  Positioned.fill(
+                    child: widget.mapBuilder != null
+                        ? widget.mapBuilder!(context, mapConfig)
+                        : GoogleMap(
+                            key: ValueKey('google_map_${camera.id}'),
+                            initialCameraPosition: CameraPosition(
+                              target: cameraPos,
+                              zoom: 15.5,
+                            ),
+                            trafficEnabled: _trafficEnabled,
+                            markers: markers,
+                            myLocationButtonEnabled: false,
+                            zoomControlsEnabled: false,
+                            mapToolbarEnabled: false,
+                            onMapCreated: mapConfig.onMapCreated,
+                            gestureRecognizers: const <Factory<
+                                OneSequenceGestureRecognizer>>{
+                              Factory<OneSequenceGestureRecognizer>(
+                                EagerGestureRecognizer.new,
+                              ),
+                            },
+                          ),
+                  ),
+
+                  // Floating Glass Action Controls (Recenter, Toggle, Fullscreen)
+                  Positioned(
+                    top: CameraUiTokens.spacing8,
+                    right: CameraUiTokens.spacing8,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CameraGlassIconButton(
+                          key: const ValueKey('traffic_map_recenter_button'),
+                          icon: Icons.my_location,
+                          label: 'camera.traffic_map_recenter'.tr(),
+                          tooltip: 'camera.traffic_map_recenter'.tr(),
+                          forceOpaque: true,
+                          onPressed: _recenter,
+                        ),
+                        const SizedBox(height: CameraUiTokens.spacing4),
+                        CameraGlassIconButton(
+                          key: const ValueKey('traffic_layer_toggle_button'),
+                          icon: _trafficEnabled
+                              ? Icons.traffic
+                              : Icons.traffic_outlined,
+                          iconColor: _trafficEnabled
+                              ? CameraUiTokens.accentTeal
+                              : null,
+                          label: 'camera.traffic_map_toggle'.tr(),
+                          tooltip: 'camera.traffic_map_toggle'.tr(),
+                          selected: _trafficEnabled,
+                          forceOpaque: true,
+                          onPressed: _toggleTraffic,
+                        ),
+                        const SizedBox(height: CameraUiTokens.spacing4),
+                        CameraGlassIconButton(
+                          key: const ValueKey('traffic_map_fullscreen_button'),
+                          icon: Icons.fullscreen,
+                          label: 'camera.traffic_map_fullscreen'.tr(),
+                          tooltip: 'camera.traffic_map_fullscreen'.tr(),
+                          forceOpaque: true,
+                          onPressed: _handleFullscreen,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-
-            // Map Area
-            SizedBox(
-              height: widget.height,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  bottom: Radius.circular(CameraUiTokens.radius16),
-                ),
-                child: Stack(
-                  children: [
-                    // Google Map View
-                    Positioned.fill(
-                      child: widget.mapBuilder != null
-                          ? widget.mapBuilder!(context, mapConfig)
-                          : GoogleMap(
-                              key: ValueKey('google_map_${camera.id}'),
-                              initialCameraPosition: CameraPosition(
-                                target: cameraPos,
-                                zoom: 15.5,
-                              ),
-                              trafficEnabled: _trafficEnabled,
-                              markers: markers,
-                              myLocationButtonEnabled: false,
-                              zoomControlsEnabled: false,
-                              mapToolbarEnabled: false,
-                              onMapCreated: mapConfig.onMapCreated,
-                              gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{
-                                Factory<OneSequenceGestureRecognizer>(
-                                  EagerGestureRecognizer.new,
-                                ),
-                              },
-                            ),
-                    ),
-
-                    // Floating Glass Action Controls (Recenter, Toggle, Fullscreen)
-                    Positioned(
-                      top: CameraUiTokens.spacing8,
-                      right: CameraUiTokens.spacing8,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _MapActionButton(
-                            key: const ValueKey('traffic_map_recenter_button'),
-                            icon: Icons.my_location,
-                            label: 'camera.traffic_map_recenter'.tr(),
-                            tooltip: 'camera.traffic_map_recenter'.tr(),
-                            forceOpaque: true,
-                            onPressed: _recenter,
-                          ),
-                          const SizedBox(height: CameraUiTokens.spacing4),
-                          _MapActionButton(
-                            key: const ValueKey('traffic_layer_toggle_button'),
-                            icon: _trafficEnabled
-                                ? Icons.traffic
-                                : Icons.traffic_outlined,
-                            iconColor: _trafficEnabled
-                                ? CameraUiTokens.accentTeal
-                                : null,
-                            label: 'camera.traffic_map_toggle'.tr(),
-                            tooltip: 'camera.traffic_map_toggle'.tr(),
-                            selected: _trafficEnabled,
-                            forceOpaque: true,
-                            onPressed: _toggleTraffic,
-                          ),
-                          const SizedBox(height: CameraUiTokens.spacing4),
-                          _MapActionButton(
-                            key: const ValueKey('traffic_map_fullscreen_button'),
-                            icon: Icons.fullscreen,
-                            label: 'camera.traffic_map_fullscreen'.tr(),
-                            tooltip: 'camera.traffic_map_fullscreen'.tr(),
-                            forceOpaque: true,
-                            onPressed: _handleFullscreen,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-  }
-}
-
-class _MapActionButton extends StatelessWidget {
-  const _MapActionButton({super.key, required this.icon, required this.label,
-    required this.onPressed, this.tooltip, this.iconColor, this.selected = false,
-    this.forceOpaque = false});
-  final IconData icon;
-  final String label;
-  final String? tooltip;
-  final VoidCallback? onPressed;
-  final Color? iconColor;
-  final bool selected;
-  final bool forceOpaque;
-  @override
-  Widget build(BuildContext context) => Semantics(
-    selected: selected,
-    label: label,
-    button: true,
-    enabled: onPressed != null,
-    onTap: onPressed,
-    excludeSemantics: true,
-    child: Material(
-      color: Theme.of(context).colorScheme.surface,
-      borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
-      child: IconButton(
-        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-        tooltip: tooltip ?? label,
-        icon: Icon(icon, color: iconColor), onPressed: onPressed,
+          ),
+        ],
       ),
-    ),
-  );
+    );
+  }
 }

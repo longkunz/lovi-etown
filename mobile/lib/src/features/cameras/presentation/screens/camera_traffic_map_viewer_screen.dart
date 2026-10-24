@@ -6,6 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Màn hình xem bản đồ Google Maps và lớp giao thông kẹt xe toàn màn hình (T18).
@@ -23,7 +26,8 @@ class CameraTrafficMapViewerScreen extends StatefulWidget {
   final Camera camera;
 
   /// Custom map builder for widget testing without headless platform view errors.
-  final Widget Function(BuildContext context, CameraTrafficMapConfig config)? mapBuilder;
+  final Widget Function(BuildContext context, CameraTrafficMapConfig config)?
+      mapBuilder;
 
   @override
   State<CameraTrafficMapViewerScreen> createState() =>
@@ -121,8 +125,10 @@ class _CameraTrafficMapViewerScreenState
       extendBodyBehindAppBar: true,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(64),
-        child: Material(
-          color: theme.colorScheme.surface,
+        child: CameraGlassSurface(
+          role: CameraGlassRole.header,
+          forceOpaque: true,
+          borderRadius: BorderRadius.zero,
           child: AppBar(
             backgroundColor: Colors.transparent,
             elevation: 0,
@@ -194,12 +200,13 @@ class _CameraTrafficMapViewerScreenState
 
           // Floating Controls (Recenter, Toggle Traffic, Toggle Layers, Directions)
           Positioned(
-            bottom: CameraUiTokens.spacing24 + MediaQuery.viewPaddingOf(context).bottom,
+            bottom: CameraUiTokens.spacing24 +
+                MediaQuery.viewPaddingOf(context).bottom,
             right: CameraUiTokens.spacing16,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _MapActionButton(
+                CameraGlassIconButton(
                   key: const ValueKey('fullscreen_traffic_recenter_button'),
                   icon: Icons.my_location,
                   label: 'camera.traffic_map_recenter'.tr(),
@@ -208,9 +215,10 @@ class _CameraTrafficMapViewerScreenState
                   onPressed: _recenter,
                 ),
                 const SizedBox(height: CameraUiTokens.spacing8),
-                _MapActionButton(
+                CameraGlassIconButton(
                   key: const ValueKey('fullscreen_traffic_toggle_button'),
-                  icon: _trafficEnabled ? Icons.traffic : Icons.traffic_outlined,
+                  icon:
+                      _trafficEnabled ? Icons.traffic : Icons.traffic_outlined,
                   iconColor: _trafficEnabled ? CameraUiTokens.accentTeal : null,
                   label: 'camera.traffic_map_toggle'.tr(),
                   tooltip: 'camera.traffic_map_toggle'.tr(),
@@ -219,11 +227,15 @@ class _CameraTrafficMapViewerScreenState
                   onPressed: _toggleTraffic,
                 ),
                 const SizedBox(height: CameraUiTokens.spacing8),
-                _MapActionButton(
+                CameraGlassIconButton(
                   key: const ValueKey('fullscreen_map_type_button'),
                   icon: _mapType == MapType.normal ? Icons.layers : Icons.map,
-                  label: _mapType == MapType.normal ? 'Bản đồ vệ tinh' : 'Bản đồ chuẩn',
-                  tooltip: _mapType == MapType.normal ? 'Bản đồ vệ tinh' : 'Bản đồ chuẩn',
+                  label: _mapType == MapType.normal
+                      ? 'Bản đồ vệ tinh'
+                      : 'Bản đồ chuẩn',
+                  tooltip: _mapType == MapType.normal
+                      ? 'Bản đồ vệ tinh'
+                      : 'Bản đồ chuẩn',
                   selected: _mapType != MapType.normal,
                   forceOpaque: true,
                   onPressed: _toggleMapType,
@@ -235,35 +247,4 @@ class _CameraTrafficMapViewerScreenState
       ),
     );
   }
-}
-
-class _MapActionButton extends StatelessWidget {
-  const _MapActionButton({super.key, required this.icon, required this.label,
-    required this.onPressed, this.tooltip, this.iconColor, this.selected = false,
-    this.forceOpaque = false});
-  final IconData icon;
-  final String label;
-  final String? tooltip;
-  final VoidCallback? onPressed;
-  final Color? iconColor;
-  final bool selected;
-  final bool forceOpaque;
-  @override
-  Widget build(BuildContext context) => Semantics(
-    selected: selected,
-    label: label,
-    button: true,
-    enabled: onPressed != null,
-    onTap: onPressed,
-    excludeSemantics: true,
-    child: Material(
-      color: Theme.of(context).colorScheme.surface,
-      borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
-      child: IconButton(
-        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-        tooltip: tooltip ?? label,
-        icon: Icon(icon, color: iconColor), onPressed: onPressed,
-      ),
-    ),
-  );
 }

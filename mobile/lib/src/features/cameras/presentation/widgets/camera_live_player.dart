@@ -10,11 +10,15 @@ class CameraLivePlayer extends StatefulWidget {
   const CameraLivePlayer({
     required this.streamUrl,
     required this.onUnavailable,
+    this.active = true,
     super.key,
   });
 
   final String streamUrl;
   final VoidCallback onUnavailable;
+
+  /// Inactive players retain their controller but must not play offscreen.
+  final bool active;
 
   @override
   State<CameraLivePlayer> createState() => _CameraLivePlayerState();
@@ -24,6 +28,7 @@ class _CameraLivePlayerState extends State<CameraLivePlayer> {
   VideoPlayerController? _controller;
   bool _ready = false;
   bool _failed = false;
+  bool _routePopped = false;
 
   @override
   void initState() {
@@ -39,10 +44,24 @@ class _CameraLivePlayerState extends State<CameraLivePlayer> {
     controller.addListener(_onControllerUpdate);
     try {
       await controller.initialize();
-      await controller.play();
+      if (!mounted || _routePopped) return;
+      if (widget.active) await controller.play();
       if (mounted) setState(() => _ready = true);
     } catch (_) {
       _fail();
+    }
+  }
+
+  @override
+  void didUpdateWidget(CameraLivePlayer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_routePopped || oldWidget.active == widget.active) return;
+    final controller = _controller;
+    if (controller == null || !controller.value.isInitialized) return;
+    if (widget.active) {
+      controller.play();
+    } else {
+      controller.pause();
     }
   }
 
@@ -54,7 +73,7 @@ class _CameraLivePlayerState extends State<CameraLivePlayer> {
   }
 
   void _fail() {
-    if (_failed || !mounted) return;
+    if (_failed || !mounted || _routePopped) return;
     _failed = true;
     widget.onUnavailable();
   }
@@ -62,12 +81,27 @@ class _CameraLivePlayerState extends State<CameraLivePlayer> {
   @override
   void dispose() {
     _controller?.removeListener(_onControllerUpdate);
+    // Stop playback immediately while native disposal finishes asynchronously.
+    _controller?.pause();
     _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    return PopScope<void>(
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) return;
+        // The underlying route resumes before the reverse transition disposes
+        // this player. Pause now so the two routes never play together.
+        _routePopped = true;
+        _controller?.pause();
+      },
+      child: _buildPlayer(),
+    );
+  }
+
+  Widget _buildPlayer() {
     final controller = _controller;
     if (controller == null || !_ready) {
       return AspectRatio(
@@ -90,14 +124,17 @@ class _CameraLivePlayerState extends State<CameraLivePlayer> {
           children: [
             VideoPlayer(controller),
             GestureDetector(
-              onTap: () {
-                if (controller.value.isPlaying) {
-                  controller.pause();
-                } else {
-                  controller.play();
-                }
-                setState(() {});
-              },
+              onTap: !widget.active
+                  ? null
+                  : () {
+                      if (_routePopped) return;
+                      if (controller.value.isPlaying) {
+                        controller.pause();
+                      } else {
+                        controller.play();
+                      }
+                      setState(() {});
+                    },
               child: Container(
                 color: Colors.transparent,
                 alignment: Alignment.center,

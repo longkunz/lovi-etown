@@ -90,6 +90,39 @@ class CameraTile extends StatelessWidget {
     );
   }
 
+  Widget _buildLiveBadge({bool compact = false}) {
+    return Container(
+      key: ValueKey('live_badge_${camera.id}'),
+      padding: EdgeInsets.symmetric(
+        horizontal: compact ? 6 : CameraUiTokens.spacing8,
+        vertical: compact ? 2 : CameraUiTokens.spacing4,
+      ),
+      decoration: BoxDecoration(
+        color: CameraUiTokens.errorRed,
+        borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.fiber_manual_record,
+            size: compact ? 8 : 10,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            'TRỰC TIẾP',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: compact ? 9 : 10,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildFavoriteButton() {
     return Semantics(
       button: true,
@@ -152,6 +185,12 @@ class CameraTile extends StatelessWidget {
             Stack(
               children: [
                 _buildThumbnail(height: 190, width: double.infinity),
+                if (camera.canLive)
+                  Positioned(
+                    top: CameraUiTokens.spacing8,
+                    left: CameraUiTokens.spacing8,
+                    child: _buildLiveBadge(),
+                  ),
                 Positioned(
                   top: CameraUiTokens.spacing8,
                   right: CameraUiTokens.spacing8,
@@ -241,6 +280,12 @@ class CameraTile extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   _buildThumbnail(height: double.infinity, width: double.infinity),
+                  if (camera.canLive)
+                    Positioned(
+                      top: CameraUiTokens.spacing8,
+                      left: CameraUiTokens.spacing8,
+                      child: _buildLiveBadge(compact: true),
+                    ),
                   Positioned(
                     top: 2,
                     right: 2,
@@ -314,13 +359,24 @@ class CameraTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      camera.name,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            camera.name,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (camera.canLive) ...[
+                          const SizedBox(width: CameraUiTokens.spacing8),
+                          _buildLiveBadge(compact: true),
+                        ],
+                      ],
                     ),
                     if (camera.district != null && camera.district!.isNotEmpty) ...[
                       const SizedBox(height: CameraUiTokens.spacing2),

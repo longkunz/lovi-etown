@@ -6,6 +6,9 @@ abstract final class AppRoutes {
   AppRoutes._();
 
   static const String camera = '/';
+
+  /// Full-screen single-camera viewer; `:id` is the camera id path param.
+  static const String cameraViewer = '/camera/:id';
   static const String splash = '/splash';
   static const String home = '/home';
   static const String onboarding = '/onboarding';

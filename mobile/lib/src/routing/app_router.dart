@@ -31,6 +31,13 @@ GoRouter createAppRouter({
         builder: (context, state) => const CameraFeature(),
       ),
       GoRoute(
+        path: AppRoutes.cameraViewer,
+        name: 'cameraViewer',
+        builder: (context, state) => CameraViewerFeature(
+          cameraId: state.pathParameters['id'] ?? '',
+        ),
+      ),
+      GoRoute(
         path: AppRoutes.onboarding,
         name: 'onboarding',
         builder: (context, state) => const OnboardingPage(),

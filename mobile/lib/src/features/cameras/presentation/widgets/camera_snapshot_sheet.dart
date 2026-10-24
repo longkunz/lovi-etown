@@ -11,6 +11,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
@@ -20,6 +21,7 @@ Future<void> showCameraSnapshotSheet(
   required CameraPreviewCubit preview,
   required FavoritesRepository favorites,
   CameraRepository? repository,
+  Widget Function(BuildContext, CameraTrafficMapConfig)? mapBuilder,
 }) {
   preview.open(cameraId);
 
@@ -32,6 +34,7 @@ Future<void> showCameraSnapshotSheet(
         preview: preview,
         favorites: favorites,
         repository: repository,
+        mapBuilder: mapBuilder,
       );
     },
   );
@@ -42,6 +45,7 @@ class CameraSnapshotSheet extends StatefulWidget {
     required this.preview,
     required this.favorites,
     this.repository,
+    this.mapBuilder,
     super.key,
   });
 
@@ -50,6 +54,7 @@ class CameraSnapshotSheet extends StatefulWidget {
 
   /// Optional: enables the traffic brief card (T17) when provided.
   final CameraRepository? repository;
+  final Widget Function(BuildContext, CameraTrafficMapConfig)? mapBuilder;
 
   @override
   State<CameraSnapshotSheet> createState() => _CameraSnapshotSheetState();
@@ -304,6 +309,23 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                       ],
                     ),
                   ),
+
+                  // Google Maps Traffic Layer Card (T18) — rendered when the
+                  // camera has location coordinates.
+                  if (camera != null && camera.hasLocation)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        CameraUiTokens.spacing16,
+                        0,
+                        CameraUiTokens.spacing16,
+                        CameraUiTokens.spacing16,
+                      ),
+                      child: CameraTrafficMapCard(
+                        key: ValueKey('traffic_map_${camera.id}'),
+                        camera: camera,
+                        mapBuilder: widget.mapBuilder,
+                      ),
+                    ),
 
                   // Directions handoff (T10) — only when the catalog
                   // provided coordinates for this camera.

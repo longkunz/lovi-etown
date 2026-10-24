@@ -11,6 +11,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Full-screen viewer for a single camera, mirroring the reference
@@ -27,6 +28,7 @@ class CameraViewerScreen extends StatefulWidget {
     required this.repository,
     required this.favoritesRepository,
     this.onOpenMultiCamera,
+    this.mapBuilder,
     super.key,
   });
 
@@ -37,6 +39,7 @@ class CameraViewerScreen extends StatefulWidget {
   /// Opens the multi-camera grid; when null the shortcut is hidden
   /// (e.g. when the viewer itself was opened from the grid).
   final VoidCallback? onOpenMultiCamera;
+  final Widget Function(BuildContext, CameraTrafficMapConfig)? mapBuilder;
 
   @override
   State<CameraViewerScreen> createState() => _CameraViewerScreenState();
@@ -307,6 +310,19 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 _buildInfoSection(context, camera),
                 const SizedBox(height: CameraUiTokens.spacing12),
                 _buildActionRow(context, camera, isFavorite),
+                if (camera.hasLocation) ...[
+                  const SizedBox(height: CameraUiTokens.spacing16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: CameraUiTokens.spacing16,
+                    ),
+                    child: CameraTrafficMapCard(
+                      key: ValueKey('viewer_traffic_map_${camera.id}'),
+                      camera: camera,
+                      mapBuilder: widget.mapBuilder,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: CameraUiTokens.spacing16),
                 TrafficBriefCard(
                   key: ValueKey('traffic_brief_${camera.id}'),

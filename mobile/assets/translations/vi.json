@@ -30,7 +30,12 @@
     "not_in_catalog": "Camera không còn trong danh mục",
     "snapshot_sheet_title": "Chi tiết camera",
     "snapshot_refreshing": "Đang làm mới...",
-    "snapshot_stale": "Ảnh chưa được cập nhật mới"
+    "snapshot_stale": "Ảnh chưa được cập nhật mới",
+    "traffic_map_title": "Bản đồ lưu lượng",
+    "traffic_map_toggle": "Bật/tắt lưu lượng giao thông",
+    "traffic_map_fullscreen": "Xem bản đồ toàn màn hình",
+    "traffic_map_recenter": "Về vị trí camera",
+    "traffic_map_no_location": "Chưa có dữ liệu vị trí cho camera này"
   },
   "onboarding": {
     "onboarding_title_1": "Hành trình của bạn,\nĐược lên kế hoạch hoàn hảo",

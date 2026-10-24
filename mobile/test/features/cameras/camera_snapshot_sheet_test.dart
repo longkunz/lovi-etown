@@ -9,12 +9,26 @@ import 'package:flutter_starter/src/features/cameras/domain/favorites_repository
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:dio/dio.dart';
 
 class FakeSheetCameraRepository implements CameraRepository {
+  FakeSheetCameraRepository({Camera? camera})
+      : camera = camera ??
+            const Camera(
+              id: 'cam-01',
+              name: 'Giao lo Le Loi - Pasteur',
+              provinceId: 'tp_hcm',
+              district: 'Quan 1',
+              address: 'Quan 1, TP.HCM',
+              snapshotCapable: true,
+              playbackEndpoint: '/api/v1/playback/cam-01',
+              snapshotEndpoint: '/api/v1/snapshot/cam-01',
+            );
+
   @override
   FutureEither<List<Camera>> related(String id,
           {int limit = 6, CancelToken? cancelToken}) async =>
@@ -23,16 +37,7 @@ class FakeSheetCameraRepository implements CameraRepository {
   /// Optional per-test override for snapshot behaviour (T02 tests).
   FutureEither<SnapshotReply> Function()? snapshotHandler;
 
-  final Camera camera = const Camera(
-    id: 'cam-01',
-    name: 'Giao lo Le Loi - Pasteur',
-    provinceId: 'tp_hcm',
-    district: 'Quan 1',
-    address: 'Quan 1, TP.HCM',
-    snapshotCapable: true,
-    playbackEndpoint: '/api/v1/playback/cam-01',
-    snapshotEndpoint: '/api/v1/snapshot/cam-01',
-  );
+  final Camera camera;
 
   @override
   FutureEither<CatalogPage> list({
@@ -95,6 +100,7 @@ class FakeSheetCameraRepository implements CameraRepository {
 class FakeSheetFavoritesRepository implements FavoritesRepository {
   final List<FavoriteCamera> _favs = [];
 
+
   @override
   Stream<List<FavoriteCamera>> watch() async* {
     yield List.unmodifiable(_favs);
@@ -136,6 +142,11 @@ class SheetTestAssetLoader extends AssetLoader {
       'camera': {
         'title': 'Camera giao thông',
         'favorites_title': 'Quan tâm',
+        'traffic_map_title': 'Bản đồ lưu lượng',
+        'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
+        'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',
+        'traffic_map_recenter': 'Về vị trí camera',
+        'traffic_map_no_location': 'Chưa có dữ liệu vị trí cho camera này',
       },
     };
   }
@@ -363,5 +374,51 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.byType(CameraSnapshotSheet), findsOneWidget);
     });
+
+    testWidgets('sheet renders CameraTrafficMapCard when camera has location', (tester) async {
+      const cameraWithLoc = Camera(
+        id: 'cam-loc',
+        name: 'Nga 4 Hang Xanh',
+        provinceId: 'tp_hcm',
+        playbackEndpoint: '/playback/cam-loc',
+        latitude: 10.8018,
+        longitude: 106.7114,
+      );
+
+      final locRepo = FakeSheetCameraRepository(camera: cameraWithLoc);
+      final preview = CameraPreviewCubit(repository: locRepo);
+      addTearDown(preview.close);
+
+      await tester.pumpWidget(
+        buildTestApp(
+          child: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  showCameraSnapshotSheet(
+                    context,
+                    cameraId: 'cam-loc',
+                    preview: preview,
+                    favorites: favRepo,
+                    mapBuilder: (context, config) => const SizedBox(
+                      key: ValueKey('mock_map_in_sheet'),
+                    ),
+                  );
+                },
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byType(CameraTrafficMapCard), findsOneWidget);
+    });
+
   });
 }

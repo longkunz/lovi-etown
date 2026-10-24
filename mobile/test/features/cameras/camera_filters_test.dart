@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_filters.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_district_picker.dart';
+import '../../support/camera_localization.dart';
 
 void main() {
+  setUpAll(loadCameraTestTranslations);
   const sampleDistricts = [
     DistrictOption(name: 'Quận 1', count: 12),
     DistrictOption(name: 'Quận 3', count: 8),
@@ -16,7 +18,7 @@ void main() {
     testWidgets('shows all districts when selectedDistrict is null',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        localizedCameraTestApp(
           home: Scaffold(
             body: CameraDistrictPicker(
               districts: sampleDistricts,
@@ -27,13 +29,14 @@ void main() {
         ),
       );
 
-      expect(find.text('Tất cả'), findsOneWidget);
+      await tester.pumpAndSettle();
+      expect(find.text('Tất cả quận/huyện'), findsOneWidget);
     });
 
     testWidgets('shows district name when selectedDistrict is set',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        localizedCameraTestApp(
           home: Scaffold(
             body: CameraDistrictPicker(
               districts: sampleDistricts,
@@ -44,6 +47,7 @@ void main() {
         ),
       );
 
+      await tester.pumpAndSettle();
       expect(find.text('Quận 1 (12)'), findsOneWidget);
     });
 
@@ -51,7 +55,7 @@ void main() {
         (tester) async {
       String? chosen;
       await tester.pumpWidget(
-        MaterialApp(
+        localizedCameraTestApp(
           home: Scaffold(
             body: CameraDistrictPicker(
               districts: sampleDistricts,
@@ -62,6 +66,7 @@ void main() {
         ),
       );
 
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(CameraDistrictPicker));
       await tester.pumpAndSettle();
 
@@ -79,7 +84,7 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(MaterialApp(
+    await tester.pumpWidget(localizedCameraTestApp(
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context)
             .copyWith(textScaler: const TextScaler.linear(2)),
@@ -111,7 +116,7 @@ void main() {
       CameraViewMode currentMode = CameraViewMode.card;
 
       await tester.pumpWidget(
-        MaterialApp(
+        localizedCameraTestApp(
           home: Scaffold(
             body: StatefulBuilder(
               builder: (context, setState) {
@@ -131,6 +136,7 @@ void main() {
       );
 
       // Search typing
+      await tester.pumpAndSettle();
       await tester.enterText(find.byType(TextField), 'Hai Bà Trưng');
       await tester.pump();
       expect(currentQuery, 'Hai Bà Trưng');
@@ -159,7 +165,7 @@ void main() {
           tester.view.devicePixelRatio = 1;
           addTearDown(tester.view.resetPhysicalSize);
           addTearDown(tester.view.resetDevicePixelRatio);
-          await tester.pumpWidget(MaterialApp(
+          await tester.pumpWidget(localizedCameraTestApp(
             builder: (context, child) => MediaQuery(
               data: MediaQuery.of(context)
                   .copyWith(textScaler: TextScaler.linear(scale)),
@@ -181,7 +187,7 @@ void main() {
           ));
           await tester.pumpAndSettle();
           expect(tester.takeException(), isNull);
-          expect(find.bySemanticsLabel('camera.view_grid'), findsOneWidget);
+          expect(find.bySemanticsLabel('Lưới'), findsOneWidget);
           for (final icon in [
             Icons.view_agenda_outlined,
             Icons.grid_view_outlined,
@@ -205,7 +211,7 @@ void main() {
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
       final nav = GlobalKey<NavigatorState>();
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedCameraTestApp(
         navigatorKey: nav,
         builder: (context, child) => MediaQuery(
           data: MediaQuery.of(context)
@@ -223,6 +229,7 @@ void main() {
           onViewModeChanged: (_) {},
         )),
       ));
+      await tester.pumpAndSettle();
       await tester.tap(find.byType(TextField));
       await tester.pump();
       await tester.tap(find.byType(CameraDistrictPicker));

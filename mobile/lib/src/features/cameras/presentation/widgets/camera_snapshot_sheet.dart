@@ -194,7 +194,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             CameraGlassIconButton(
                               key: const ValueKey('sheet_close_button'),
                               icon: Icons.close,
-                              label: 'Đóng',
+                              label: 'shared.close'.tr(),
                               embedded: true,
                               onPressed: () => Navigator.of(context).pop(),
                             ),

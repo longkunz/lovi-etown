@@ -60,3 +60,11 @@ Backend chạy **lần lượt** với `PATH` ưu tiên Node 24. Một lần th�
 12 PNG ở [thư mục mockup](liquid-glass-refresh/README.md) được tạo bằng `scripts/ui/generate-refresh-mockups.mjs` (Chrome headless/HTML), không phải Flutter screenshots hoặc bằng chứng trước/sau. Không dùng các file `ios-sim-*` chưa có metadata phiên chạy trong PR.
 
 Trước khi đổi PR sang Ready: review giao diện thật light/dark và opaque; chụp trước/sau đủ màn; kiểm tra native Maps/live, xoay và Back; walkthrough TalkBack/VoiceOver; chạy build profile 20 lần mở/đóng và ghi p95 UI/raster cùng RAM. Chưa có bằng chứng hoàn tất các bước này trong lượt review.
+
+## Xử lý review PR #41 — 2026-10-25
+
+- Dùng bản dịch cho nhãn Card/Grid/List, tooltip/semantics của nút xóa tìm kiếm và nút đóng trong sheet, image viewer, full-screen media viewer. Thêm `camera.clear_search` cho cả tiếng Việt và tiếng Anh.
+- Bộ chọn quận truyền `ListTile.selected` đúng cho quận hiện tại và “Tất cả” (cả giá trị `null` và chuỗi rỗng), giữ dấu check cùng trạng thái semantics.
+- Thêm 11 widget tests trong `camera_refresh_accessibility_test.dart`, đọc JSON bản dịch thật. Chạy cùng các test này trên mã trước sửa: **3 PASS, 8 FAIL**; sau sửa: **11/11 PASS**. Các test filters hiện có cũng dùng catalog thật và chờ localization khởi tạo, giữ kiểm tra viewport/text scale, callback và focus.
+- Chạy lại trên worktree riêng, Flutter 3.47.7 / Dart 3.13.5: `flutter test --no-pub --reporter expanded` **185/185 PASS**, `flutter analyze --no-pub` **0 issues**; sinh localization keys thành công. Backend chạy lần lượt bằng Node 24.16.0: `npm run test:unit` **56/56 PASS**, `npm run test:api` **18/18 PASS**, `npm run test:db` **12/12 PASS** với PostGIS local.
+- Review lại diff và test harness không còn phát hiện cần sửa. Phần nghiệm thu trên thiết bị và profile nêu trên vẫn chưa hoàn tất; PR tiếp tục Draft.

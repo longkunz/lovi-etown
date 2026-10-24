@@ -787,7 +787,7 @@ class _FullScreenMediaPage extends StatelessWidget {
                     CameraGlassIconButton(
                       key: const ValueKey('viewer_fullscreen_close'),
                       icon: Icons.close,
-                      label: 'Đóng',
+                      label: 'shared.close'.tr(),
                       embedded: true,
                       iconColor: Colors.white,
                       iconSize: 28,

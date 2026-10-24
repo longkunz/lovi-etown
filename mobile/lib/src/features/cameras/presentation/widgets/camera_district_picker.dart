@@ -133,6 +133,8 @@ class _CameraDistrictPickerState extends State<CameraDistrictPicker> {
                         children: [
                           ListTile(
                             minTileHeight: CameraUiTokens.minTouchTarget,
+                            selected: widget.selectedDistrict == null ||
+                                widget.selectedDistrict!.isEmpty,
                             title: Text(allLabel),
                             trailing: (widget.selectedDistrict == null ||
                                     widget.selectedDistrict!.isEmpty)
@@ -149,6 +151,7 @@ class _CameraDistrictPickerState extends State<CameraDistrictPicker> {
                                 d.name == widget.selectedDistrict;
                             return ListTile(
                               minTileHeight: CameraUiTokens.minTouchTarget,
+                              selected: isSelected,
                               title: Text('${d.name} (${d.count})'),
                               trailing: isSelected
                                   ? const Icon(Icons.check,

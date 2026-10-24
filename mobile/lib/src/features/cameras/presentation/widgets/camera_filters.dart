@@ -60,19 +60,19 @@ class _CameraFiltersState extends State<CameraFilters> {
       ButtonSegment<CameraViewMode>(
         value: CameraViewMode.card,
         icon: const Icon(Icons.view_agenda_outlined, size: 18),
-        label: compact ? null : const Text('Card'),
+        label: compact ? null : Text('camera.view_card'.tr()),
         tooltip: 'camera.view_card'.tr(),
       ),
       ButtonSegment<CameraViewMode>(
         value: CameraViewMode.grid,
         icon: const Icon(Icons.grid_view_outlined, size: 18),
-        label: compact ? null : const Text('Grid'),
+        label: compact ? null : Text('camera.view_grid'.tr()),
         tooltip: 'camera.view_grid'.tr(),
       ),
       ButtonSegment<CameraViewMode>(
         value: CameraViewMode.list,
         icon: const Icon(Icons.view_list_outlined, size: 18),
-        label: compact ? null : const Text('List'),
+        label: compact ? null : Text('camera.view_list'.tr()),
         tooltip: 'camera.view_list'.tr(),
       ),
     ];

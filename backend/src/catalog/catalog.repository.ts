@@ -121,7 +121,7 @@ export class PgCatalogRepository implements CatalogRepository {
           INSERT INTO cameras (
             provider, provider_camera_id, name, name_normalized, province_id,
             address, address_normalized, district, district_normalized,
-            geom, capabilities, source_kind, source_ref, stream_url, stream_url, updated_at
+            geom, capabilities, source_kind, source_ref, stream_url, updated_at
           ) VALUES (
             $1, $2, $3, $4, $5, $6, $7, $8, $9, ${geomSql}, $10, $11, $12, $13, NOW()
           )

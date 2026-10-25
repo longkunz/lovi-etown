@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_canvas.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
@@ -91,7 +91,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(CameraTrafficMapCard), findsOneWidget);
-      expect(find.byType(GoogleMap), findsNothing);
+      expect(find.byType(CameraMapCanvas), findsNothing);
       expect(find.text('Bản đồ lưu lượng'), findsNothing);
     });
 
@@ -129,7 +129,7 @@ void main() {
       expect(capturedConfig!.center.longitude, 106.7114);
       expect(capturedConfig!.trafficEnabled, isTrue);
       expect(capturedConfig!.markers.length, 1);
-      expect(capturedConfig!.markers.first.markerId.value, 'cam_hang_xanh');
+      expect(capturedConfig!.markers.first.id, 'cam_hang_xanh');
 
       // Verify action buttons exist by key
       expect(find.byKey(const ValueKey('traffic_map_recenter_button')),

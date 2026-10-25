@@ -1,6 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_district_picker.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_search_field.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_segmented_control.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 class CameraFilters extends StatefulWidget {
@@ -52,10 +55,31 @@ class _CameraFiltersState extends State<CameraFilters> {
     super.dispose();
   }
 
+  List<ButtonSegment<CameraViewMode>> _buildSegments({bool compact = false}) {
+    return [
+      ButtonSegment<CameraViewMode>(
+        value: CameraViewMode.card,
+        icon: const Icon(Icons.view_agenda_outlined, size: 18),
+        label: compact ? null : const Text('Card'),
+        tooltip: 'camera.view_card'.tr(),
+      ),
+      ButtonSegment<CameraViewMode>(
+        value: CameraViewMode.grid,
+        icon: const Icon(Icons.grid_view_outlined, size: 18),
+        label: compact ? null : const Text('Grid'),
+        tooltip: 'camera.view_grid'.tr(),
+      ),
+      ButtonSegment<CameraViewMode>(
+        value: CameraViewMode.list,
+        icon: const Icon(Icons.view_list_outlined, size: 18),
+        label: compact ? null : const Text('List'),
+        tooltip: 'camera.view_list'.tr(),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: CameraUiTokens.spacing16,
@@ -64,125 +88,61 @@ class _CameraFiltersState extends State<CameraFilters> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Search box
-          TextField(
+          CameraGlassSearchField(
             controller: _controller,
-            decoration: InputDecoration(
-              hintText: 'camera.search_hint'.tr(),
-              prefixIcon: const Icon(Icons.search, color: CameraUiTokens.primaryTeal),
-              suffixIcon: _controller.text.isNotEmpty
-                  ? IconButton(
-                      icon: const Icon(Icons.clear, size: 20),
-                      onPressed: () {
-                        _controller.clear();
-                        widget.onQueryChanged('');
-                      },
-                    )
-                  : null,
-              filled: true,
-              fillColor: theme.colorScheme.surface,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: CameraUiTokens.spacing16,
-                vertical: CameraUiTokens.spacing12,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-                borderSide: BorderSide(
-                  color: widget.validationMessage != null
-                      ? CameraUiTokens.errorRed
-                      : theme.dividerColor.withValues(alpha: 0.2),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-                borderSide: BorderSide(
-                  color: widget.validationMessage != null
-                      ? CameraUiTokens.errorRed
-                      : theme.dividerColor.withValues(alpha: 0.2),
-                ),
-              ),
-            ),
+            hintText: 'camera.search_hint'.tr(),
             onChanged: widget.onQueryChanged,
+            onClear: () {
+              widget.onQueryChanged('');
+            },
+            validationMessage: widget.validationMessage,
           ),
-          if (widget.validationMessage != null) ...[
-            const SizedBox(height: CameraUiTokens.spacing4),
-            Text(
-              widget.validationMessage!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: CameraUiTokens.errorRed,
-              ),
-            ),
-          ],
           const SizedBox(height: CameraUiTokens.spacing8),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth <
+                      CameraUiTokens.compactFilterBreakpoint ||
+                  MediaQuery.textScalerOf(context).scale(1) > 1.3;
+              if (isNarrow) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    CameraDistrictPicker(
+                      districts: widget.districts,
+                      selectedDistrict: widget.selectedDistrict,
+                      onChanged: widget.onDistrictChanged,
+                    ),
+                    const SizedBox(height: CameraUiTokens.spacing8),
+                    Center(
+                      child: CameraGlassSegmentedControl<CameraViewMode>(
+                        segments: _buildSegments(compact: true),
+                        value: widget.viewMode,
+                        onChanged: widget.onViewModeChanged,
+                      ),
+                    ),
+                  ],
+                );
+              }
 
-          // District selector & view mode toggle
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: CameraUiTokens.spacing12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surface,
-                    borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
-                    border: Border.all(color: theme.dividerColor.withValues(alpha: 0.2)),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String?>(
-                      value: widget.selectedDistrict,
-                      isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down, color: CameraUiTokens.primaryTeal),
-                      hint: Text('camera.all_districts'.tr()),
-                      items: [
-                        DropdownMenuItem<String?>(
-                          value: null,
-                          child: Text('camera.all_districts'.tr()),
-                        ),
-                        ...widget.districts.map(
-                          (d) => DropdownMenuItem<String?>(
-                            value: d.name,
-                            child: Text(
-                              '${d.name} (${d.count})',
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ),
-                      ],
+              return Row(
+                children: [
+                  Expanded(
+                    child: CameraDistrictPicker(
+                      districts: widget.districts,
+                      selectedDistrict: widget.selectedDistrict,
                       onChanged: widget.onDistrictChanged,
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(width: CameraUiTokens.spacing12),
-
-              // View mode toggles
-              SegmentedButton<CameraViewMode>(
-                segments: [
-                  ButtonSegment<CameraViewMode>(
-                    value: CameraViewMode.card,
-                    icon: const Icon(Icons.view_agenda_outlined, size: 20),
-                    tooltip: 'camera.view_card'.tr(),
-                  ),
-                  ButtonSegment<CameraViewMode>(
-                    value: CameraViewMode.grid,
-                    icon: const Icon(Icons.grid_view_outlined, size: 20),
-                    tooltip: 'camera.view_grid'.tr(),
-                  ),
-                  ButtonSegment<CameraViewMode>(
-                    value: CameraViewMode.list,
-                    icon: const Icon(Icons.view_list_outlined, size: 20),
-                    tooltip: 'camera.view_list'.tr(),
+                  const SizedBox(width: CameraUiTokens.spacing8),
+                  CameraGlassSegmentedControl<CameraViewMode>(
+                    segments:
+                        _buildSegments(compact: constraints.maxWidth < 420),
+                    value: widget.viewMode,
+                    onChanged: widget.onViewModeChanged,
                   ),
                 ],
-                selected: {widget.viewMode},
-                onSelectionChanged: (newSelection) {
-                  widget.onViewModeChanged(newSelection.first);
-                },
-                style: const ButtonStyle(
-                  visualDensity: VisualDensity.compact,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ],
       ),

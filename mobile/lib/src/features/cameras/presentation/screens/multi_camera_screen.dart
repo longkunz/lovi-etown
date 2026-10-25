@@ -6,6 +6,8 @@ import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Picks the favorites shown in the multi-camera grid (T12): catalog-known
@@ -132,6 +134,11 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
         title: const Text('Lưới camera'),
         elevation: 0,
         backgroundColor: Colors.transparent,
+        flexibleSpace: const CameraGlassSurface(
+          role: CameraGlassRole.header,
+          borderRadius: BorderRadius.zero,
+          child: SizedBox.expand(),
+        ),
       ),
       body: selected.isEmpty
           ? const Center(child: Text('Chưa có camera Quan tâm khả dụng'))

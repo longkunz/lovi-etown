@@ -1,4 +1,4 @@
-package site.capyai.lovi
+package com.lovisoft.etown
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

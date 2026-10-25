@@ -143,11 +143,33 @@ end
 
 ---
 
-## 5. 🌍 Environment Variables
+## 5. 🌍 Environment Variables & Google Maps API Key
 
-Create `mobile/.env` by copying `.env.example`, set `CAMERA_API_BASE_URL=https://api.capyai.site` and your `CAMERA_READER_KEY`, and keep `CAMERA_DEMO_MODE=false` for the real backend.
+Your project relies on `flutter_dotenv` to load app-level secrets, and native configuration for Google Maps SDK (T18).
+
+### 5.1 App Variables (`.env`)
+1. Create a [`.env`](.env) file in the `mobile/` project root folder.
+2. Copy the variables from `.env.example`, use `CAMERA_API_BASE_URL=https://api.capyai.site`, and set `CAMERA_READER_KEY` to your reader API key. Keep `CAMERA_DEMO_MODE=false` for the real backend.
+3. For Dart reference, optional: `GOOGLE_MAPS_API_KEY=AIzaSy...`.
 
 The app loads `.env` automatically at startup. Explicit `--dart-define` values override individual `.env` values. Stop and restart the app after changing these values.
+
+### 5.2 Google Maps SDK (Traffic Layer & Camera Locations)
+Maps SDK for Android and iOS requires native API Key registration:
+1. **Google Cloud Console:** Create a project, enable **Maps SDK for Android** and **Maps SDK for iOS**.
+2. **Key Restriction:**
+   - Android: Restrict by package name `com.lovisoft.etown` and debug/release SHA-1 fingerprint.
+   - iOS: Restrict by iOS bundle identifier `com.lovisoft.etown`.
+3. **Android Configuration:**
+   - Add to `mobile/android/local.properties`:
+     ```properties
+     GOOGLE_MAPS_API_KEY=AIzaSyYourActualKeyHere
+     ```
+   - Or export `export GOOGLE_MAPS_API_KEY=AIzaSy...` in your build environment.
+   - The key is injected at build time into `AndroidManifest.xml` via `manifestPlaceholders`.
+4. **iOS Configuration:**
+   - Set `GOOGLE_MAPS_API_KEY` in your environment or Xcode build settings / `Info.plist`.
+   - Pass API Key to `GMSServices.provideAPIKey("...")` in `AppDelegate.swift`.
 
 ---
 
@@ -161,7 +183,7 @@ The app loads `.env` automatically at startup. Explicit `--dart-define` values o
 
 You chose to structure your APIs using **Custom Backend**.
 
-Camera connections read `CAMERA_API_BASE_URL`, `CAMERA_READER_KEY`, and `CAMERA_DEMO_MODE` from `.env`. Run `flutter run` or select the `App: Production API` VS Code launch profile.
+Camera connections automatically read `CAMERA_API_BASE_URL`, `CAMERA_READER_KEY`, and `CAMERA_DEMO_MODE` from `.env` at startup. Explicit `--dart-define` values override individual `.env` values. Run `flutter run` or select the `App: Production API` VS Code launch profile. Stop and restart the app after changing these values.
 
 ---
 

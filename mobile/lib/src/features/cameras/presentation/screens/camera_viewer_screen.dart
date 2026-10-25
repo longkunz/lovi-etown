@@ -10,7 +10,11 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// Full-screen viewer for a single camera, mirroring the reference
@@ -27,6 +31,7 @@ class CameraViewerScreen extends StatefulWidget {
     required this.repository,
     required this.favoritesRepository,
     this.onOpenMultiCamera,
+    this.mapBuilder,
     super.key,
   });
 
@@ -37,6 +42,9 @@ class CameraViewerScreen extends StatefulWidget {
   /// Opens the multi-camera grid; when null the shortcut is hidden
   /// (e.g. when the viewer itself was opened from the grid).
   final VoidCallback? onOpenMultiCamera;
+
+  /// Optional custom map builder for testing (T18).
+  final Widget Function(BuildContext, CameraTrafficMapConfig)? mapBuilder;
 
   @override
   State<CameraViewerScreen> createState() => _CameraViewerScreenState();
@@ -181,8 +189,14 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
     return Scaffold(
       backgroundColor: CameraUiTokens.backgroundDark,
       appBar: AppBar(
-        backgroundColor: CameraUiTokens.backgroundDark,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        flexibleSpace: const CameraGlassSurface(
+          role: CameraGlassRole.header,
+          brightness: Brightness.dark,
+          borderRadius: BorderRadius.zero,
+          child: SizedBox.expand(),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         title: BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
           bloc: _previewCubit,
@@ -307,6 +321,19 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 _buildInfoSection(context, camera),
                 const SizedBox(height: CameraUiTokens.spacing12),
                 _buildActionRow(context, camera, isFavorite),
+                if (camera.hasLocation) ...[
+                  const SizedBox(height: CameraUiTokens.spacing16),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: CameraUiTokens.spacing16,
+                    ),
+                    child: CameraTrafficMapCard(
+                      key: ValueKey('viewer_traffic_map_${camera.id}'),
+                      camera: camera,
+                      mapBuilder: widget.mapBuilder,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: CameraUiTokens.spacing16),
                 TrafficBriefCard(
                   key: ValueKey('traffic_brief_${camera.id}'),
@@ -746,37 +773,41 @@ class _FullScreenMediaPage extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: CameraUiTokens.spacing8,
-                vertical: CameraUiTokens.spacing8,
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: CameraUiTokens.minTouchTarget,
-                    height: CameraUiTokens.minTouchTarget,
-                    child: IconButton(
+            CameraGlassSurface(
+              role: CameraGlassRole.header,
+              brightness: Brightness.dark,
+              borderRadius: BorderRadius.zero,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: CameraUiTokens.spacing8,
+                  vertical: CameraUiTokens.spacing8,
+                ),
+                child: Row(
+                  children: [
+                    CameraGlassIconButton(
                       key: const ValueKey('viewer_fullscreen_close'),
-                      icon: const Icon(Icons.close,
-                          color: Colors.white, size: 28),
+                      icon: Icons.close,
+                      label: 'Đóng',
+                      embedded: true,
+                      iconColor: Colors.white,
+                      iconSize: 28,
                       onPressed: () => Navigator.of(context).pop(),
                     ),
-                  ),
-                  const SizedBox(width: CameraUiTokens.spacing8),
-                  Expanded(
-                    child: Text(
-                      cameraName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(width: CameraUiTokens.spacing8),
+                    Expanded(
+                      child: Text(
+                        cameraName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Expanded(child: child),

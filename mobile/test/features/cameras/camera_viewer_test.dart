@@ -144,6 +144,7 @@ class _ViewerRepo implements CameraRepository {
   final Map<String, Camera> cameras;
   final List<String> snapshotRequests = [];
   final Map<String, List<Camera>> relatedById;
+  bool returnUnchanged = false;
 
   @override
   FutureEither<CatalogPage> list({
@@ -193,6 +194,7 @@ class _ViewerRepo implements CameraRepository {
   FutureEither<SnapshotReply> snapshot(String endpoint,
       {String? etag, CancelToken? cancelToken}) async {
     snapshotRequests.add(endpoint);
+    if (returnUnchanged) return const Right(SnapshotUnchanged());
     return Right(SnapshotReceived(SnapshotFrame(bytes: pngBytes, etag: 'e1')));
   }
 }
@@ -304,6 +306,42 @@ void main() {
     await tester.pump(const Duration(milliseconds: 300));
     await tester.pump(const Duration(milliseconds: 300));
   }
+
+  testWidgets('snapshot countdown animates and restarts after a 304 refresh',
+      (tester) async {
+    final repo = _ViewerRepo(cameras: {'cam-plain': plainCam});
+    await pumpViewer(tester,
+        cameraId: 'cam-plain', repo: repo, favs: InMemoryFavoritesRepository());
+
+    final progress = find.byKey(const ValueKey('camera_refresh_progress'));
+    expect(progress, findsOneWidget);
+    final start = tester.widget<CircularProgressIndicator>(progress).value!;
+    await tester.pump(const Duration(seconds: 6));
+    final later = tester.widget<CircularProgressIndicator>(progress).value!;
+    expect(later, lessThan(start - 0.09));
+    expect(find.text('Làm mới sau 54s'), findsOneWidget);
+    expect(repo.snapshotRequests, hasLength(1));
+
+    repo.returnUnchanged = true;
+    await tester.pump(const Duration(seconds: 54));
+    await tester.pump();
+    expect(repo.snapshotRequests, hasLength(2));
+    expect(find.text('Làm mới sau 60s'), findsOneWidget);
+    expect(tester.widget<CircularProgressIndicator>(progress).value!,
+        greaterThan(0.99));
+
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(progress, findsNothing);
+    await tester.pump(const Duration(seconds: 90));
+    expect(repo.snapshotRequests, hasLength(2));
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    await tester.pump();
+    expect(repo.snapshotRequests, hasLength(3));
+    expect(progress, findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
 
   testWidgets('opens in Live mode for a live-capable camera', (tester) async {
     final repo = _ViewerRepo(cameras: {'cam-live': liveCam});

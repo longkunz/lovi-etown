@@ -8,6 +8,8 @@ abstract final class CameraUiTokens {
   // ── Touch Target ──────────────────────────────────────────────────────────
   /// Apple HIG & Material accessibility minimum interactive target (48x48)
   static const double minTouchTarget = 48;
+  static const double controlIconSize = 20;
+  static const double overlayControlSize = 32;
 
   // ── Spacing ───────────────────────────────────────────────────────────────
   static const double spacing2 = 2;

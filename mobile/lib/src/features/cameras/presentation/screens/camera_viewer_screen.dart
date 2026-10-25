@@ -10,6 +10,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_refresh_countdown.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
@@ -376,14 +377,22 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             Positioned(
               top: CameraUiTokens.spacing4,
               right: CameraUiTokens.spacing4,
-              child: DecoratedBox(
-                decoration: const BoxDecoration(
-                  color: Colors.black45,
-                  shape: BoxShape.circle,
-                ),
+              child: SizedBox.square(
+                dimension: CameraUiTokens.minTouchTarget,
                 child: IconButton(
                   key: const ValueKey('viewer_fullscreen_button'),
-                  icon: const Icon(Icons.fullscreen, color: Colors.white),
+                  padding: EdgeInsets.zero,
+                  icon: Container(
+                    width: CameraUiTokens.overlayControlSize,
+                    height: CameraUiTokens.overlayControlSize,
+                    decoration: const BoxDecoration(
+                      color: Colors.black45,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.fullscreen, color: Colors.white,
+                        size: CameraUiTokens.controlIconSize),
+                  ),
                   tooltip: 'Toàn màn hình',
                   onPressed: () =>
                       _openFullScreen(camera, liveSelected: liveSelected),
@@ -526,6 +535,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
               },
               icon: Icon(
                 isFavorite ? Icons.star : Icons.star_border,
+                  size: CameraUiTokens.controlIconSize,
                 color: isFavorite
                     ? CameraUiTokens.starActive
                     : CameraUiTokens.starInactive,
@@ -665,6 +675,16 @@ class _SnapshotView extends StatelessWidget {
       fit: StackFit.expand,
       children: [
         imageWidget,
+        if (state.currentFrame != null)
+          Positioned(
+            bottom: CameraUiTokens.spacing8,
+            left: CameraUiTokens.spacing8,
+            right: CameraUiTokens.spacing8,
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: CameraRefreshCountdown(state: state),
+            ),
+          ),
         if (state.isStale)
           Positioned(
             top: CameraUiTokens.spacing8,

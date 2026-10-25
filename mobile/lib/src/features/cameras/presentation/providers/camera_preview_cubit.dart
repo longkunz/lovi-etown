@@ -56,6 +56,7 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
       currentFrame: isSameCamera ? state.currentFrame : cachedFrame,
       clearCurrentFrame: !isSameCamera && cachedFrame == null,
       isStale: false,
+      clearRefreshSchedule: true,
     ));
 
     await _loadDetail(currentGen);
@@ -183,6 +184,10 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
         : state.currentFrame!.etag;
 
     _cancelToken ??= CancelToken();
+    emit(state.copyWith(
+      snapshotState: const RequestLoading(),
+      clearRefreshSchedule: true,
+    ));
     final snapResult = await _repository.snapshot(
       endpoint,
       etag: etagToSend,
@@ -269,7 +274,7 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
     final intervalMs = state.descriptor?.refreshIntervalMs ?? 12000;
     final intervalSeconds = math.max(3, (intervalMs / 1000).round());
 
-    _pollingTimer = _clock.schedule(
+    _scheduleRefresh(
       Duration(seconds: intervalSeconds),
       () {
         // While the descriptor has not been recovered yet, a cycle first
@@ -282,6 +287,18 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
         }
       },
     );
+  }
+
+  void _scheduleRefresh(Duration delay, void Function() onRefresh) {
+    _pollingTimer?.cancel();
+    _pollingTimer = _clock.schedule(delay, () {
+      emit(state.copyWith(clearRefreshSchedule: true));
+      onRefresh();
+    });
+    emit(state.copyWith(
+      nextRefreshAt: _clock.now().add(delay),
+      refreshDelay: delay,
+    ));
   }
 
   /// Schedules [onRetry] after a failure, honouring the retry policy:
@@ -329,7 +346,7 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
     }
 
     _pollingTimer?.cancel();
-    _pollingTimer = _clock.schedule(delay, () {
+    _scheduleRefresh(delay, () {
       onRetry();
     });
   }
@@ -337,7 +354,10 @@ class CameraPreviewCubit extends Cubit<CameraPreviewState> {
   void setForeground(bool isForeground) {
     if (state.isForeground == isForeground) return;
 
-    emit(state.copyWith(isForeground: isForeground));
+    emit(state.copyWith(
+      isForeground: isForeground,
+      clearRefreshSchedule: true,
+    ));
 
     if (!isForeground) {
       _generation++;

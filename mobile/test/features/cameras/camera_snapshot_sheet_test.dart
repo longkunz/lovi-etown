@@ -1,3 +1,4 @@
+import '../../support/pump_camera_transition.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -182,7 +183,7 @@ void main() {
       previewCubit.close();
     });
 
-    testWidgets('sheet_has_no_refresh_fullscreen_buttons_or_time_text', (tester) async {
+    testWidgets('sheet shows refresh countdown without extra action buttons', (tester) async {
       await tester.pumpWidget(
         buildTestApp(
           child: Scaffold(
@@ -206,12 +207,13 @@ void main() {
 
       // Open sheet
       await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // Should show sheet title and close button
       expect(find.byType(CameraSnapshotSheet), findsOneWidget);
       expect(find.text('Giao lo Le Loi - Pasteur'), findsOneWidget);
       expect(find.byIcon(Icons.close), findsOneWidget);
+      expect(find.text('Làm mới sau 5s'), findsOneWidget);
 
       // Should NOT have refresh button, fullscreen button, or live clock text
       expect(find.byIcon(Icons.refresh), findsNothing);
@@ -268,7 +270,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // First frame loaded; no stale notice yet.
       expect(find.byKey(const ValueKey('snapshot_sheet_image')),
@@ -286,6 +288,7 @@ void main() {
       expect(find.byKey(const ValueKey('snapshot_sheet_image')),
           findsOneWidget);
       expect(find.text('Ảnh cũ'), findsOneWidget);
+      expect(find.text('Làm mới sau 12s'), findsOneWidget);
       expect(find.textContaining('offline'), findsNothing);
     });
 
@@ -312,13 +315,13 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // Tap snapshot image area
       final imageFinder = find.byKey(const ValueKey('snapshot_sheet_image'));
       expect(imageFinder, findsOneWidget);
       await tester.tap(imageFinder);
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // CameraImageViewer should now be open
       expect(find.byType(CameraImageViewer), findsOneWidget);
@@ -358,7 +361,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       expect(tester.takeException(), isNull);
       expect(find.byType(CameraSnapshotSheet), findsOneWidget);

@@ -12,6 +12,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_refresh_countdown.dart';
 import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 Future<void> showCameraSnapshotSheet(
@@ -212,6 +213,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                               },
                               icon: Icon(
                                 isFavorite ? Icons.star : Icons.star_border,
+                                  size: CameraUiTokens.controlIconSize,
                                 color: isFavorite
                                     ? CameraUiTokens.starActive
                                     : CameraUiTokens.starInactive,
@@ -410,6 +412,16 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
             fit: StackFit.passthrough,
             children: [
               imageWidget,
+                if (state.currentFrame != null)
+                  Positioned(
+                    bottom: CameraUiTokens.spacing8,
+                    left: CameraUiTokens.spacing8,
+                    right: CameraUiTokens.spacing8,
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: CameraRefreshCountdown(state: state),
+                    ),
+                  ),
               if (state.isStale)
                 Positioned(
                   top: CameraUiTokens.spacing8,

@@ -35,12 +35,14 @@ flutter run --dart-define=CAMERA_DEMO_MODE=true
 ```
 
 ### 3. Chạy ứng dụng kết nối tới Backend thực tế
+
+Backend: `https://api.capyai.site/`. Tạo `mobile/.env` từ `.env.example` nếu chưa có, điền `CAMERA_READER_KEY`, rồi chạy trong thư mục `mobile/`:
+
 ```bash
-flutter run \
-  --dart-define=CAMERA_API_BASE_URL=http://10.0.2.2:3000 \
-  --dart-define=CAMERA_READER_KEY=your_reader_api_key_here \
-  --dart-define=CAMERA_DEMO_MODE=false
+flutter run
 ```
+
+App tự đọc `.env` khi khởi động. Trong VS Code, chọn profile `App: Production API`. Có thể truyền `--dart-define` để ghi đè từng giá trị trong `.env`. Dừng và chạy lại app khi đổi cấu hình.
 
 ---
 

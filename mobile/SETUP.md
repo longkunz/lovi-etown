@@ -145,11 +145,9 @@ end
 
 ## 5. 🌍 Environment Variables
 
-Your project relies on `flutter_dotenv` to load secrets. 
+Create `mobile/.env` by copying `.env.example`, set `CAMERA_API_BASE_URL=https://api.capyai.site` and your `CAMERA_READER_KEY`, and keep `CAMERA_DEMO_MODE=false` for the real backend.
 
-1. Create a [`.env`](.env) file in the project root folder.
-2. Insert your required variables (e.g. `API_URL=https://api.example.com`).
-3. These keys are now accessible in Dart via `dotenv.env['API_URL']`.
+The app loads `.env` automatically at startup. Explicit `--dart-define` values override individual `.env` values. Stop and restart the app after changing these values.
 
 ---
 
@@ -163,8 +161,7 @@ Your project relies on `flutter_dotenv` to load secrets.
 
 You chose to structure your APIs using **Custom Backend**.
 
-Verify that your Base URL pointing to staging/production is correctly initialized inside your globally injected network class.
-   *(Tip: Read this via `dotenv.env['BASE_API_URL']` inside your network initializer!)*
+Camera connections read `CAMERA_API_BASE_URL`, `CAMERA_READER_KEY`, and `CAMERA_DEMO_MODE` from `.env`. Run `flutter run` or select the `App: Production API` VS Code launch profile.
 
 ---
 

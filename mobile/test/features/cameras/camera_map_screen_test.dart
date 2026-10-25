@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_results.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_map_state.dart';
 import 'package:flutter_starter/src/utils/failure.dart';
@@ -51,8 +52,91 @@ class RejectedCatalog extends FixtureCameraRepository {
       const Left(ApiFailure('Expired', statusCode: 401));
 }
 
+class SlowCatalog extends FixtureCameraRepository {
+  final pending = Completer<Either<Failure, List<DistrictOption>>>();
+  @override
+  FutureEither<List<DistrictOption>> districts({CancelToken? cancelToken}) =>
+      pending.future;
+}
+
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
+  testWidgets(
+      'traffic loads before districts and refreshes shared edits on return',
+      (tester) async {
+    SharedPreferences.setMockInitialValues(
+        {'camera_traffic_layer_enabled': false});
+    final catalog = SlowCatalog();
+    CameraMapViewConfig? config;
+    Widget screen(bool active) => MaterialApp(
+        home: CameraMapScreen(
+            repository: Maps(),
+            locationGateway: GPS(),
+            cameraRepository: catalog,
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            active: active,
+            connectionConfig: const MapConnectionConfig(apiKey: 'key'),
+            mapBuilder: (context, value) {
+              config = value;
+              return const SizedBox();
+            }));
+    await tester.pumpWidget(screen(true));
+    await tester.pumpAndSettle();
+    expect(config!.trafficEnabled, false);
+    await tester.tap(find.text('Giao thông'));
+    await tester.pumpAndSettle();
+    expect(config!.trafficEnabled, true);
+    await tester.pumpWidget(screen(false));
+    await tester.pumpAndSettle();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('camera_traffic_layer_enabled', false);
+    await tester.pumpWidget(screen(true));
+    await tester.pumpAndSettle();
+    expect(config!.trafficEnabled, false);
+    (tester.state(find.byType(CameraMapScreen)) as WidgetsBindingObserver)
+        .didChangeAppLifecycleState(AppLifecycleState.paused);
+    await tester.pump();
+    await prefs.setBool('camera_traffic_layer_enabled', true);
+    (tester.state(find.byType(CameraMapScreen)) as WidgetsBindingObserver)
+        .didChangeAppLifecycleState(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(config!.trafficEnabled, true);
+    catalog.pending.complete(const Right([]));
+    await tester.pumpAndSettle();
+  });
+  testWidgets('background initialization does not mount canvas',
+      (tester) async {
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    addTearDown(() => tester.binding
+        .handleAppLifecycleStateChanged(AppLifecycleState.resumed));
+    await tester.pumpWidget(MaterialApp(
+        home: CameraMapScreen(
+            repository: Maps(),
+            locationGateway: GPS(),
+            cameraRepository: FixtureCameraRepository(),
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            mapBuilder: (context, config) =>
+                const SizedBox(key: ValueKey('background-map')))));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('background-map')), findsNothing);
+  });
+  testWidgets('stale limit explanation follows result query mode',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: CameraMapResults(
+                state: const CameraMapState(
+                    mode: CameraMapMode.viewport,
+                    resultQuery: CameraMapQuery.nearby(lat: 10, lng: 106),
+                    result: CameraMapResult(
+                        items: [], hasMore: true, catalogVersion: 'v1')),
+                onSelectCamera: (_) {},
+                onRetry: () {}))));
+    expect(find.textContaining('hãy giảm bán kính'), findsOneWidget);
+    expect(find.textContaining('Phóng to để xem đủ'), findsNothing);
+  });
   testWidgets(
       'results show stale coverage distance limits and route selected camera',
       (tester) async {

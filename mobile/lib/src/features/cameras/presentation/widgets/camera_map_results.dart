@@ -46,7 +46,8 @@ class CameraMapResults extends StatelessWidget {
         Text(mapText(
             'incomplete_catalog', 'Danh mục camera có thể chưa đầy đủ.')),
       if (result?.hasMore ?? false)
-        Text(state.mode == CameraMapMode.viewport
+        Text(!(state.resultQuery?.isNearby ??
+                (state.mode == CameraMapMode.nearby))
             ? mapText('viewport_limit', 'Phóng to để xem đủ camera')
             : mapText('nearby_limit',
                 'Đang hiển thị các camera gần nhất, hãy giảm bán kính để xem đủ')),

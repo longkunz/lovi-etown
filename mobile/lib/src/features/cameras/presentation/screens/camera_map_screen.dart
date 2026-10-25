@@ -43,10 +43,8 @@ class _CameraMapScreenState extends State<CameraMapScreen>
   late final CameraMapCubit _cubit;
   late final MapConnectionConfig _connection;
   CameraMapHandle? _handle;
-  bool _foreground = true,
-      _traffic = true,
-      _trafficEdited = false,
-      _demoScheduled = false;
+  bool _foreground = true, _traffic = true, _demoScheduled = false;
+  int _preferenceGeneration = 0;
   CameraMapType _mapType = CameraMapType.street;
   List<DistrictOption> _districts = [];
   Failure? _districtFailure;
@@ -57,9 +55,13 @@ class _CameraMapScreenState extends State<CameraMapScreen>
         widget.connectionConfig ?? MapConnectionConfig.fromEnvironment();
     _cubit = CameraMapCubit(
         repository: widget.repository, locationGateway: widget.locationGateway);
+    final lifecycle = WidgetsBinding.instance.lifecycleState;
+    _foreground = lifecycle == null || lifecycle == AppLifecycleState.resumed;
+    _cubit.setForeground(_foreground);
     _cubit.setActive(widget.active);
     WidgetsBinding.instance.addObserver(this);
     unawaited(_loadOptions());
+    unawaited(_loadTrafficPreference());
   }
 
   Future<void> _loadOptions() async {
@@ -74,23 +76,26 @@ class _CameraMapScreenState extends State<CameraMapScreen>
               _districts = values;
               _districtFailure = null;
             }));
+  }
+
+  Future<void> _loadTrafficPreference() async {
+    final generation = ++_preferenceGeneration;
     try {
       final prefs = await SharedPreferences.getInstance();
-      if (mounted && !_trafficEdited) {
-        setState(() =>
-            _traffic = prefs.getBool('camera_traffic_layer_enabled') ?? true);
-      }
+      if (!mounted || generation != _preferenceGeneration) return;
+      setState(() =>
+          _traffic = prefs.getBool('camera_traffic_layer_enabled') ?? true);
     } catch (_) {}
   }
 
   Future<void> _toggleTraffic() async {
-    setState(() {
-      _trafficEdited = true;
-      _traffic = !_traffic;
-    });
+    final generation = ++_preferenceGeneration;
+    final next = !_traffic;
+    setState(() => _traffic = next);
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('camera_traffic_layer_enabled', _traffic);
+      if (!mounted || generation != _preferenceGeneration) return;
+      await prefs.setBool('camera_traffic_layer_enabled', next);
     } catch (_) {}
   }
 
@@ -99,7 +104,12 @@ class _CameraMapScreenState extends State<CameraMapScreen>
     super.didUpdateWidget(old);
     if (old.active != widget.active) {
       _cubit.setActive(widget.active);
-      if (!widget.active) _handle = null;
+      if (!widget.active) {
+        _handle = null;
+        _preferenceGeneration++;
+      } else {
+        unawaited(_loadTrafficPreference());
+      }
     }
   }
 
@@ -109,11 +119,17 @@ class _CameraMapScreenState extends State<CameraMapScreen>
     if (next == _foreground) return;
     setState(() => _foreground = next);
     _cubit.setForeground(next);
-    if (!next) _handle = null;
+    if (!next) {
+      _handle = null;
+      _preferenceGeneration++;
+    } else {
+      unawaited(_loadTrafficPreference());
+    }
   }
 
   @override
   void dispose() {
+    _preferenceGeneration++;
     WidgetsBinding.instance.removeObserver(this);
     _cubit.close();
     super.dispose();

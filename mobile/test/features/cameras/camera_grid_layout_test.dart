@@ -2,8 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 
 void main() {
+  for (final mode in [CameraViewMode.card, CameraViewMode.grid]) {
+    testWidgets('$mode favorite keeps compact glass and a 48px tap target',
+        (tester) async {
+      var toggles = 0;
+      await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+          body: SizedBox(
+            width: 200,
+            height: 350,
+            child: CameraTile(
+              camera: const Camera(
+                id: 'favorite',
+                name: 'Lê Lợi',
+                provinceId: 'tp_hcm',
+                playbackEndpoint: '/favorite/playback',
+              ),
+              viewMode: mode,
+              isFavorite: true,
+              onToggleFavorite: () => toggles++,
+            ),
+          ),
+        ),
+      ));
+      await tester.pump();
+
+      final favorite = find.byTooltip('Bỏ quan tâm');
+      expect(tester.getSize(favorite), const Size(48, 48));
+      expect(
+          tester.getSize(find.byType(CameraGlassSurface)), const Size(32, 32));
+      expect(tester.widget<Icon>(find.byIcon(Icons.star)).size, 20);
+      // The corner is outside the visible 32px control but must remain tappable.
+      await tester.tapAt(tester.getTopLeft(favorite) + const Offset(1, 1));
+      expect(toggles, 1);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   for (final textScale in [1.0, 2.0]) {
     testWidgets('grid aligns images and labels at text scale $textScale',
         (tester) async {

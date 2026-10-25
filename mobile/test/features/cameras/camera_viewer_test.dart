@@ -204,6 +204,13 @@ class _Loader extends AssetLoader {
   @override
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
+        'camera': {
+          'traffic_map_title': 'Bản đồ lưu lượng',
+          'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
+          'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',
+          'traffic_map_recenter': 'Về vị trí camera',
+          'traffic_map_no_location': 'Chưa có dữ liệu vị trí cho camera này',
+        },
       };
 }
 

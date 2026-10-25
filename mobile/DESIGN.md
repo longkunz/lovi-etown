@@ -1,9 +1,12 @@
 # Design system — flutter_starter
 
-**Trạng thái triển khai:** Đã hoàn thành và nghiệm thu đầy đủ trên Flutter Mobile A1 (docs/ui/mobile-a1-verification.md).
-- Liquid Glass widgets (liquid_glass_widgets: 1.13.0) tích hợp hoàn chỉnh với tokens CameraUiTokens.
-- Snapshot sheet tối giản loại bỏ nút thừa, chạm ảnh mở viewer overlay.
-- Section Quan tâm tích hợp inline trong Camera, lưu bền vững và đồng bộ.
+**Trạng thái triển khai:**
+- **Mobile A1 (2026-10-16):** Đã hoàn thành và nghiệm thu đầy đủ (docs/ui/mobile-a1-verification.md).
+- **Google Maps & Traffic Layer T18 (2026-10-24):** Có báo cáo triển khai; native/lifecycle cần nghiệm thu riêng (docs/ui/t18-google-maps-traffic-verification.md).
+- **Liquid Glass Refresh (2026-10-24):** Đã review mã nguồn và kiểm thử tự động 174/174 Flutter tests PASS, 86/86 Backend tests PASS (docs/ui/liquid-glass-refresh-verification.md). Bộ component kính dùng chung `CameraGlassSurface`, `CameraGlassIconButton`, `CameraGlassSearchField`, `CameraGlassSegmentedControl`, `CameraDistrictPicker` áp dụng xuyên suốt catalog, sheet, viewers, multi-camera grid và map; các mục đo đạc profile frame time/RAM và TalkBack/VoiceOver được bảo lưu cho bước kiểm thử trên thiết bị vật lý.
+- Snapshot sheet tối giản loại bỏ nút thừa, tách biệt header glass khỏi body media solid; chạm ảnh mở viewer overlay.
+- Minimum touch target: Controls kính dùng tối thiểu 48×48 logical pixels; cần tiếp tục walkthrough toàn app trên thiết bị (`CameraUiTokens.minTouchTarget`).
+- Zero glass over media: Toàn bộ ảnh snapshot, live video và canvas Google Maps nằm độc lập, không đi qua shader mờ.
 
 This file documents the design conventions established at generation time. Consult it before changing UI code.
 
@@ -78,7 +81,25 @@ Import tokens via `package:flutter_starter/src/theme/theme_constants.dart`.
 
 ---
 
-## Responsive layout (no ScreenUtil)
+## Liquid Glass Component System (`features/cameras/presentation/widgets/glass/`)
+
+Hệ thống component kính được chuẩn hóa qua `CameraGlassTheme`, `CameraGlassPolicy` và `CameraUiTokens`:
+
+| Component | Vị trí / Mục đích | Đặc tính kỹ thuật |
+|---|---|---|
+| `CameraGlassSurface` | Khung nền kính dùng cho AppBar, Sheet Header, floating panels | Nhận `CameraGlassRole` (`header`, `sheetHeader`, `control`), tự động fallback sang `Container` khi `forceOpaque` hoặc `highContrast`. |
+| `CameraGlassIconButton` | Nút bấm thao tác icon (Back, Close, Star, Recenter, Traffic, MapType) | Đạt chuẩn touch target ≥ 48×48 px (`minTouchTarget`), hỗ trợ `embedded: true` (tránh lồng kính 2 lớp) và `forceOpaque: true`. |
+| `CameraGlassSearchField` | Ô tìm kiếm camera nổi | Nền kính bo tròn 24px, tích hợp nút Clear 48×48 px, responsive chống tràn text scale 2.0. |
+| `CameraGlassSegmentedControl` | Chuyển đổi Card / Grid / List | Bố cục co giãn với scroll ngang chống tràn layout ở 320dp / text scale 2.0. |
+| `CameraDistrictPicker` | Popover bộ lọc quận/huyện | Hiển thị số lượng camera trong label, modal lựa chọn có keyboard inset và trả focus sau Back. |
+
+### Quy tắc bất biến (Invariants):
+1. **Single-layer glass rule:** Không bao giờ lồng một widget kính bên trong một container kính khác. Các controls con trong header dùng `embedded: true`.
+2. **Zero glass over media:** Snapshot JPEG, video live HLS và Google Maps platform view tuyệt đối không đi qua shader blur hay khúc xạ.
+3. **Platform view isolation:** Trên bản đồ Google Maps, mọi floating controls và header sử dụng `forceOpaque: true` để triệt tiêu nguy cơ lỗi shader lấy mẫu texture native.
+4. **Accessible touch target:** Tất cả controls tương tác đều có diện tích bấm tối thiểu 48×48 logical pixels.
+
+---
 
 - Use `MediaQuery`, `LayoutBuilder`, `Flexible`, and `Expanded` for responsiveness.
 - Fixed pixel sizes are acceptable only for elements that should not scale (e.g. icon touch targets defined by tokens).

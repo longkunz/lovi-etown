@@ -26,13 +26,35 @@ abstract final class CameraUiTokens {
   static const double radius12 = 12;
   static const double radius16 = 16;
   static const double radius20 = 20;
+  static const double radius24 = 24;
   static const double radiusFull = 999;
 
   // ── Glass Surface Properties ──────────────────────────────────────────────
   static const double glassBlur = 12;
+  static const double glassControlBlur = 10;
   static const double glassSheetBlur = 18;
   static const double glassOpacityLight = 0.72;
   static const double glassOpacityDark = 0.65;
+  static const double glassThicknessHeader = 14;
+  static const double glassThicknessControl = 8;
+  static const double glassThicknessSheet = 16;
+
+  // ── Border & Opaque Colors ────────────────────────────────────────────────
+  static const Color glassBorderLight = Color(0x8CFFFFFF);
+  static const Color glassBorderDark = Color(0x38A2DCE8);
+  static const Color glassBorderOpaqueLight = Color(0xFFBAC9D2);
+  static const Color glassBorderOpaqueDark = Color(0xFF3D5668);
+  static const Color opaqueSurfaceLight = Color(0xFFFFFFFF);
+  static const Color opaqueSurfaceDark = Color(0xFF1E2F3D);
+  static const Color controlForegroundLight = Color(0xFF182D3B);
+  static const Color controlForegroundDark = Color(0xFFE9F3F8);
+  static const Color mutedForegroundLight = Color(0xFF61737D);
+  static const Color mutedForegroundDark = Color(0xFFA8BAC5);
+  static const Duration controlTransition = Duration(milliseconds: 200);
+  static const double segmentInset = 3;
+  static const double compactFilterBreakpoint = 420;
+  static const double favoriteCardBaseHeight = 96;
+  static const double favoriteCardTextHeight = 64;
 
   // ── Brand & Accent Colors (Teal theme based on Stitch prototype) ───────────
   static const Color primaryTeal = Color(0xFF00796B);

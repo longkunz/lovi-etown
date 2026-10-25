@@ -28,7 +28,7 @@
       "cwd": "${workspaceFolder}/mobile",
       "args": [
         "--dart-define=CAMERA_API_BASE_URL=http://10.0.2.2:3000",
-        "--dart-define=CAMERA_READER_KEY=dev-reader-key",
+        "--dart-define=CAMERA_READER_KEY=test-reader-key-32charslong!!",
         "--dart-define=CAMERA_DEMO_MODE=false"
       ]
     },
@@ -41,7 +41,7 @@
       "args": [
         // Đổi 127.0.0.1 thành IP LAN của máy tính nếu chạy trên điện thoại thật.
         "--dart-define=CAMERA_API_BASE_URL=http://127.0.0.1:3000",
-        "--dart-define=CAMERA_READER_KEY=dev-reader-key",
+        "--dart-define=CAMERA_READER_KEY=test-reader-key-32charslong!!",
         "--dart-define=CAMERA_DEMO_MODE=false"
       ]
     },

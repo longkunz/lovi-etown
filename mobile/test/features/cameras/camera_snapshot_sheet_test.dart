@@ -10,12 +10,26 @@ import 'package:flutter_starter/src/features/cameras/domain/favorites_repository
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:dio/dio.dart';
 
 class FakeSheetCameraRepository implements CameraRepository {
+  FakeSheetCameraRepository({Camera? camera})
+      : camera = camera ??
+            const Camera(
+              id: 'cam-01',
+              name: 'Giao lo Le Loi - Pasteur',
+              provinceId: 'tp_hcm',
+              district: 'Quan 1',
+              address: 'Quan 1, TP.HCM',
+              snapshotCapable: true,
+              playbackEndpoint: '/api/v1/playback/cam-01',
+              snapshotEndpoint: '/api/v1/snapshot/cam-01',
+            );
+
   @override
   FutureEither<List<Camera>> related(String id,
           {int limit = 6, CancelToken? cancelToken}) async =>
@@ -24,16 +38,7 @@ class FakeSheetCameraRepository implements CameraRepository {
   /// Optional per-test override for snapshot behaviour (T02 tests).
   FutureEither<SnapshotReply> Function()? snapshotHandler;
 
-  final Camera camera = const Camera(
-    id: 'cam-01',
-    name: 'Giao lo Le Loi - Pasteur',
-    provinceId: 'tp_hcm',
-    district: 'Quan 1',
-    address: 'Quan 1, TP.HCM',
-    snapshotCapable: true,
-    playbackEndpoint: '/api/v1/playback/cam-01',
-    snapshotEndpoint: '/api/v1/snapshot/cam-01',
-  );
+  final Camera camera;
 
   @override
   FutureEither<CatalogPage> list({
@@ -55,7 +60,8 @@ class FakeSheetCameraRepository implements CameraRepository {
   }
 
   @override
-  FutureEither<List<DistrictOption>> districts({CancelToken? cancelToken}) async {
+  FutureEither<List<DistrictOption>> districts(
+      {CancelToken? cancelToken}) async {
     return const Right([]);
   }
 
@@ -65,7 +71,8 @@ class FakeSheetCameraRepository implements CameraRepository {
   }
 
   @override
-  FutureEither<PlaybackDescriptor> playback(String id, {CancelToken? cancelToken}) async {
+  FutureEither<PlaybackDescriptor> playback(String id,
+      {CancelToken? cancelToken}) async {
     return const Right(PlaybackDescriptor(
       cameraId: 'cam-01',
       kind: 'snapshot_poll',
@@ -75,26 +82,88 @@ class FakeSheetCameraRepository implements CameraRepository {
   }
 
   @override
-  FutureEither<SnapshotReply> snapshot(String endpoint, {String? etag, CancelToken? cancelToken}) async {
+  FutureEither<SnapshotReply> snapshot(String endpoint,
+      {String? etag, CancelToken? cancelToken}) async {
     if (snapshotHandler != null) return snapshotHandler!();
     // 1x1 transparent png / dummy bytes
     final dummyBytes = Uint8List.fromList([
-      0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-      0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-      0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-      0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-      0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-      0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
-      0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
-      0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
-      0x42, 0x60, 0x82,
+      0x89,
+      0x50,
+      0x4E,
+      0x47,
+      0x0D,
+      0x0A,
+      0x1A,
+      0x0A,
+      0x00,
+      0x00,
+      0x00,
+      0x0D,
+      0x49,
+      0x48,
+      0x44,
+      0x52,
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+      0x00,
+      0x01,
+      0x08,
+      0x06,
+      0x00,
+      0x00,
+      0x00,
+      0x1F,
+      0x15,
+      0xC4,
+      0x89,
+      0x00,
+      0x00,
+      0x00,
+      0x0A,
+      0x49,
+      0x44,
+      0x41,
+      0x54,
+      0x78,
+      0x9C,
+      0x63,
+      0x00,
+      0x01,
+      0x00,
+      0x00,
+      0x05,
+      0x00,
+      0x01,
+      0x0D,
+      0x0A,
+      0x2D,
+      0xB4,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x49,
+      0x45,
+      0x4E,
+      0x44,
+      0xAE,
+      0x42,
+      0x60,
+      0x82,
     ]);
-    return Right(SnapshotReceived(SnapshotFrame(bytes: dummyBytes, etag: 'etag-1')));
+    return Right(
+        SnapshotReceived(SnapshotFrame(bytes: dummyBytes, etag: 'etag-1')));
   }
 }
 
 class FakeSheetFavoritesRepository implements FavoritesRepository {
   final List<FavoriteCamera> _favs = [];
+
+  bool isSaved(String id) => _favs.any((f) => f.id == id);
 
   @override
   Stream<List<FavoriteCamera>> watch() async* {
@@ -137,6 +206,11 @@ class SheetTestAssetLoader extends AssetLoader {
       'camera': {
         'title': 'Camera giao thông',
         'favorites_title': 'Quan tâm',
+        'traffic_map_title': 'Bản đồ lưu lượng',
+        'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
+        'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',
+        'traffic_map_recenter': 'Về vị trí camera',
+        'traffic_map_no_location': 'Chưa có dữ liệu vị trí cho camera này',
       },
     };
   }
@@ -183,7 +257,8 @@ void main() {
       previewCubit.close();
     });
 
-    testWidgets('sheet shows refresh countdown without extra action buttons', (tester) async {
+    testWidgets('sheet shows refresh countdown without extra action buttons',
+        (tester) async {
       await tester.pumpWidget(
         buildTestApp(
           child: Scaffold(
@@ -224,18 +299,76 @@ void main() {
       expect(find.textContaining('giây trước'), findsNothing);
     });
 
-    testWidgets(
-        'refresh_error_shows_stale_badge_and_keeps_image_T02', (tester) async {
+    testWidgets('refresh_error_shows_stale_badge_and_keeps_image_T02',
+        (tester) async {
       final dummyBytes = Uint8List.fromList([
-        0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-        0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-        0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-        0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-        0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-        0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
-        0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
-        0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
-        0x42, 0x60, 0x82,
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1F,
+        0x15,
+        0xC4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0A,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9C,
+        0x63,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x05,
+        0x00,
+        0x01,
+        0x0D,
+        0x0A,
+        0x2D,
+        0xB4,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4E,
+        0x44,
+        0xAE,
+        0x42,
+        0x60,
+        0x82,
       ]);
       var snapshotCalls = 0;
       repo.snapshotHandler = () async {
@@ -273,8 +406,8 @@ void main() {
       await pumpCameraTransition(tester);
 
       // First frame loaded; no stale notice yet.
-      expect(find.byKey(const ValueKey('snapshot_sheet_image')),
-          findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
       expect(find.text('Ảnh cũ'), findsNothing);
 
       // Descriptor refresh interval is 5s: advance past it so the poll
@@ -285,8 +418,8 @@ void main() {
 
       // The good image is still shown and is now visibly marked stale,
       // without calling the network error "camera offline".
-      expect(find.byKey(const ValueKey('snapshot_sheet_image')),
-          findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
       expect(find.text('Ảnh cũ'), findsOneWidget);
       expect(find.text('Làm mới sau 12s'), findsOneWidget);
       expect(find.textContaining('offline'), findsNothing);
@@ -365,6 +498,270 @@ void main() {
 
       expect(tester.takeException(), isNull);
       expect(find.byType(CameraSnapshotSheet), findsOneWidget);
+    });
+
+    testWidgets('sheet renders CameraTrafficMapCard when camera has location',
+        (tester) async {
+      const cameraWithLoc = Camera(
+        id: 'cam-loc',
+        name: 'Nga 4 Hang Xanh',
+        provinceId: 'tp_hcm',
+        playbackEndpoint: '/playback/cam-loc',
+        latitude: 10.8018,
+        longitude: 106.7114,
+      );
+
+      final locRepo = FakeSheetCameraRepository(camera: cameraWithLoc);
+      final preview = CameraPreviewCubit(repository: locRepo);
+      addTearDown(preview.close);
+
+      await tester.pumpWidget(
+        buildTestApp(
+          child: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  showCameraSnapshotSheet(
+                    context,
+                    cameraId: 'cam-loc',
+                    preview: preview,
+                    favorites: favRepo,
+                    mapBuilder: (context, config) => const SizedBox(
+                      key: ValueKey('mock_map_in_sheet'),
+                    ),
+                  );
+                },
+                child: const Text('Open'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(find.byType(CameraTrafficMapCard), findsOneWidget);
+    });
+
+    testWidgets('sheet navigation to image overlay and back preserves context',
+        (tester) async {
+      await tester.pumpWidget(
+        buildTestApp(
+          child: Scaffold(
+            body: Builder(
+              builder: (context) => ElevatedButton(
+                onPressed: () {
+                  showCameraSnapshotSheet(
+                    context,
+                    cameraId: 'cam-01',
+                    preview: previewCubit,
+                    favorites: favRepo,
+                  );
+                },
+                child: const Text('Open Sheet'),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open Sheet'));
+      await pumpCameraTransition(tester);
+
+      expect(find.byType(CameraSnapshotSheet), findsOneWidget);
+
+      // Toggle star
+      expect(favRepo.isSaved('cam-01'), isFalse);
+      await tester.tap(find.byKey(const ValueKey('sheet_favorite_button')));
+      await tester.pump();
+      expect(favRepo.isSaved('cam-01'), isTrue);
+
+      // Tap image to open full image viewer overlay
+      await tester.tap(find.byKey(const ValueKey('snapshot_sheet_image')));
+      await pumpCameraTransition(tester);
+
+      expect(find.byType(CameraImageViewer), findsOneWidget);
+
+      // Close viewer using its close button
+      await tester.tap(find.byKey(const ValueKey('viewer_close_button')));
+      await pumpCameraTransition(tester);
+
+      // We should be back on the sheet
+      expect(find.byType(CameraImageViewer), findsNothing);
+      expect(find.byType(CameraSnapshotSheet), findsOneWidget);
+
+      // Close sheet using its close button
+      await tester.tap(find.byKey(const ValueKey('sheet_close_button')));
+      await tester.pumpAndSettle();
+
+      // Sheet should be dismissed
+      expect(find.byType(CameraSnapshotSheet), findsNothing);
+      expect(find.text('Open Sheet'), findsOneWidget);
+    });
+
+    testWidgets(
+        'theme and high contrast changes retain loaded frame without extra snapshot requests',
+        (tester) async {
+      var snapshotRequestCount = 0;
+      final dummyBytes = Uint8List.fromList([
+        0x89,
+        0x50,
+        0x4E,
+        0x47,
+        0x0D,
+        0x0A,
+        0x1A,
+        0x0A,
+        0x00,
+        0x00,
+        0x00,
+        0x0D,
+        0x49,
+        0x48,
+        0x44,
+        0x52,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x00,
+        0x01,
+        0x08,
+        0x06,
+        0x00,
+        0x00,
+        0x00,
+        0x1F,
+        0x15,
+        0xC4,
+        0x89,
+        0x00,
+        0x00,
+        0x00,
+        0x0A,
+        0x49,
+        0x44,
+        0x41,
+        0x54,
+        0x78,
+        0x9C,
+        0x63,
+        0x00,
+        0x01,
+        0x00,
+        0x00,
+        0x05,
+        0x00,
+        0x01,
+        0x0D,
+        0x0A,
+        0x2D,
+        0xB4,
+        0x00,
+        0x00,
+        0x00,
+        0x00,
+        0x49,
+        0x45,
+        0x4E,
+        0x44,
+        0xAE,
+        0x42,
+        0x60,
+        0x82,
+      ]);
+      repo.snapshotHandler = () async {
+        snapshotRequestCount++;
+        return Right(
+            SnapshotReceived(SnapshotFrame(bytes: dummyBytes, etag: 'etag-1')));
+      };
+
+      var isDark = false;
+      var isHighContrast = false;
+      late StateSetter updateTheme;
+
+      await tester.pumpWidget(
+        StatefulBuilder(
+          builder: (context, setState) {
+            updateTheme = setState;
+            return MediaQuery(
+              data: MediaQueryData(highContrast: isHighContrast),
+              child: MaterialApp(
+                theme: isDark ? ThemeData.dark() : ThemeData.light(),
+                home: Scaffold(
+                  body: Builder(
+                    builder: (sheetContext) => Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            showCameraSnapshotSheet(
+                              sheetContext,
+                              cameraId: 'cam-01',
+                              preview: previewCubit,
+                              favorites: favRepo,
+                            );
+                          },
+                          child: const Text('Open'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => setState(() => isDark = !isDark),
+                          child: const Text('Toggle Theme'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () =>
+                              setState(() => isHighContrast = !isHighContrast),
+                          child: const Text('Toggle Contrast'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Open'));
+      await pumpCameraTransition(tester);
+
+      expect(find.byType(CameraSnapshotSheet), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
+      final initialRequests = snapshotRequestCount;
+
+      // Toggle dark theme
+      updateTheme(() => isDark = true);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      expect(
+          Theme.of(tester.element(find.byType(CameraSnapshotSheet))).brightness,
+          Brightness.dark);
+      // Frame is still displayed
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
+      expect(snapshotRequestCount, initialRequests);
+
+      // Toggle high contrast
+      updateTheme(() => isHighContrast = true);
+      await tester.pump();
+
+      expect(
+          MediaQuery.of(tester.element(find.byType(CameraSnapshotSheet)))
+              .highContrast,
+          isTrue);
+      // Frame is still displayed, no extra snapshot fetch
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
+      expect(snapshotRequestCount, initialRequests);
     });
   });
 }

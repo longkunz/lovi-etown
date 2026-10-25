@@ -1,4 +1,4 @@
-package site.capyai.lovi
+package com.lovisoft.etown
 
 import io.flutter.embedding.android.FlutterActivity
 

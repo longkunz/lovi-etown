@@ -1,0 +1,40 @@
+DEMO ONLY — fake map and fixture camera data. No real Vietmap key, tiles,
+hybrid/traffic entitlement or native-map gesture acceptance is claimed.
+
+Build:
+  cd mobile
+  flutter build apk --debug --no-pub --dart-define=CAMERA_DEMO_MODE=true
+Result: PASS (28.4 s). App com.lovisoft.etown, version1.0.0 code1, minSdk24.
+
+The requested emulator-5556 received this APK via adb install -r, but was NOT
+launched: agent-device refused DEVICE_IN_USE by unrelated meitu-native-code.
+That session was not reused or closed. No physical devices were touched.
+
+Authorized isolated instance:
+  emulator -avd Lovi_Library_API36_20261024 -port 5558 -read-only
+    -no-snapshot-save -no-snapshot-load -no-window -no-boot-anim
+    -memory 1536 -cores 2 -gpu swiftshader_indirect -no-audio
+  adb -s emulator-5558 install -r mobile/build/app/outputs/flutter-apk/app-debug.apk
+
+App driving with agent-device (all opens pinned to serial/allowlist emulator-5558):
+  open com.lovisoft.etown --foreground --session lovi40
+  Initial System UI ANR from com.android.systemui: screenshot00, alert dismiss.
+  snapshot -i: Map tab1 selected, Vùng đang xem selected, fake-map demo label.
+  screenshot01. No location permission dialog appeared.
+  click Camera tab --settle: Camera tab2 selected, Dữ liệu mẫu visible.
+  screenshot02.
+  click Nguyễn Huệ - Lê Lợi camera: detail with name/district/snapshot displayed.
+  screenshot03.
+  click Quay lại --settle: Camera tab2 selected.
+  close --session lovi40 (without app): releases session; app remains warm.
+  open normally: Camera remains selected; screenshot04 is WARM SESSION REOPEN.
+  close com.lovisoft.etown --session lovi40: actual app force-stop.
+  adb -s emulator-5558 shell pidof com.lovisoft.etown: no PID, exit1.
+  open com.lovisoft.etown normally: Map tab1 selected, Vùng đang xem selected.
+  screenshot05 + snapshot05 text.
+  adb -s emulator-5558 shell dumpsys package com.lovisoft.etown:
+    fine/coarse permissions both granted=false (location-permissions.txt).
+  adb -s emulator-5558 logcat -d -s AndroidRuntime:E flutter:E:
+    EMPTY output, zero error lines.
+  close com.lovisoft.etown --session lovi40 --shutdown:
+    app closed, own isolated emulator5558 killed successfully.

@@ -48,6 +48,9 @@ class FixtureCameraRepository implements CameraRepository {
           playbackEndpoint: map['playbackEndpoint'] as String? ?? '',
           latitude: (location?['lat'] as num?)?.toDouble(),
           longitude: (location?['lng'] as num?)?.toDouble(),
+          liveCapable: map['liveCapable'] as bool? ?? false,
+          streamUrl: map['streamUrl'] as String?,
+          availability: map['availability'] as String? ?? 'online',
         );
       }).toList();
 
@@ -102,16 +105,24 @@ class FixtureCameraRepository implements CameraRepository {
   FutureEither<List<DistrictOption>> districts({CancelToken? cancelToken}) async {
     final all = await _loadCameras();
     final counts = <String, int>{};
+    final onlineCounts = <String, int>{};
 
     for (final cam in all) {
       final d = cam.district;
       if (d != null && d.trim().isNotEmpty) {
         counts[d] = (counts[d] ?? 0) + 1;
+        if (cam.isOnline) {
+          onlineCounts[d] = (onlineCounts[d] ?? 0) + 1;
+        }
       }
     }
 
     final list = counts.entries
-        .map((e) => DistrictOption(name: e.key, count: e.value))
+        .map((e) => DistrictOption(
+              name: e.key,
+              count: e.value,
+              onlineCount: onlineCounts[e.key] ?? e.value,
+            ))
         .toList();
     list.sort((a, b) => a.name.compareTo(b.name));
 

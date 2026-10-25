@@ -1,25 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
-/// "Tình trạng tại điểm" — traffic brief v1 (T17). A one-glance card inside
-/// the camera sheet summarizing what the backend already knows about the
-/// camera's district: how many cameras the area has, how many of the
-/// related ones can stream live, and the nearest related cameras (tap to
-/// jump). Renders nothing while loading, on failure, or when the camera
-/// has no district — it never blocks the sheet.
+/// "Tình trạng tại điểm" — traffic brief v1 (T17).
+///
+/// Thẻ tổng hợp tình trạng camera tại điểm xem chi tiết:
+/// - Trạng thái hoạt động (online / offline / degraded / unknown)
+/// - Độ tươi của ảnh (số giây từ ảnh mới nhất, ảnh tươi / cũ)
+/// - Tỉ lệ camera cùng quận đang online / tổng số camera quận
+/// - Nút "Chỉ đường" (T10 handoff) khi camera có tọa độ
+/// - Danh sách camera lân cận cùng quận (chạm để chuyển)
 class TrafficBriefCard extends StatefulWidget {
   const TrafficBriefCard({
     required this.camera,
     required this.repository,
     required this.onSelectCamera,
+    this.snapshotFetchedAt,
+    this.isStale = false,
+    this.onDirectionsTap,
+    this.clockNow,
     super.key,
   });
 
   final Camera camera;
   final CameraRepository repository;
   final ValueChanged<Camera> onSelectCamera;
+  final DateTime? snapshotFetchedAt;
+  final bool isStale;
+  final VoidCallback? onDirectionsTap;
+  final DateTime Function()? clockNow;
 
   @override
   State<TrafficBriefCard> createState() => _TrafficBriefCardState();
@@ -28,6 +39,7 @@ class TrafficBriefCard extends StatefulWidget {
 class _TrafficBriefCardState extends State<TrafficBriefCard> {
   List<Camera> _related = const [];
   int? _districtTotal;
+  int? _districtOnlineCount;
   bool _loaded = false;
 
   @override
@@ -36,18 +48,130 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
     _load();
   }
 
+  @override
+  void didUpdateWidget(covariant TrafficBriefCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.camera.id != widget.camera.id ||
+        oldWidget.camera.district != widget.camera.district) {
+      _load();
+    }
+  }
+
   Future<void> _load() async {
     final camera = widget.camera;
     final relatedResult = await widget.repository.related(camera.id, limit: 6);
     final districtsResult = await widget.repository.districts();
     if (!mounted) return;
+
     relatedResult.fold((_) {}, (items) => _related = items);
     districtsResult.fold((_) {}, (options) {
       for (final option in options) {
-        if (option.name == camera.district) _districtTotal = option.count;
+        if (option.name == camera.district) {
+          _districtTotal = option.count;
+          _districtOnlineCount = option.onlineCount;
+        }
       }
     });
+
     setState(() => _loaded = true);
+  }
+
+  Widget _buildStatusBadge(String availability) {
+    final Color color;
+    final String label;
+    final IconData icon;
+
+    switch (availability) {
+      case 'online':
+        color = const Color(0xFF2E7D32);
+        label = 'Đang hoạt động';
+        icon = Icons.check_circle_outline;
+        break;
+      case 'offline':
+        color = CameraUiTokens.errorRed;
+        label = 'Mất tín hiệu';
+        icon = Icons.error_outline;
+        break;
+      case 'degraded':
+        color = const Color(0xFFE65100);
+        label = 'Chập chờn';
+        icon = Icons.warning_amber_outlined;
+        break;
+      default:
+        color = Colors.grey;
+        label = 'Chưa rõ';
+        icon = Icons.help_outline;
+    }
+
+    return Container(
+      key: ValueKey('traffic_brief_status_$availability'),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFreshnessRow(BuildContext context) {
+    if (widget.snapshotFetchedAt == null) return const SizedBox.shrink();
+
+    final now = widget.clockNow?.call() ?? DateTime.now();
+    final seconds =
+        now.difference(widget.snapshotFetchedAt!).inSeconds.clamp(0, 999999);
+    final isStale = widget.isStale || seconds >= 60;
+
+    final String text;
+    final IconData icon;
+    final Color color;
+
+    if (isStale) {
+      icon = Icons.history_rounded;
+      color = CameraUiTokens.errorRed;
+      text = 'Ảnh cũ (${seconds}s trước)';
+    } else {
+      icon = Icons.check_circle_outlined;
+      color = CameraUiTokens.primaryTeal;
+      text = seconds < 5
+          ? 'Ảnh mới: Vừa cập nhật'
+          : 'Ảnh mới: Cập nhật ${seconds}s trước';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(top: CameraUiTokens.spacing8),
+      child: Row(
+        children: [
+          Icon(icon, size: 14, color: color),
+          const SizedBox(width: CameraUiTokens.spacing4),
+          Text(
+            text,
+            key: ValueKey(isStale
+                ? 'traffic_brief_freshness_stale'
+                : 'traffic_brief_freshness_fresh'),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w500,
+                ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -64,6 +188,16 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
     final liveCount =
         _related.where((c) => c.canLive).length + (camera.canLive ? 1 : 0);
     final shownRelated = _related.take(3).toList();
+
+    final String districtDetail;
+    if (_districtTotal != null && _districtOnlineCount != null) {
+      districtDetail =
+          '$_districtOnlineCount/$_districtTotal camera hoạt động';
+    } else if (_districtTotal != null) {
+      districtDetail = '$_districtTotal camera trong khu vực';
+    } else {
+      districtDetail = '';
+    }
 
     return Container(
       key: const ValueKey('traffic_brief_card'),
@@ -99,17 +233,36 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              const Spacer(),
+              _buildStatusBadge(camera.availability),
             ],
           ),
           const SizedBox(height: CameraUiTokens.spacing8),
           Text(
             [
               camera.district!,
-              if (_districtTotal != null) '$_districtTotal camera trong khu vực',
+              if (districtDetail.isNotEmpty) districtDetail,
               if (liveCount > 0) '$liveCount camera có trực tiếp',
             ].join(' · '),
+            key: const ValueKey('traffic_brief_district_info'),
             style: theme.textTheme.bodySmall,
           ),
+          _buildFreshnessRow(context),
+          if (camera.hasLocation) ...[
+            const SizedBox(height: CameraUiTokens.spacing8),
+            OutlinedButton.icon(
+              key: const ValueKey('brief_directions_button'),
+              onPressed:
+                  widget.onDirectionsTap ?? () => openCameraDirections(camera),
+              icon: const Icon(Icons.directions, size: 16),
+              label: const Text('Chỉ đường'),
+              style: OutlinedButton.styleFrom(
+                visualDensity: VisualDensity.compact,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              ),
+            ),
+          ],
           if (shownRelated.isNotEmpty) ...[
             const SizedBox(height: CameraUiTokens.spacing8),
             Text(

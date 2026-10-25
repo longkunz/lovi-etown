@@ -313,7 +313,9 @@ export class PgCatalogRepository implements CatalogRepository {
     const client = await this.getClient();
     try {
       const res = await client.query(
-        `SELECT district, COUNT(*) as count
+        `SELECT district, 
+                COUNT(*) as count,
+                COUNT(*) FILTER (WHERE availability = 'online') as online_count
          FROM cameras
          WHERE province_id = $1 AND district IS NOT NULL AND TRIM(district) <> ''
          GROUP BY district
@@ -323,6 +325,7 @@ export class PgCatalogRepository implements CatalogRepository {
       return res.rows.map((r) => ({
         district: r.district,
         cameraCount: parseInt(r.count, 10),
+        onlineCount: parseInt(r.online_count, 10),
       }));
     } finally {
       client.release();

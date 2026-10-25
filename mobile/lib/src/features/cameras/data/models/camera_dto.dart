@@ -15,6 +15,7 @@ class CameraDto {
     this.longitude,
     this.liveCapable = false,
     this.streamUrl,
+    this.availability = 'unknown',
   });
 
   final String id;
@@ -30,6 +31,7 @@ class CameraDto {
   final double? longitude;
   final bool liveCapable;
   final String? streamUrl;
+  final String availability;
 
   factory CameraDto.fromJson(Map<String, dynamic> json) {
     final capabilities = json['capabilities'] as Map<String, dynamic>?;
@@ -46,6 +48,7 @@ class CameraDto {
     final longitude = (location?['lng'] as num?)?.toDouble();
     final isLiveCapable = capabilities?['live'] as bool? ?? false;
     final rawStreamUrl = json['streamUrl'] as String?;
+    final availability = json['availability'] as String? ?? 'unknown';
 
     return CameraDto(
       id: id,
@@ -62,6 +65,7 @@ class CameraDto {
       liveCapable: isLiveCapable,
       // A stream URL only counts when the API also flags the camera live.
       streamUrl: isLiveCapable ? rawStreamUrl : null,
+      availability: availability,
     );
   }
 
@@ -80,6 +84,7 @@ class CameraDto {
       longitude: longitude,
       liveCapable: liveCapable,
       streamUrl: streamUrl,
+      availability: availability,
     );
   }
 }

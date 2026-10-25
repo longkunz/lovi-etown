@@ -50,7 +50,7 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 
 ### #40 — Bản đồ mặc định / Vietmap / Gần tôi (2026-10-25)
 
-- Triển khai trên nhánh `feat/40-vietmap-discovery` từ `c0a01b9`; chưa ghi nhận merge vào `main`. Navigation Bản đồ | Camera, mặc định Bản đồ tại `/`, Camera lazy tại `/cameras`; backend `/v1/map-cameras` dùng PostGIS. Canvas Vietmap dùng chung cả khám phá lẫn chi tiết camera, đã gỡ Google Maps SDK.
+- Triển khai trên nhánh `feat/40-vietmap-discovery`, đã merge vào `main` qua PR #45 (commit `85bd847`). Navigation Bản đồ | Camera, mặc định Bản đồ tại `/`, Camera lazy tại `/cameras`; backend `/v1/map-cameras` dùng PostGIS. Canvas Vietmap dùng chung cả khám phá lẫn chi tiết camera, đã gỡ Google Maps SDK.
 - [Báo cáo #40](ui/camera-map-discovery-verification.md), [spec](superpowers/specs/2026-10-24-camera-map-discovery-design.md), [plan](superpowers/plans/2026-10-24-camera-map-discovery.md).
 - Backend kiểm tra thực: typecheck PASS, **59 unit + 21 API + 15 DB PASS** trên Node24.16/PG17.11/PostGIS3.6.4. Android debug và iOS Simulator build PASS. Flutter analyze không có issue; **231 Flutter tests PASS, 1 conditional skip**. Kết quả và evidence nằm trong báo cáo đi kèm.
 - Android emulator demo smoke xác nhận cold start Bản đồ, chuyển tab/detail/Back, force-stop rồi mở về Bản đồ, không tự xin GPS. **Chưa có key Vietmap hợp lệ**, không đánh PASS tiles/hybrid/traffic hoặc nghiệm thu runtime iOS từ fake/build.

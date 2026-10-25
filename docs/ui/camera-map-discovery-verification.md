@@ -1,6 +1,6 @@
 # #40 — Tab Bản đồ mặc định và camera Gần tôi
 
-Ngày: 2026-10-25. Nhánh triển khai: `feat/40-vietmap-discovery`, từ `c0a01b9`. Mã sản phẩm đã kiểm tra: `3b6ca6a`; evidence native cuối: `3c243bd`. Chưa merge vào `main`.
+Ngày: 2026-10-25. Nhánh triển khai: `feat/40-vietmap-discovery`, từ `c0a01b9`. Mã sản phẩm đã kiểm tra: `3b6ca6a`; evidence native cuối: `3c243bd`. Đã merge vào `main` qua PR #45 (`85bd847`).
 
 [Spec](../superpowers/specs/2026-10-24-camera-map-discovery-design.md) · [Plan](../superpowers/plans/2026-10-24-camera-map-discovery.md) · [Issue #40](https://github.com/longkunz/lovi-etown/issues/40)
 

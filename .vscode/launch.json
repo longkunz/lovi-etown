@@ -1,10 +1,17 @@
 {
   // Hồ sơ chạy/debug cho Lovi Etown trong VS Code.
   // Mở thư mục GỐC của repo trong VS Code → panel Run and Debug → chọn profile → F5.
-  // LƯU Ý: profile "Production API" chứa reader key (key này vốn đã nằm trong APK
-  // phát hành) — chỉ để chạy máy cá nhân, ĐỪNG commit thư mục .vscode này lên repo public.
+  // Profile "Production API" tự đọc cấu hình kết nối từ mobile/.env.
   "version": "0.2.0",
   "configurations": [
+    {
+      "name": "App: Production API",
+      "type": "dart",
+      "request": "launch",
+      "program": "${workspaceFolder}/mobile/lib/main.dart",
+      "cwd": "${workspaceFolder}/mobile",
+      "args": []
+    },
     {
       "name": "App: Demo (dữ liệu mẫu)",
       "type": "dart",
@@ -35,18 +42,6 @@
         // Đổi 127.0.0.1 thành IP LAN của máy tính nếu chạy trên điện thoại thật.
         "--dart-define=CAMERA_API_BASE_URL=http://127.0.0.1:3000",
         "--dart-define=CAMERA_READER_KEY=dev-reader-key",
-        "--dart-define=CAMERA_DEMO_MODE=false"
-      ]
-    },
-    {
-      "name": "App: Production API",
-      "type": "dart",
-      "request": "launch",
-      "program": "${workspaceFolder}/mobile/lib/main.dart",
-      "cwd": "${workspaceFolder}/mobile",
-      "args": [
-        "--dart-define=CAMERA_API_BASE_URL=https://api.capyai.site",
-        "--dart-define=CAMERA_READER_KEY=CHANGEME@123456789@CHANGEME",
         "--dart-define=CAMERA_DEMO_MODE=false"
       ]
     },

@@ -38,3 +38,29 @@ App driving with agent-device (all opens pinned to serial/allowlist emulator-555
     EMPTY output, zero error lines.
   close com.lovisoft.etown --session lovi40 --shutdown:
     app closed, own isolated emulator5558 killed successfully.
+
+Final verification after review/contrast fixes (2026-10-25):
+Source camera_map_screen.dart last updated17:35:33; builds below include that edit.
+  flutter build apk --debug --no-pub --dart-define=CAMERA_DEMO_MODE=true
+    PASS29.0s. Saved app-debug-demo.apk (17:36:28).
+  flutter build apk --debug --no-pub
+    PASS61.8s. Saved app-debug-standard.apk (17:37:51).
+    Default app-debug.apk is byte-identical to standard, NOT demo.
+  flutter build ios --simulator --no-codesign --no-pub
+    PASS34.9s. Built build/ios/iphonesimulator/Runner.app.
+
+SHA256 of local APK artifacts under mobile/build/app/outputs/flutter-apk/:
+  app-debug.apk / app-debug-standard.apk:
+    7f586b4eeaeb6d6dcbab67ed791127b33ddd756977bff2fe6f7e94ed68e73aa2
+  app-debug-demo.apk:
+    8726864501b3a246e6892ae12ad48d838896d6387d703db7ac5c62055cbef258
+
+Repeated cold-start demo smoke on isolated emulator5558 with the same read-only
+AVD/session settings above. No further access to5556 or physical devices.
+  Normal open -> Map tab1 selected, Vùng đang xem selected.
+  Screenshot06 + semantic snapshot06: all chips now use readable dark labels,
+  including Giao thông. Fake-map demo label remains explicit.
+  No GPS prompt. Fine/coarse location permissions remain granted=false.
+  AndroidRuntime:E/flutter:E logcat again returned zero lines.
+  Explicit close app+shutdown completed; lovi40/own5558 no longer running.
+This is DEMO UI evidence, not acceptance of real Vietmap tiles or entitlements.

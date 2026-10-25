@@ -36,9 +36,7 @@ class CameraMapResults extends StatelessWidget {
         Text(mapText('stale_results',
             'Kết quả cũ — chưa cập nhật cho tìm kiếm hiện tại.')),
       if (result != null &&
-          (result.coverage == 'partial' ||
-              (result.coverage != null &&
-                  !['full', 'complete'].contains(result.coverage)) ||
+          (result.coverage != 'verified' ||
               (result.syncState != null &&
                   result.syncState != 'synced' &&
                   result.syncState != 'ready' &&

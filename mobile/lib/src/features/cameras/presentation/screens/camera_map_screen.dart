@@ -258,12 +258,20 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                     Theme.of(context).textTheme.headlineSmall),
                             Wrap(spacing: 8, runSpacing: 4, children: [
                               ChoiceChip(
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   label: Text(
                                       mapText('viewport', 'Vùng đang xem')),
                                   selected:
                                       state.mode == CameraMapMode.viewport,
                                   onSelected: (_) => _cubit.showViewport()),
                               ChoiceChip(
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   label: Text(mapText('nearby', 'Gần tôi')),
                                   selected: state.mode == CameraMapMode.nearby,
                                   onSelected: (_) => _cubit.showNearby())
@@ -272,6 +280,10 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                               Wrap(spacing: 8, children: [
                                 for (final radius in [1000, 2000, 5000])
                                   ChoiceChip(
+                                      labelStyle: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface),
                                       label: Text('${radius ~/ 1000} km'),
                                       selected: state.radiusMeters == radius,
                                       onSelected: (_) =>
@@ -305,15 +317,27 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                   onChanged: _cubit.setDistrict),
                             Wrap(spacing: 8, runSpacing: 4, children: [
                               FilterChip(
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   label: Text(mapText('traffic', 'Giao thông')),
                                   selected: _traffic,
                                   onSelected: (_) => _toggleTraffic()),
                               ChoiceChip(
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   label: Text(mapText('street', 'Đường phố')),
                                   selected: _mapType == CameraMapType.street,
                                   onSelected: (_) => setState(
                                       () => _mapType = CameraMapType.street)),
                               ChoiceChip(
+                                  labelStyle: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   label: Text(mapText('hybrid', 'Vệ tinh')),
                                   selected: _mapType == CameraMapType.hybrid,
                                   onSelected: (_) => setState(

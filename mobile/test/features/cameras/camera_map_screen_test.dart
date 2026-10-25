@@ -1,3 +1,4 @@
+import 'package:flutter_starter/src/theme/theme.dart';
 import 'dart:async';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_results.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_map_state.dart';
@@ -264,5 +265,42 @@ void main() {
     expect(find.text('2 km'), findsOneWidget);
     expect(find.text('5 km'), findsOneWidget);
     expect(find.text('Mở cài đặt ứng dụng'), findsOneWidget);
+  });
+  testWidgets(
+      'verified backend coverage does not show an incomplete catalog warning',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: CameraMapResults(
+                state: const CameraMapState(
+                    result: CameraMapResult(
+                        items: [],
+                        hasMore: false,
+                        catalogVersion: 'v1',
+                        coverage: 'verified',
+                        syncState: 'synced')),
+                onSelectCamera: (_) {},
+                onRetry: () {}))));
+    expect(find.text('Danh mục camera có thể chưa đầy đủ.'), findsNothing);
+  });
+  testWidgets(
+      'map controls retain readable contrast in the product light theme',
+      (tester) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(MaterialApp(
+          theme: buildLightTheme(primaryColorHex: '#00796B'),
+          home: CameraMapScreen(
+              repository: Maps(),
+              locationGateway: GPS(),
+              cameraRepository: SlowCatalog(),
+              onSelectCamera: (_) {},
+              onOpenCameras: () {},
+              mapBuilder: (context, config) => const SizedBox())));
+      await tester.pumpAndSettle();
+      await expectLater(tester, meetsGuideline(textContrastGuideline));
+    } finally {
+      semantics.dispose();
+    }
   });
 }

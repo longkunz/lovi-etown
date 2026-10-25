@@ -6,15 +6,14 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/vietma
 class StyleAdapter implements HttpClientAdapter {
   RequestOptions? request;
   int status = 200;
+  String body = '{"version":8,"sources":{},"layers":[]}';
   @override
   Future<ResponseBody> fetch(RequestOptions options, Stream<Uint8List>? stream,
       Future<void>? cancelFuture) async {
     request = options;
-    return ResponseBody.fromString(
-        '{"version":8,"sources":{},"layers":[]}', status,
-        headers: {
-          Headers.contentTypeHeader: ['application/json']
-        });
+    return ResponseBody.fromString(body, status, headers: {
+      Headers.contentTypeHeader: ['application/json']
+    });
   }
 
   @override
@@ -48,13 +47,13 @@ void main() {
       () {
     final base = <String, dynamic>{
       'version': 8,
-      'sources': {'base': <String,dynamic>{}},
+      'sources': {'base': <String, dynamic>{}},
       'layers': [
         {'id': 'base'}
       ]
     };
     final overlay = <String, dynamic>{
-      'sources': {'traffic': <String,dynamic>{}},
+      'sources': {'traffic': <String, dynamic>{}},
       'layers': [
         {'id': 'traffic'}
       ]
@@ -74,5 +73,32 @@ void main() {
               }
             }),
         throwsA(isA<VietmapStyleFailure>()));
+  });
+  test('malformed successful traffic payload becomes a typed safe failure',
+      () async {
+    final adapter = StyleAdapter();
+    final loader =
+        VietmapStyleLoader(client: Dio()..httpClientAdapter = adapter);
+    for (final body in [
+      '{"sources":{},"layers":[{}]}',
+      '{"sources":{},"layers":[1]}',
+      '{"sources":{"bad":1},"layers":[]}'
+    ]) {
+      adapter.body = body;
+      await expectLater(
+          loader.load('tf', 'private-key'),
+          throwsA(isA<VietmapStyleFailure>().having(
+              (e) => e.kind, 'kind', VietmapStyleFailureKind.malformed)));
+    }
+    expect(
+        () => VietmapStyleLoader.mergeTraffic({
+              'sources': <String, dynamic>{},
+              'layers': <Object?>[]
+            }, {
+              'sources': <String, dynamic>{},
+              'layers': <Object?>[<String, dynamic>{}]
+            }),
+        throwsA(isA<VietmapStyleFailure>()));
+    loader.dispose();
   });
 }

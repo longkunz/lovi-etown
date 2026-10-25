@@ -65,6 +65,7 @@ class VietmapStyleLoader {
         throw const VietmapStyleFailure(VietmapStyleFailureKind.malformed);
       }
       final result = Map<String, dynamic>.from(raw);
+      validateStyle(result);
       validateResources(result);
       return result;
     } on VietmapStyleFailure {
@@ -85,6 +86,22 @@ class VietmapStyleLoader {
       }
       throw const VietmapStyleFailure(VietmapStyleFailureKind.network);
     } catch (_) {
+      throw const VietmapStyleFailure(VietmapStyleFailureKind.malformed);
+    }
+  }
+
+  /// Validate the fields consumed by the merger before crossing the native boundary.
+  static void validateStyle(Map<String, dynamic> style) {
+    final sources = style['sources'];
+    final layers = style['layers'];
+    if (sources is! Map ||
+        layers is! List ||
+        sources.entries
+            .any((entry) => entry.key is! String || entry.value is! Map) ||
+        layers.any((layer) =>
+            layer is! Map ||
+            layer['id'] is! String ||
+            (layer['id'] as String).trim().isEmpty)) {
       throw const VietmapStyleFailure(VietmapStyleFailureKind.malformed);
     }
   }
@@ -122,6 +139,8 @@ class VietmapStyleLoader {
 
   static Map<String, dynamic> mergeTraffic(
       Map<String, dynamic> base, Map<String, dynamic> traffic) {
+    validateStyle(base);
+    validateStyle(traffic);
     final layers = <String, Map<String, dynamic>>{};
     for (final layer in [
       ...base['layers'] as List,

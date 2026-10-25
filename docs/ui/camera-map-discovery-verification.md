@@ -60,6 +60,6 @@ Fixture nearby dùng Haversine (bán kính Trái Đất 6.371.008,8 m), khác el
 
 ## Chưa nghiệm thu với dữ liệu native thật
 
-Không có `VIETMAP_API_KEY` hợp lệ trong môi trường này. **Chưa xác minh** tiles đường phố/hybrid, entitlement traffic, marker trên bản đồ thật, pan/pinch và vòng đời native với key thật; chưa chạy nghiệm thu runtime iOS. Android demo smoke và iOS Simulator build không thay thế các kiểm tra này. TalkBack/VoiceOver, profile p95/RAM và permission granted/denied trên cả hai nền tảng vẫn cần nghiệm thu thiết bị. Issue không được coi là nghiệm thu production chỉ từ các test fake.
+Không có `VIETMAP_API_KEY` hợp lệ trong môi trường này. **Chưa xác minh** tiles đường phố/hybrid, entitlement traffic, marker trên bản đồ thật, pan/pinch và vòng đời native với key thật; chưa chạy nghiệm thu runtime iOS. Android demo smoke và iOS Simulator build không thay thế các kiểm tra này. Yêu cầu nghiệm thu TalkBack/VoiceOver đã được người dùng lược bỏ. Profile p95/RAM và permission granted/denied trên cả hai nền tảng vẫn cần nghiệm thu thiết bị. Issue không được coi là nghiệm thu production chỉ từ các test fake.
 
 Cách chạy tiếp: cấu hình backend/reader key theo `mobile/SETUP.md`, triển khai migration/API backend của nhánh này và truyền `--dart-define=VIETMAP_API_KEY=<key>` (hoặc `.env` cục bộ). Build bình thường, không bật demo, rồi chạy các kịch bản nghiệm thu trong spec trên Android và iOS riêng biệt.

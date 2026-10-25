@@ -3,7 +3,7 @@
 **Trạng thái triển khai:**
 - **Mobile A1 (2026-10-16):** Đã hoàn thành và nghiệm thu đầy đủ (docs/ui/mobile-a1-verification.md).
 - **Google Maps & Traffic Layer T18 (2026-10-24):** Có báo cáo triển khai; native/lifecycle cần nghiệm thu riêng (docs/ui/t18-google-maps-traffic-verification.md).
-- **Liquid Glass Refresh (2026-10-24):** Đã review mã nguồn và kiểm thử tự động 174/174 Flutter tests PASS, 86/86 Backend tests PASS (docs/ui/liquid-glass-refresh-verification.md). Bộ component kính dùng chung `CameraGlassSurface`, `CameraGlassIconButton`, `CameraGlassSearchField`, `CameraGlassSegmentedControl`, `CameraDistrictPicker` áp dụng xuyên suốt catalog, sheet, viewers, multi-camera grid và map; các mục đo đạc profile frame time/RAM và TalkBack/VoiceOver được bảo lưu cho bước kiểm thử trên thiết bị vật lý.
+- **Liquid Glass Refresh (2026-10-24):** Đã review mã nguồn và kiểm thử tự động 174/174 Flutter tests PASS, 86/86 Backend tests PASS (docs/ui/liquid-glass-refresh-verification.md). Bộ component kính dùng chung `CameraGlassSurface`, `CameraGlassIconButton`, `CameraGlassSearchField`, `CameraGlassSegmentedControl`, `CameraDistrictPicker` áp dụng xuyên suốt catalog, sheet, viewers, multi-camera grid và map; các mục đo đạc profile frame time/RAM được bảo lưu cho bước kiểm thử trên thiết bị vật lý (đã bỏ yêu cầu TalkBack/VoiceOver theo quyết định của người dùng).
 - Snapshot sheet tối giản loại bỏ nút thừa, tách biệt header glass khỏi body media solid; chạm ảnh mở viewer overlay.
 - Minimum touch target: Controls kính dùng tối thiểu 48×48 logical pixels; cần tiếp tục walkthrough toàn app trên thiết bị (`CameraUiTokens.minTouchTarget`).
 - Zero glass over media: Toàn bộ ảnh snapshot, live video và canvas Google Maps nằm độc lập, không đi qua shader mờ.

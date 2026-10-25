@@ -46,7 +46,7 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 - [Báo cáo review](ui/liquid-glass-refresh-verification.md), [spec](superpowers/specs/2026-10-24-liquid-glass-refresh-design.md), [plan](superpowers/plans/2026-10-24-liquid-glass-refresh.md).
 - Có triển khai theme/policy và controls dùng chung cho catalog, sheet/viewers, favorites/lưới và bản đồ. Review đã sửa target/semantics/reduced-motion, keyboard focus, opaque header media, feed dưới AppBar và overflow map/favorites ở chữ lớn.
 - Kiểm thử worktree PR: `flutter analyze` 0 issues; **174/174 Flutter tests PASS**; backend chạy lần lượt **56 unit + 18 API + 12 DB PASS** với Node 24.16.0 và PostGIS local. Sửa SQL tiền đề nằm ở nhánh T18, ngoài diff Refresh.
-- **Chưa hoàn tất nghiệm thu**: 12 PNG là mockup HTML, thiếu screenshot app trước/sau, shader/native Maps/live trên thiết bị, TalkBack/VoiceOver và profile p95/RAM. PR Draft trên nhánh T18 tiền đề; không phải xác nhận sẵn sàng phát hành.
+- **Chưa hoàn tất nghiệm thu**: 12 PNG là mockup HTML, thiếu screenshot app trước/sau, shader/native Maps/live trên thiết bị và profile p95/RAM (đã bỏ yêu cầu TalkBack/VoiceOver). PR Draft trên nhánh T18 tiền đề; không phải xác nhận sẵn sàng phát hành.
 
 ### #40 — Bản đồ mặc định / Vietmap / Gần tôi (2026-10-25)
 

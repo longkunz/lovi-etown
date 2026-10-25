@@ -18,8 +18,9 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/distri
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/weather_card.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memory_cache.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_scheduler.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 import 'package:fpdart/fpdart.dart' hide State;
 
@@ -35,7 +36,8 @@ class _NoOpFavoritesRepository implements FavoritesRepository {
   FutureEither<void> load() async => const Right(null);
 
   @override
-  FutureEither<void> setSaved(Camera camera, bool saved) async => const Right(null);
+  FutureEither<void> setSaved(Camera camera, bool saved) async =>
+      const Right(null);
 
   @override
   FutureEither<void> resetCorruptData() async => const Right(null);
@@ -214,8 +216,7 @@ class _CameraScreenState extends State<CameraScreen>
 
     final int firstVisible =
         (firstVisibleRow * crossAxis).clamp(0, items.length);
-    final int lastVisible =
-        (lastVisibleRow * crossAxis).clamp(0, items.length);
+    final int lastVisible = (lastVisibleRow * crossAxis).clamp(0, items.length);
 
     final visibleIds = <String>{};
     for (int i = firstVisible; i < lastVisible; i++) {
@@ -265,16 +266,16 @@ class _CameraScreenState extends State<CameraScreen>
     } else {
       Navigator.of(context)
           .push(
-            MaterialPageRoute<void>(
-              builder: (_) => CameraViewerScreen(
-                cameraId: camera.id,
-                repository: _repository,
-                favoritesRepository: _favoritesRepository,
-                onOpenMultiCamera: () =>
-                    _openMultiCameraGrid(context, _latestFavorites),
-              ),
-            ),
-          )
+        MaterialPageRoute<void>(
+          builder: (_) => CameraViewerScreen(
+            cameraId: camera.id,
+            repository: _repository,
+            favoritesRepository: _favoritesRepository,
+            onOpenMultiCamera: () =>
+                _openMultiCameraGrid(context, _latestFavorites),
+          ),
+        ),
+      )
           .whenComplete(() {
         _thumbnailScheduler.setPreviewCamera(null);
         _updateThumbnailWindow();
@@ -282,7 +283,8 @@ class _CameraScreenState extends State<CameraScreen>
     }
   }
 
-  void _openMultiCameraGrid(BuildContext context, List<FavoriteCamera> favorites) {
+  void _openMultiCameraGrid(
+      BuildContext context, List<FavoriteCamera> favorites) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => MultiCameraScreen(
@@ -317,16 +319,13 @@ class _CameraScreenState extends State<CameraScreen>
     return BlocProvider.value(
       value: _catalogCubit,
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Colors.transparent,
-          flexibleSpace: const AdaptiveGlass(
-            shape: LiquidRoundedSuperellipse(borderRadius: 0),
-            settings: LiquidGlassSettings(
-              blur: CameraUiTokens.glassBlur,
-              thickness: 10,
-              glassColor: Color(0x1A00796B),
-            ),
+          flexibleSpace: const CameraGlassSurface(
+            role: CameraGlassRole.header,
+            borderRadius: BorderRadius.zero,
             child: SizedBox.expand(),
           ),
           title: Text(
@@ -345,8 +344,11 @@ class _CameraScreenState extends State<CameraScreen>
                     ),
                     decoration: BoxDecoration(
                       color: CameraUiTokens.badgeDemoBg,
-                      borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
-                      border: Border.all(color: CameraUiTokens.badgeDemoText.withValues(alpha: 0.3)),
+                      borderRadius:
+                          BorderRadius.circular(CameraUiTokens.radius8),
+                      border: Border.all(
+                          color: CameraUiTokens.badgeDemoText
+                              .withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       'shared.demo_mode_badge'.tr(),
@@ -371,11 +373,20 @@ class _CameraScreenState extends State<CameraScreen>
             // T06-D4: a rejected reader key gets a dedicated screen, not a
             // retryable error. Favorites stay untouched in local storage.
             if (state.isUpdateRequired) {
-              return _buildUpdateRequiredView(context);
+              return Padding(
+                padding: EdgeInsets.only(
+                    top: MediaQuery.paddingOf(context).top + kToolbarHeight),
+                child: _buildUpdateRequiredView(context),
+              );
             }
             return CustomScrollView(
               controller: _scrollController,
               slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                      height:
+                          MediaQuery.paddingOf(context).top + kToolbarHeight),
+                ),
                 // Filters
                 SliverToBoxAdapter(
                   child: CameraFilters(
@@ -504,7 +515,8 @@ class _CameraScreenState extends State<CameraScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: CameraUiTokens.errorRed),
+              const Icon(Icons.error_outline,
+                  size: 48, color: CameraUiTokens.errorRed),
               const SizedBox(height: CameraUiTokens.spacing8),
               const Text('Không thể tải danh sách camera'),
               const SizedBox(height: CameraUiTokens.spacing12),

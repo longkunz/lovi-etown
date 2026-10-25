@@ -13,7 +13,7 @@ abstract class WidgetDataSink {
 
 class HomeWidgetDataSink implements WidgetDataSink {
   /// Qualified Android provider class registered in the manifest.
-  static const qualifiedAndroidName = 'site.capyai.lovi.LoviWidgetProvider';
+  static const qualifiedAndroidName = 'com.lovisoft.etown.LoviWidgetProvider';
 
   @override
   Future<void> save(String key, String value) =>

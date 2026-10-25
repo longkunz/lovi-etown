@@ -1,6 +1,6 @@
 # Hiện trạng dự án Lovi Etown
 
-Cập nhật: **2026-10-19**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
+Cập nhật: **2026-10-24**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
 
 ## Repository và cấu hình làm việc
 
@@ -33,6 +33,20 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 - T01: `CameraApiClient.getSnapshot` nay decode thật payload (ngoài kiểm tra magic bytes ở header) trước khi tạo `SnapshotFrame`; payload JPEG/PNG/WebP có header hợp lệ nhưng không giải mã được bị từ chối với lỗi 422, nên không thể thay last-good frame trong preview/viewer hay đi vào snapshot cache dùng chung. Có regression test ở tầng client và test đầu-cuối client → repository → preview/cache (kể cả thumbnail scheduler).
 - T02: `CameraPreviewCubit` được tách thành các stage detail → descriptor → snapshot; backoff tự động và retry thủ công làm lại đúng stage còn thiếu thay vì gọi snapshot khi chưa có endpoint, descriptor lỗi vẫn thử snapshot qua endpoint của camera và được khôi phục ở chu kỳ poll kế tiếp, lỗi refresh đánh dấu ảnh hiện tại là cũ (`isStale`) ngay cả trước ngưỡng 60 giây, và bộ đếm backoff đặt lại khi mỗi stage thành công.
 - Kiểm thử đã chạy lại trên môi trường agent (Flutter 3.47.7 / Dart 3.13.5): targeted tests cho T01/T02 đỏ trước khi sửa (8 test fail) và xanh sau khi sửa; `flutter test` toàn bộ **66/66 PASS**; `flutter analyze` không có issue. Backend không thay đổi mã nguồn; `npm run test:unit` **22/22 PASS**. `test:api`/`test:db` chưa chạy được trên môi trường agent vì không có Docker/PostgreSQL và kho gói hệ điều hành không truy cập được; cần chạy lại ở môi trường có PostgreSQL/PostGIS tại `127.0.0.1:5433` để hoàn tất bằng chứng backend.
+
+### T18 — Google Maps & Traffic Layer (2026-10-24)
+
+- **Báo cáo nghiệm thu:** [`docs/ui/t18-google-maps-traffic-verification.md`](ui/t18-google-maps-traffic-verification.md).
+- **Đặc tả & Kế hoạch:** [`docs/superpowers/specs/2026-10-24-camera-google-maps-traffic-design.md`](superpowers/specs/2026-10-24-camera-google-maps-traffic-design.md) & [`docs/superpowers/plans/2026-10-24-camera-google-maps-traffic.md`](superpowers/plans/2026-10-24-camera-google-maps-traffic.md).
+- **Tóm tắt:** Tích hợp Google Maps SDK cùng lớp vạch màu kẹt xe (`trafficEnabled: true`) vào `CameraSnapshotSheet` và `CameraViewerScreen`, kèm màn hình xem bản đồ toàn màn hình `CameraTrafficMapViewerScreen` (hỗ trợ chuyển đổi vệ tinh/hybrid, recenter, directions).
+- **Kiểm thử tự động:** `flutter test` toàn bộ **141/141 PASS**; `flutter analyze` 0 issues; Backend unit (56/56 PASS), API (15/15 PASS), DB (12/12 PASS).
+
+### Liquid Glass Refresh (review 2026-10-24)
+
+- [Báo cáo review](ui/liquid-glass-refresh-verification.md), [spec](superpowers/specs/2026-10-24-liquid-glass-refresh-design.md), [plan](superpowers/plans/2026-10-24-liquid-glass-refresh.md).
+- Có triển khai theme/policy và controls dùng chung cho catalog, sheet/viewers, favorites/lưới và bản đồ. Review đã sửa target/semantics/reduced-motion, keyboard focus, opaque header media, feed dưới AppBar và overflow map/favorites ở chữ lớn.
+- Kiểm thử worktree PR: `flutter analyze` 0 issues; **174/174 Flutter tests PASS**; backend chạy lần lượt **56 unit + 18 API + 12 DB PASS** với Node 24.16.0 và PostGIS local. Sửa SQL tiền đề nằm ở nhánh T18, ngoài diff Refresh.
+- **Chưa hoàn tất nghiệm thu**: 12 PNG là mockup HTML, thiếu screenshot app trước/sau, shader/native Maps/live trên thiết bị, TalkBack/VoiceOver và profile p95/RAM. PR Draft trên nhánh T18 tiền đề; không phải xác nhận sẵn sàng phát hành.
 
 ## Cách đọc và cập nhật tài liệu
 

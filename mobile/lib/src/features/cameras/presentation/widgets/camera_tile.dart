@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 class CameraTile extends StatelessWidget {
   const CameraTile({
@@ -104,9 +104,9 @@ class CameraTile extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          const Icon(
             Icons.fiber_manual_record,
-            size: compact ? 8 : 10,
+            size: 8,
             color: Colors.white,
           ),
           const SizedBox(width: 4),
@@ -123,27 +123,26 @@ class CameraTile extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteButton() {
-    return Semantics(
-      button: true,
+  Widget _buildGlassFavoriteButton() {
+    return CameraGlassIconButton(
+      icon: isFavorite ? Icons.star : Icons.star_border,
       label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
-      child: SizedBox(
-        width: CameraUiTokens.minTouchTarget,
-        height: CameraUiTokens.minTouchTarget,
-        child: IconButton(
-          iconSize: 24,
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(
-            minWidth: CameraUiTokens.minTouchTarget,
-            minHeight: CameraUiTokens.minTouchTarget,
-          ),
-          onPressed: onToggleFavorite,
-          icon: Icon(
-            isFavorite ? Icons.star : Icons.star_border,
-            color: isFavorite ? CameraUiTokens.starActive : CameraUiTokens.starInactive,
-          ),
-        ),
-      ),
+      selected: isFavorite,
+      onPressed: onToggleFavorite,
+      size: CameraUiTokens.minTouchTarget,
+      iconSize: 24,
+    );
+  }
+
+  Widget _buildFavoriteButton() {
+    return CameraGlassIconButton(
+      icon: isFavorite ? Icons.star : Icons.star_border,
+      label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+      selected: isFavorite,
+      embedded: true,
+      onPressed: onToggleFavorite,
+      size: CameraUiTokens.minTouchTarget,
+      iconSize: 24,
     );
   }
 
@@ -154,112 +153,94 @@ class CameraTile extends StatelessWidget {
         horizontal: CameraUiTokens.spacing16,
         vertical: CameraUiTokens.spacing8,
       ),
-      child: AdaptiveGlass(
-        shape: const LiquidRoundedSuperellipse(
-          borderRadius: CameraUiTokens.radius16,
-        ),
-        settings: const LiquidGlassSettings(
-          blur: CameraUiTokens.glassBlur,
-          thickness: 8,
-          glassColor: Color(0x1400796B),
-        ),
-        child: Card(
-          key: ValueKey('camera_card_${camera.id}'),
-          margin: EdgeInsets.zero,
-          color: theme.brightness == Brightness.dark
-              ? CameraUiTokens.surfaceDark.withValues(alpha: CameraUiTokens.glassOpacityDark)
-              : CameraUiTokens.surfaceLight.withValues(alpha: CameraUiTokens.glassOpacityLight),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
-            side: BorderSide(
-              color: theme.dividerColor.withValues(alpha: 0.1),
-            ),
+      child: Card(
+        key: ValueKey('camera_card_${camera.id}'),
+        margin: EdgeInsets.zero,
+        color: theme.cardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
+          side: BorderSide(
+            color: theme.dividerColor.withValues(alpha: 0.1),
           ),
-          elevation: 0,
-          clipBehavior: Clip.antiAlias,
-          child: InkWell(
-            onTap: onTap,
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                _buildThumbnail(height: 190, width: double.infinity),
-                if (camera.canLive)
+        ),
+        elevation: 0,
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  _buildThumbnail(height: 190, width: double.infinity),
+                  if (camera.canLive)
+                    Positioned(
+                      top: CameraUiTokens.spacing8,
+                      left: CameraUiTokens.spacing8,
+                      child: _buildLiveBadge(),
+                    ),
                   Positioned(
                     top: CameraUiTokens.spacing8,
-                    left: CameraUiTokens.spacing8,
-                    child: _buildLiveBadge(),
+                    right: CameraUiTokens.spacing8,
+                    child: _buildGlassFavoriteButton(),
                   ),
-                Positioned(
-                  top: CameraUiTokens.spacing8,
-                  right: CameraUiTokens.spacing8,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Colors.black45,
-                      borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
-                    ),
-                    child: _buildFavoriteButton(),
-                  ),
-                ),
-                if (camera.district != null && camera.district!.isNotEmpty)
-                  Positioned(
-                    bottom: CameraUiTokens.spacing8,
-                    left: CameraUiTokens.spacing8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: CameraUiTokens.spacing8,
-                        vertical: CameraUiTokens.spacing4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: CameraUiTokens.primaryTealDark.withValues(alpha: 0.85),
-                        borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
-                      ),
-                      child: Text(
-                        camera.district!,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                  if (camera.district != null && camera.district!.isNotEmpty)
+                    Positioned(
+                      bottom: CameraUiTokens.spacing8,
+                      left: CameraUiTokens.spacing8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: CameraUiTokens.spacing8,
+                          vertical: CameraUiTokens.spacing4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: CameraUiTokens.primaryTealDark.withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
+                        ),
+                        child: Text(
+                          camera.district!,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(CameraUiTokens.spacing12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    camera.name,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (camera.address != null && camera.address!.isNotEmpty) ...[
-                    const SizedBox(height: CameraUiTokens.spacing4),
-                    Text(
-                      camera.address!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
                 ],
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(CameraUiTokens.spacing12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      camera.name,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (camera.address != null && camera.address!.isNotEmpty) ...[
+                      const SizedBox(height: CameraUiTokens.spacing4),
+                      Text(
+                        camera.address!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
-    ),
-  ),
-);
-}
+    );
+  }
 
   Widget _buildGrid(BuildContext context) {
     final theme = Theme.of(context);
@@ -289,13 +270,7 @@ class CameraTile extends StatelessWidget {
                   Positioned(
                     top: 2,
                     right: 2,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Colors.black45,
-                        borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
-                      ),
-                      child: _buildFavoriteButton(),
-                    ),
+                    child: _buildGlassFavoriteButton(),
                   ),
                 ],
               ),

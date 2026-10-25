@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "site.capyai.lovi"
+    namespace = "com.lovisoft.etown"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -18,7 +18,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "site.capyai.lovi"
+        applicationId = "com.lovisoft.etown"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -29,6 +29,16 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+        val localProperties = Properties()
+        val localPropertiesFile = rootProject.file("local.properties")
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.inputStream().use { localProperties.load(it) }
+        }
+        val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY")
+            ?: System.getenv("GOOGLE_MAPS_API_KEY")
+            ?: "DEFAULT_MAPS_API_KEY"
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = googleMapsApiKey
     }
 
     signingConfigs {

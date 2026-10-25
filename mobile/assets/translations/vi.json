@@ -78,5 +78,40 @@
     "forgot_password_title": "Quên mật khẩu",
     "forgot_password_subtitle": "Nhập địa chỉ email để nhận liên kết đặt lại mật khẩu.",
     "reset_link_sent": "Đã gửi liên kết đặt lại mật khẩu."
+  },
+  "navigation": {
+    "map": "Bản đồ",
+    "cameras": "Camera"
+  },
+  "map_discovery": {
+    "title": "Bản đồ",
+    "viewport": "Vùng đang xem",
+    "nearby": "Gần tôi",
+    "refresh_location": "Cập nhật vị trí",
+    "district": "Quận / huyện",
+    "all_districts": "Tất cả quận / huyện",
+    "traffic": "Giao thông",
+    "street": "Đường phố",
+    "hybrid": "Vệ tinh",
+    "open_cameras": "Mở Camera",
+    "locating": "Đang lấy vị trí…",
+    "location_denied": "Quyền vị trí bị từ chối. Thử lại",
+    "app_settings": "Mở cài đặt ứng dụng",
+    "location_settings": "Bật dịch vụ vị trí",
+    "location_timeout": "Hết thời gian lấy vị trí. Thử lại",
+    "location_failed": "Không lấy được vị trí. Thử lại",
+    "missing_key": "Chưa cấu hình khóa Vietmap. Bạn vẫn có thể xem danh mục Camera.",
+    "demo_map": "Bản đồ minh họa · dữ liệu demo",
+    "invalid_viewport": "Phóng to bản đồ để chọn vùng hợp lệ.",
+    "update_required": "Mã truy cập camera đã hết hiệu lực. Vui lòng cập nhật cấu hình truy cập.",
+    "load_failed": "Không thể tải camera trong vùng này.",
+    "retry": "Thử lại",
+    "stale_results": "Kết quả cũ — chưa cập nhật cho tìm kiếm hiện tại.",
+    "incomplete_catalog": "Danh mục camera có thể chưa đầy đủ.",
+    "viewport_limit": "Phóng to để xem đủ camera",
+    "nearby_limit": "Đang hiển thị các camera gần nhất, hãy giảm bán kính để xem đủ",
+    "empty": "Chưa tìm thấy camera trong vùng đã chọn.",
+    "loading": "Đang tải camera",
+    "straight_distance": "khoảng cách đường thẳng"
   }
 }

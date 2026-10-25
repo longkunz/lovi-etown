@@ -21,7 +21,7 @@ android {
         applicationId = "com.lovisoft.etown"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 24
         targetSdk = flutter.targetSdkVersion
         // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
         // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
@@ -30,15 +30,7 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
 
-        val localProperties = Properties()
-        val localPropertiesFile = rootProject.file("local.properties")
-        if (localPropertiesFile.exists()) {
-            localPropertiesFile.inputStream().use { localProperties.load(it) }
-        }
-        val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY")
-            ?: System.getenv("GOOGLE_MAPS_API_KEY")
-            ?: "DEFAULT_MAPS_API_KEY"
-        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = googleMapsApiKey
+
     }
 
     signingConfigs {

@@ -1,0 +1,18 @@
+Page: com.lovisoft.etown
+App: com.lovisoft.etown
+Snapshot: 12 visible nodes
+@e2 [scroll-area] [scrollable]
+  [content below scroll-area hidden]
+@e3 [group] "Bản đồ"
+@e4 [button] "Vùng đang xem" [selected]
+@e5 [button] "Gần tôi"
+@e6 [button] "Quận / huyện
+Tất cả quận / huyện"
+@e7 [button] "Giao thông" [selected]
+@e8 [button] "Đường phố" [selected]
+@e9 [button] "Vệ tinh"
+@e10 [group] "Bản đồ minh họa · dữ liệu demo"
+@e11 [button] "Bản đồ
+Tab 1 trong tổng số 2" [selected]
+@e12 [button] "Camera
+Tab 2 trong tổng số 2"

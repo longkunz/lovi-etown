@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fpdart/fpdart.dart';
+import 'package:fpdart/fpdart.dart' hide State;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
@@ -484,6 +484,7 @@ void main() {
     expect(find.text('Camera Liên Quan Một'), findsWidgets);
 
     await tester.tap(relatedCard);
+    await tester.pump(); // Unmount native map before navigation.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 300));
@@ -540,6 +541,7 @@ void main() {
     );
 
     await tester.tap(find.byKey(const ValueKey('viewer_fullscreen_button')));
+    await tester.pump(); // Unmount native map before navigation.
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
 
@@ -740,4 +742,98 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     expect(requests, ['/v1/cameras/cam-plain/snapshot']);
   });
+  testWidgets(
+      'detail map unmounts under transparent routes, fullscreen and background',
+      (tester) async {
+    const camera = Camera(
+        id: 'map-camera',
+        name: 'Map camera',
+        provinceId: 'tp_hcm',
+        playbackEndpoint: '/playback',
+        snapshotEndpoint: '/snapshot',
+        snapshotCapable: true,
+        latitude: 10.77,
+        longitude: 106.7);
+    final repo = _ViewerRepo(cameras: {camera.id: camera});
+    var mountedMaps = 0;
+    await tester.pumpWidget(_featureApp(
+        home: CameraViewerScreen(
+            cameraId: camera.id,
+            repository: repo,
+            favoritesRepository: InMemoryFavoritesRepository(),
+            mapBuilder: (_, __) =>
+                _MapMountSpy(onChange: (delta) => mountedMaps += delta))));
+    await _pumpFrames(tester);
+    expect(mountedMaps, 1);
+    final navigator =
+        Navigator.of(tester.element(find.byType(CameraViewerScreen)));
+    navigator.push(PageRouteBuilder<void>(
+        opaque: false, pageBuilder: (_, __, ___) => const SizedBox.expand()));
+    await _pumpFrames(tester);
+    expect(mountedMaps, 0);
+    navigator.pop();
+    await _pumpFrames(tester);
+    expect(mountedMaps, 1);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+    await tester.pump();
+    expect(mountedMaps, 0);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await _pumpFrames(tester);
+    expect(mountedMaps, 1);
+    await tester.tap(find.byKey(const ValueKey('viewer_fullscreen_button')));
+    await _pumpFrames(tester);
+    expect(mountedMaps, 0);
+    await tester.tap(find.byKey(const ValueKey('viewer_fullscreen_close')));
+    await _pumpFrames(tester);
+    expect(mountedMaps, 1);
+    await tester.pumpWidget(const SizedBox());
+    expect(mountedMaps, 0);
+  });
+  testWidgets('direct camera route Back returns to map without a stack',
+      (tester) async {
+    final repo = _ViewerRepo(cameras: {plainCam.id: plainCam});
+    final router = GoRouter(initialLocation: '/camera/${plainCam.id}', routes: [
+      GoRoute(
+          path: '/',
+          builder: (_, __) => const Scaffold(body: Text('Map destination'))),
+      GoRoute(
+          path: '/camera/:id',
+          builder: (_, state) => CameraViewerScreen(
+              cameraId: state.pathParameters['id']!,
+              repository: repo,
+              favoritesRepository: InMemoryFavoritesRepository()))
+    ]);
+    addTearDown(router.dispose);
+    await tester.pumpWidget(_featureApp(router: router));
+    await _pumpFrames(tester);
+    expect(find.byType(BackButton), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await _pumpFrames(tester);
+    expect(find.text('Map destination'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+}
+
+class _MapMountSpy extends StatefulWidget {
+  const _MapMountSpy({required this.onChange});
+  final void Function(int) onChange;
+  @override
+  State<_MapMountSpy> createState() => _MapMountSpyState();
+}
+
+class _MapMountSpyState extends State<_MapMountSpy> {
+  @override
+  void initState() {
+    super.initState();
+    widget.onChange(1);
+  }
+
+  @override
+  void dispose() {
+    widget.onChange(-1);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => const SizedBox.expand();
 }

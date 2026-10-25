@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_starter/src/app.dart';
 import 'package:flutter_starter/src/config/app_config.dart';
 import 'package:flutter_starter/src/routing/app_router.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/camera_feature.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_navigation_shell.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +13,7 @@ class TestAssetLoader extends AssetLoader {
   @override
   Future<Map<String, dynamic>> load(String path, Locale locale) async {
     return {
+      'navigation': {'map': 'Bản đồ', 'cameras': 'Camera'},
       'shared': {
         'get_started': 'Bắt đầu',
         'retry': 'Thử lại',
@@ -57,7 +58,8 @@ void main() {
     expect(explicitDemo.demoMode, isTrue);
   });
 
-  testWidgets('boots_camera_without_session_redirect', (WidgetTester tester) async {
+  testWidgets('boots_map_without_session_redirect',
+      (WidgetTester tester) async {
     AppConfig.cameraConfig = const CameraConnectionConfig(
       baseUrl: 'http://10.0.2.2:3000',
       readerKey: 'test_reader_key',
@@ -73,18 +75,23 @@ void main() {
         startLocale: const Locale('vi'),
         saveLocale: false,
         child: App(
-          routerConfig: createAppRouter(navigatorKey: GlobalKey<NavigatorState>()),
+          routerConfig:
+              createAppRouter(navigatorKey: GlobalKey<NavigatorState>()),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
-    expect(find.byType(CameraFeature), findsOneWidget);
+    expect(find.byType(CameraMapFeature), findsOneWidget);
+    expect(
+        tester.widget<NavigationBar>(find.byType(NavigationBar)).selectedIndex,
+        0);
     expect(find.text('Login'), findsNothing);
     expect(find.text('Get Started'), findsNothing);
   });
 
-  testWidgets('missing_config_shows_connection_state', (WidgetTester tester) async {
+  testWidgets('missing_config_shows_connection_state',
+      (WidgetTester tester) async {
     AppConfig.cameraConfig = const CameraConnectionConfig(
       baseUrl: '',
       readerKey: '',
@@ -100,7 +107,8 @@ void main() {
         startLocale: const Locale('vi'),
         saveLocale: false,
         child: App(
-          routerConfig: createAppRouter(navigatorKey: GlobalKey<NavigatorState>()),
+          routerConfig:
+              createAppRouter(navigatorKey: GlobalKey<NavigatorState>()),
         ),
       ),
     );

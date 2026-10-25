@@ -1,3 +1,6 @@
+import { MapCatalogController } from './map-catalog.controller.js';
+import { MapCatalogRepository } from './map-catalog.repository.js';
+import { MapCatalogService } from './map-catalog.service.js';
 import { Module, Global } from '@nestjs/common';
 import pg from 'pg';
 import { CATALOG_REPOSITORY, PgCatalogRepository } from './catalog.repository.js';
@@ -10,7 +13,7 @@ import { AppConfig } from '../config/config.js';
 
 @Global()
 @Module({
-  controllers: [CatalogController],
+  controllers: [CatalogController, MapCatalogController],
   providers: [
     {
       provide: CLOCK,
@@ -21,6 +24,13 @@ import { AppConfig } from '../config/config.js';
       useFactory: (pool: pg.Pool, clock: Clock, config: AppConfig) => {
         return new PgCatalogRepository(pool, config.databaseSchema, clock, config.catalogStaleAfterMs);
       },
+      inject: [DATABASE_POOL, CLOCK, APP_CONFIG],
+    },
+    MapCatalogService,
+    {
+      provide: MapCatalogRepository,
+      useFactory: (pool: pg.Pool, clock: Clock, config: AppConfig) =>
+        new MapCatalogRepository(pool, config.databaseSchema, clock, config.catalogStaleAfterMs),
       inject: [DATABASE_POOL, CLOCK, APP_CONFIG],
     },
     CatalogService,

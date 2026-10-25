@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:label="Lovi Etown"
         android:name="${applicationName}"
@@ -37,11 +39,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/lovi_widget_info" />
         </receiver>
-        <!-- Google Maps API Key for Traffic Layer and Camera Locations (T18) -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${GOOGLE_MAPS_API_KEY}" />
-
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

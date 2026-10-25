@@ -1,0 +1,57 @@
+#40 automated verification — 2026-10-25
+Source commit: 3b6ca6a
+macOS; Flutter3.47.7/Dart3.13.5; Node24.16; PostgreSQL17.11/PostGIS3.6.4
+Temporary DB isolated at127.0.0.1:5433; PostGIS public extension precreated; stopped after verification.
+
+backend/npm run typecheck
+> camera-backend@1.0.0 typecheck
+> tsc --noEmit -p tsconfig.json
+
+backend/npm run test:unit
+✔ City-wide coverage (T13) (1.883583ms)
+ℹ tests 59
+ℹ suites 14
+ℹ pass 59
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 394.332792
+
+backend/npm run test:api
+✔ Snapshot API (Integration) (376.525084ms)
+ℹ tests 21
+ℹ suites 6
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1506.901917
+
+backend/npm run test:db
+✔ records spatial EXPLAIN plans on a synthetic catalog of 20000 cameras (403.183834ms)
+ℹ tests 15
+ℹ suites 2
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 842.564625
+
+mobile/flutter analyze --no-pub
+Analyzing mobile...
+No issues found! (ran in 4.2s)
+
+mobile/flutter test --no-pub
+00:23 +231 ~1: /Users/admin/.codex/worktrees/5d69/lovi-etown/mobile/test/app_boot_test.dart: (tearDownAll)
+00:23 +231 ~1: All tests passed!
+
+SpatialEXPLAIN20000camera fixture:
+->  Bitmap Index Scan on cameras_geom_geometry_gist  (cost=0.00..4.33 rows=8 width=0) (actual time=0.038..0.038 rows=25 loops=1)
+->  Bitmap Index Scan on idx_cameras_geom  (cost=0.00..4.51 rows=14 width=0) (actual time=0.029..0.029 rows=9 loops=1)
+
+Android standard/demo and iOSsim latest build evidence: android-emulator-2026-10-25/commands.txt
+Street/hybrid/traffic valid-key runtime: NOT RUN. iOS runtime: NOT RUN.
+Demo screenshot06 verifies navigation/contrast only.

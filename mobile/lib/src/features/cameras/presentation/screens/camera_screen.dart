@@ -52,6 +52,7 @@ class CameraScreen extends StatefulWidget {
     this.thumbnailScheduler,
     this.onSelectCamera,
     this.isDemoMode = false,
+    this.active = true,
     super.key,
   });
 
@@ -62,6 +63,7 @@ class CameraScreen extends StatefulWidget {
   final ThumbnailScheduler? thumbnailScheduler;
   final ValueChanged<Camera>? onSelectCamera;
   final bool isDemoMode;
+  final bool active;
 
   @override
   State<CameraScreen> createState() => _CameraScreenState();
@@ -80,6 +82,8 @@ class _CameraScreenState extends State<CameraScreen>
   Set<String> _favoriteIds = {};
   List<FavoriteCamera> _latestFavorites = const [];
   bool _isCorruptFavorites = false;
+  bool _appForeground = true;
+  bool _routeCurrent = true;
 
   @override
   void initState() {
@@ -101,6 +105,8 @@ class _CameraScreenState extends State<CameraScreen>
       _ownsCubit = true;
     }
 
+    _appForeground = WidgetsBinding.instance.lifecycleState == null || WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _thumbnailScheduler.setForeground(widget.active && _appForeground);
     _cache.addListener(_onCacheChanged);
     _catalogCubit.start();
     _loadFavorites();
@@ -119,12 +125,32 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isForeground = state == AppLifecycleState.resumed;
-    _thumbnailScheduler.setForeground(isForeground);
-    if (isForeground) {
-      _updateThumbnailWindow();
+  void didUpdateWidget(CameraScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.active && !oldWidget.active) {
+      _thumbnailScheduler.setPreviewCamera(null);
+      _loadFavorites();
     }
+    _syncThumbnailActivity();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeCurrent = ModalRoute.isCurrentOf(context) ?? true;
+    _syncThumbnailActivity();
+  }
+
+  void _syncThumbnailActivity() {
+    final active = widget.active && _appForeground && _routeCurrent;
+    _thumbnailScheduler.setForeground(active);
+    if (active) _updateThumbnailWindow();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _appForeground = state == AppLifecycleState.resumed;
+    _syncThumbnailActivity();
   }
 
   Future<void> _loadFavorites() async {
@@ -183,7 +209,7 @@ class _CameraScreenState extends State<CameraScreen>
   }
 
   void _updateThumbnailWindow() {
-    if (!mounted) return;
+    if (!mounted || !widget.active || !_appForeground || !_routeCurrent) return;
     final items = _catalogCubit.state.items;
     if (items.isEmpty) return;
 

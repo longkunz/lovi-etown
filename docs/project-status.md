@@ -1,6 +1,6 @@
 # Hiện trạng dự án Lovi Etown
 
-Cập nhật: **2026-10-24**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
+Cập nhật: **2026-10-25**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
 
 ## Repository và cấu hình làm việc
 
@@ -25,7 +25,7 @@ Ngày 2026-10-19 đã chạy lại trên mã nguồn đưa lên GitHub:
 
 Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox ban đầu bị chặn kết nối `127.0.0.1:5433`, sau đó chạy lại với quyền truy cập local và đều PASS. Flutter tests cũng chạy với quyền truy cập SDK/cache ngoài workspace.
 
-Đây là bằng chứng kiểm thử tự động, không phải xác nhận mới về bản APK/IPA phát hành, nghiệm thu iOS trên thiết bị, shader trên mọi thiết bị hoặc triển khai production. Bản đồ/Vietmap/nearby, LIVE, cảnh báo và tài khoản tiếp tục thuộc các lát sau A1.
+Đây là bằng chứng kiểm thử tự động, không phải xác nhận mới về bản APK/IPA phát hành, nghiệm thu iOS trên thiết bị, shader trên mọi thiết bị hoặc triển khai production. Các tính năng sau A1 phải đối chiếu các mục cập nhật bên dưới; bản đồ/Vietmap/nearby hiện có triển khai #40 trên nhánh tính năng, chưa nghiệm thu map native với key thật.
 
 ### T01/T02 (issue #1, #2) — 2026-10-19
 
@@ -47,6 +47,13 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 - Có triển khai theme/policy và controls dùng chung cho catalog, sheet/viewers, favorites/lưới và bản đồ. Review đã sửa target/semantics/reduced-motion, keyboard focus, opaque header media, feed dưới AppBar và overflow map/favorites ở chữ lớn.
 - Kiểm thử worktree PR: `flutter analyze` 0 issues; **174/174 Flutter tests PASS**; backend chạy lần lượt **56 unit + 18 API + 12 DB PASS** với Node 24.16.0 và PostGIS local. Sửa SQL tiền đề nằm ở nhánh T18, ngoài diff Refresh.
 - **Chưa hoàn tất nghiệm thu**: 12 PNG là mockup HTML, thiếu screenshot app trước/sau, shader/native Maps/live trên thiết bị, TalkBack/VoiceOver và profile p95/RAM. PR Draft trên nhánh T18 tiền đề; không phải xác nhận sẵn sàng phát hành.
+
+### #40 — Bản đồ mặc định / Vietmap / Gần tôi (2026-10-25)
+
+- Triển khai trên nhánh `feat/40-vietmap-discovery` từ `c0a01b9`; chưa ghi nhận merge vào `main`. Navigation Bản đồ | Camera, mặc định Bản đồ tại `/`, Camera lazy tại `/cameras`; backend `/v1/map-cameras` dùng PostGIS. Canvas Vietmap dùng chung cả khám phá lẫn chi tiết camera, đã gỡ Google Maps SDK.
+- [Báo cáo #40](ui/camera-map-discovery-verification.md), [spec](superpowers/specs/2026-10-24-camera-map-discovery-design.md), [plan](superpowers/plans/2026-10-24-camera-map-discovery.md).
+- Backend kiểm tra thực: typecheck PASS, **59 unit + 21 API + 15 DB PASS** trên Node24.16/PG17.11/PostGIS3.6.4. Android debug và iOS Simulator build PASS. Flutter analyze không có issue; **231 Flutter tests PASS, 1 conditional skip**. Kết quả và evidence nằm trong báo cáo đi kèm.
+- Android emulator demo smoke xác nhận cold start Bản đồ, chuyển tab/detail/Back, force-stop rồi mở về Bản đồ, không tự xin GPS. **Chưa có key Vietmap hợp lệ**, không đánh PASS tiles/hybrid/traffic hoặc nghiệm thu runtime iOS từ fake/build.
 
 ## Cách đọc và cập nhật tài liệu
 

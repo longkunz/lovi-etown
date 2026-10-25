@@ -1,3 +1,4 @@
+import { toCatalogState } from './catalog-metadata.js';
 import pg from 'pg';
 import {
   Bbox,
@@ -210,32 +211,7 @@ export class PgCatalogRepository implements CatalogRepository {
     try {
       // 1. Fetch catalog state
       const stateRes = await client.query('SELECT * FROM catalog_state WHERE id = 1');
-      let catalog: CatalogState;
-      const nowMs = this.clock ? this.clock.now() : Date.now();
-
-      if (stateRes.rows.length === 0) {
-        catalog = {
-          version: '0',
-          fetchedAt: null,
-          isStale: false,
-          coverage: 'unknown',
-          syncState: 'never_synced',
-        };
-      } else {
-        const row = stateRes.rows[0];
-        const fetchedDate: Date | null = row.fetched_at ? new Date(row.fetched_at) : null;
-        const isStale = fetchedDate
-          ? nowMs - fetchedDate.getTime() > this.catalogStaleAfterMs
-          : false;
-
-        catalog = {
-          version: String(row.version),
-          fetchedAt: fetchedDate ? fetchedDate.toISOString() : null,
-          isStale,
-          coverage: row.coverage || 'unknown',
-          syncState: 'synced',
-        };
-      }
+      const catalog = toCatalogState(stateRes.rows[0], this.clock?.now() ?? Date.now(), this.catalogStaleAfterMs);
 
       // 2. Query cameras
       const whereClauses: string[] = ['province_id = $1'];
@@ -285,7 +261,7 @@ export class PgCatalogRepository implements CatalogRepository {
       `;
 
       const dataRes = await client.query(dataQuery, params);
-      const items = dataRes.rows.map((r) => this.mapRowToRecord(r));
+      const items = dataRes.rows.map((r) => PgCatalogRepository.mapRowToRecord(r));
 
       return { items, total, catalog };
     } finally {
@@ -307,7 +283,7 @@ export class PgCatalogRepository implements CatalogRepository {
         [id]
       );
       if (res.rows.length === 0) return null;
-      return this.mapRowToRecord(res.rows[0]);
+      return PgCatalogRepository.mapRowToRecord(res.rows[0]);
     } finally {
       client.release();
     }
@@ -327,7 +303,7 @@ export class PgCatalogRepository implements CatalogRepository {
         [provider, providerCameraId]
       );
       if (res.rows.length === 0) return null;
-      return this.mapRowToRecord(res.rows[0]);
+      return PgCatalogRepository.mapRowToRecord(res.rows[0]);
     } finally {
       client.release();
     }
@@ -376,7 +352,7 @@ export class PgCatalogRepository implements CatalogRepository {
          LIMIT $4`,
         [camera.provinceId, camera.districtNormalized, camera.id, limit]
       );
-      return { items: res.rows.map((r) => this.mapRowToRecord(r)) };
+      return { items: res.rows.map((r) => PgCatalogRepository.mapRowToRecord(r)) };
     } finally {
       client.release();
     }
@@ -398,7 +374,7 @@ export class PgCatalogRepository implements CatalogRepository {
     }
   }
 
-  private mapRowToRecord(row: any): CameraRecord {
+  static mapRowToRecord(row: any): CameraRecord {
     return {
       id: row.id,
       provider: row.provider,

@@ -1,8 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_canvas.dart';
+export 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_view_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
@@ -10,31 +9,11 @@ import 'package:flutter_starter/src/features/cameras/presentation/screens/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
-/// Configuration passed to [CameraTrafficMapCard.mapBuilder] for testing or custom rendering.
-class CameraTrafficMapConfig {
-  const CameraTrafficMapConfig({
-    required this.center,
-    required this.zoom,
-    required this.trafficEnabled,
-    required this.markers,
-    required this.onMapCreated,
-  });
-
-  final LatLng center;
-  final double zoom;
-  final bool trafficEnabled;
-  final Set<Marker> markers;
-  final void Function(GoogleMapController controller)? onMapCreated;
-}
-
-/// Thẻ bản đồ giao thông mini hiển thị định vị camera và vạch kẹt xe Google Maps (T18).
-///
-/// Bọc trong phong cách Liquid Glass, mặc định bật [trafficEnabled] để tải các vạch
-/// màu kẹt xe thời gian thực từ Google Play Services Maps SDK.
 class CameraTrafficMapCard extends StatefulWidget {
   const CameraTrafficMapCard({
     required this.camera,
     this.height = 210,
+    this.active = true,
     this.mapBuilder,
     this.onOpenFullscreen,
     super.key,
@@ -42,6 +21,7 @@ class CameraTrafficMapCard extends StatefulWidget {
 
   final Camera camera;
   final double height;
+  final bool active;
 
   /// Custom map builder used in widget tests to bypass native AndroidView/UiKitView.
   final Widget Function(BuildContext context, CameraTrafficMapConfig config)?
@@ -58,8 +38,10 @@ class CameraTrafficMapCard extends StatefulWidget {
 }
 
 class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
-  GoogleMapController? _mapController;
+  CameraMapHandle? _mapController;
   bool _trafficEnabled = true;
+  bool _fullscreen = false;
+  bool _preferenceEdited = false;
 
   @override
   void initState() {
@@ -71,7 +53,7 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
     try {
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getBool(CameraTrafficMapCard.prefTrafficEnabledKey);
-      if (saved != null && mounted) {
+      if (saved != null && mounted && !_preferenceEdited) {
         setState(() => _trafficEnabled = saved);
       }
     } catch (_) {
@@ -80,6 +62,7 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
   }
 
   Future<void> _toggleTraffic() async {
+    _preferenceEdited = true;
     final next = !_trafficEnabled;
     setState(() => _trafficEnabled = next);
     try {
@@ -94,27 +77,34 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
     final lat = widget.camera.latitude;
     final lng = widget.camera.longitude;
     if (lat != null && lng != null && _mapController != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(lat, lng), 15.5),
+      _mapController!.moveTo(
+        lat,
+        lng,
+        zoom: 15.5,
       );
     }
   }
 
-  void _handleFullscreen() {
+  Future<void> _handleFullscreen() async {
     if (widget.onOpenFullscreen != null) {
       widget.onOpenFullscreen!();
       return;
     }
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => CameraTrafficMapViewerScreen(camera: widget.camera),
-      ),
-    );
+    setState(() => _fullscreen = true);
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    await Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => CameraTrafficMapViewerScreen(
+            camera: widget.camera, mapBuilder: widget.mapBuilder)));
+    if (!mounted) return;
+    _preferenceEdited = false;
+    await _loadTrafficPreference();
+    if (mounted) setState(() => _fullscreen = false);
   }
 
   @override
   void dispose() {
-    _mapController?.dispose();
+    _mapController = null;
     super.dispose();
   }
 
@@ -127,17 +117,10 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
 
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final cameraPos = LatLng(camera.latitude!, camera.longitude!);
+    final cameraPos = MapCoordinate(camera.latitude!, camera.longitude!);
 
-    final markers = <Marker>{
-      Marker(
-        markerId: MarkerId(camera.id),
-        position: cameraPos,
-        infoWindow: InfoWindow(
-          title: camera.name,
-          snippet: camera.address ?? camera.district,
-        ),
-      ),
+    final markers = <CameraMapMarker>{
+      CameraMapMarker(id: camera.id, position: cameraPos, title: camera.name)
     };
 
     final mapConfig = CameraTrafficMapConfig(
@@ -198,29 +181,15 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
               ),
               child: Stack(
                 children: [
-                  // Google Map View
+                  // Shared Vietmap canvas
                   Positioned.fill(
-                    child: widget.mapBuilder != null
-                        ? widget.mapBuilder!(context, mapConfig)
-                        : GoogleMap(
-                            key: ValueKey('google_map_${camera.id}'),
-                            initialCameraPosition: CameraPosition(
-                              target: cameraPos,
-                              zoom: 15.5,
-                            ),
-                            trafficEnabled: _trafficEnabled,
-                            markers: markers,
-                            myLocationButtonEnabled: false,
-                            zoomControlsEnabled: false,
-                            mapToolbarEnabled: false,
-                            onMapCreated: mapConfig.onMapCreated,
-                            gestureRecognizers: const <Factory<
-                                OneSequenceGestureRecognizer>>{
-                              Factory<OneSequenceGestureRecognizer>(
-                                EagerGestureRecognizer.new,
-                              ),
-                            },
-                          ),
+                    child: _fullscreen ||
+                            !widget.active ||
+                            !TickerMode.valuesOf(context).enabled
+                        ? const SizedBox.shrink()
+                        : widget.mapBuilder != null
+                            ? widget.mapBuilder!(context, mapConfig)
+                            : CameraMapCanvas(config: mapConfig),
                   ),
 
                   // Floating Glass Action Controls (Recenter, Toggle, Fullscreen)

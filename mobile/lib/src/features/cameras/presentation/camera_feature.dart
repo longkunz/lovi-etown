@@ -1,3 +1,4 @@
+import 'camera_feature_scope.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/config/app_config.dart';
@@ -82,7 +83,7 @@ class CameraNotConfiguredScreen extends StatelessWidget {
 }
 
 /// Entry point widget for the Camera feature.
-/// Acts as route destination for AppRoutes.camera ('/').
+/// Acts as route destination for AppRoutes.camera ('/cameras').
 class CameraFeature extends StatelessWidget {
   const CameraFeature({
     this.cameraRepository,
@@ -101,9 +102,16 @@ class CameraFeature extends StatelessWidget {
       return const CameraNotConfiguredScreen();
     }
 
+    final scope = CameraFeatureScope.maybeOf(context);
     return CameraScreen(
-      cameraRepository: resolveCameraRepository(cameraRepository),
-      favoritesRepository: resolveFavoritesRepository(favoritesRepository),
+      cameraRepository: cameraRepository ??
+          scope?.repository ??
+          resolveCameraRepository(null),
+      favoritesRepository: favoritesRepository ??
+          scope?.favorites ??
+          resolveFavoritesRepository(null),
+      active: scope?.cameraActive ?? true,
+      onSelectCamera: scope?.openCamera,
       catalogCubit: catalogCubit,
       isDemoMode: AppConfig.cameraConfig.demoMode,
     );

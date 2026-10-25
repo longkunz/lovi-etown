@@ -73,6 +73,9 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
   // T14: live HLS mode for cameras whose DTO carries a stream URL.
   bool _liveMode = false;
   bool _liveFailed = false;
+  bool _mapCovered = false;
+  bool _routeIsCurrent = true;
+  bool _appIsForeground = true;
 
   // T17: switching cameras inside the sheet (via the brief card) resets
   // the live-mode state for the newly opened camera.
@@ -90,6 +93,8 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _appIsForeground = WidgetsBinding.instance.lifecycleState == null ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     _favSub = widget.favorites.watch().listen((favs) {
       if (mounted) {
         setState(() {
@@ -101,8 +106,25 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isForeground = state == AppLifecycleState.resumed;
-    widget.preview.setForeground(isForeground);
+    setState(() => _appIsForeground = state == AppLifecycleState.resumed);
+    widget.preview.setForeground(_appIsForeground);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _routeIsCurrent = ModalRoute.isCurrentOf(context) ?? true;
+  }
+
+  Future<void> _openImageViewer() async {
+    setState(() => _mapCovered = true);
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    try {
+      await showCameraImageViewer(context, preview: widget.preview);
+    } finally {
+      if (mounted) setState(() => _mapCovered = false);
+    }
   }
 
   @override
@@ -328,7 +350,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                           ),
                         ),
 
-                        // Google Maps Traffic Layer Card (T18) — rendered when the
+                        // Camera traffic map card — rendered when the
                         // camera has location coordinates.
                         if (camera != null && camera.hasLocation)
                           Padding(
@@ -341,6 +363,9 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             child: CameraTrafficMapCard(
                               key: ValueKey('traffic_map_${camera.id}'),
                               camera: camera,
+                              active: _routeIsCurrent &&
+                                  _appIsForeground &&
+                                  !_mapCovered,
                               mapBuilder: widget.mapBuilder,
                             ),
                           ),
@@ -436,9 +461,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
 
     return GestureDetector(
       key: const ValueKey('snapshot_sheet_image'),
-      onTap: () {
-        showCameraImageViewer(context, preview: widget.preview);
-      },
+      onTap: _openImageViewer,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
         child: Container(

@@ -82,6 +82,8 @@ docs/
 
 ---
 
+- [ui/camera-map-discovery-verification.md](ui/camera-map-discovery-verification.md): #40 — Bản đồ mặc định/Vietmap/Gần tôi, API PostGIS, automated checks, build Android/iOS và Android demo smoke; nghiệm thu native với key thật còn thiếu.
+
 ## 3. Quy tắc Dành cho Nhà phát triển Tiếp nối
 
 1. **Độc lập dữ liệu:** Không gọi trực tiếp upstream API gốc từ client. Tất cả giao tiếp qua Backend proxy NestJS (`/v1/...`).

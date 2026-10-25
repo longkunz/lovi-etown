@@ -1,3 +1,5 @@
+import 'package:go_router/go_router.dart';
+import 'package:flutter_starter/src/routing/app_routes.dart';
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -64,6 +66,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
   bool _liveFailed = false;
   bool _routeIsCurrent = true;
   bool _snapshotFullscreenOpen = false;
+  bool _mapCovered = false;
   bool _appIsForeground = true;
 
   @override
@@ -137,52 +140,72 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
     });
   }
 
-  void _openCamera(Camera camera) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => CameraViewerScreen(
-          cameraId: camera.id,
-          repository: widget.repository,
-          favoritesRepository: widget.favoritesRepository,
-          onOpenMultiCamera: widget.onOpenMultiCamera,
+  Future<void> _openCamera(Camera camera) async {
+    setState(() => _mapCovered = true);
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted) return;
+    try {
+      await Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => CameraViewerScreen(
+            cameraId: camera.id,
+            repository: widget.repository,
+            favoritesRepository: widget.favoritesRepository,
+            mapBuilder: widget.mapBuilder,
+            onOpenMultiCamera: widget.onOpenMultiCamera,
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      if (mounted) setState(() => _mapCovered = false);
+    }
   }
 
   Future<void> _openFullScreen(Camera camera,
       {required bool liveSelected}) async {
     final showLive = liveSelected && camera.canLive && !_liveFailed;
-    _snapshotFullscreenOpen = !showLive;
-    await Navigator.of(context).push(
-      PageRouteBuilder<void>(
-        opaque: false,
-        barrierColor: Colors.black.withValues(alpha: 0.97),
-        pageBuilder: (routeContext, _, __) {
-          final media = showLive
-              ? CameraLivePlayer(
-                  key: const ValueKey('viewer_fullscreen_live_player'),
-                  streamUrl: camera.streamUrl!,
-                  onUnavailable: () {
-                    Navigator.of(routeContext).pop();
-                    _handleLiveUnavailable();
-                  },
-                )
-              : BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
-                  bloc: _previewCubit,
-                  builder: (_, state) => _SnapshotView(
-                    state: state,
-                    onRetry: _previewCubit.retry,
-                    fullScreen: true,
-                  ),
-                );
-          return _FullScreenMediaPage(cameraName: camera.name, child: media);
-        },
-      ),
-    );
+    setState(() {
+      _snapshotFullscreenOpen = !showLive;
+      _mapCovered = true;
+    });
+    await WidgetsBinding.instance.endOfFrame;
     if (!mounted) return;
-    _snapshotFullscreenOpen = false;
-    _updatePreviewActivity();
+    try {
+      await Navigator.of(context).push(
+        PageRouteBuilder<void>(
+          opaque: false,
+          barrierColor: Colors.black.withValues(alpha: 0.97),
+          pageBuilder: (routeContext, _, __) {
+            final media = showLive
+                ? CameraLivePlayer(
+                    key: const ValueKey('viewer_fullscreen_live_player'),
+                    streamUrl: camera.streamUrl!,
+                    onUnavailable: () {
+                      Navigator.of(routeContext).pop();
+                      _handleLiveUnavailable();
+                    },
+                  )
+                : BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
+                    bloc: _previewCubit,
+                    builder: (_, state) => _SnapshotView(
+                      state: state,
+                      onRetry: _previewCubit.retry,
+                      fullScreen: true,
+                    ),
+                  );
+            return _FullScreenMediaPage(cameraName: camera.name, child: media);
+          },
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _snapshotFullscreenOpen = false;
+          _mapCovered = false;
+        });
+        _updatePreviewActivity();
+      }
+    }
   }
 
   @override
@@ -199,6 +222,14 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
           child: SizedBox.expand(),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
+        leading: BackButton(onPressed: () {
+          final navigator = Navigator.of(context);
+          if (navigator.canPop()) {
+            navigator.pop();
+          } else {
+            GoRouter.maybeOf(context)?.go(AppRoutes.map);
+          }
+        }),
         title: BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
           bloc: _previewCubit,
           buildWhen: (prev, curr) => prev.camera?.name != curr.camera?.name,
@@ -331,6 +362,8 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                     child: CameraTrafficMapCard(
                       key: ValueKey('viewer_traffic_map_${camera.id}'),
                       camera: camera,
+                      active:
+                          _routeIsCurrent && _appIsForeground && !_mapCovered,
                       mapBuilder: widget.mapBuilder,
                     ),
                   ),

@@ -39,6 +39,7 @@ class FakeSheetCameraRepository implements CameraRepository {
   FutureEither<SnapshotReply> Function()? snapshotHandler;
 
   final Camera camera;
+  int snapshotRequestCount = 0;
 
   @override
   FutureEither<CatalogPage> list({
@@ -84,6 +85,7 @@ class FakeSheetCameraRepository implements CameraRepository {
   @override
   FutureEither<SnapshotReply> snapshot(String endpoint,
       {String? etag, CancelToken? cancelToken}) async {
+    snapshotRequestCount++;
     if (snapshotHandler != null) return snapshotHandler!();
     // 1x1 transparent png / dummy bytes
     final dummyBytes = Uint8List.fromList([
@@ -762,6 +764,52 @@ void main() {
       expect(
           find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
       expect(snapshotRequestCount, initialRequests);
+    });
+    testWidgets(
+        'sheet unmounts its map while image overlay covers it and in background',
+        (tester) async {
+      const camera = Camera(
+          id: 'map-sheet',
+          snapshotCapable: true,
+          snapshotEndpoint: '/snapshot',
+          name: 'Map sheet',
+          provinceId: 'tp_hcm',
+          playbackEndpoint: '/playback',
+          latitude: 10.77,
+          longitude: 106.7);
+      final mapRepo = FakeSheetCameraRepository(camera: camera);
+      final preview = CameraPreviewCubit(repository: mapRepo);
+      addTearDown(preview.close);
+      await preview.open(camera.id);
+      await tester.pumpWidget(buildTestApp(
+          child: Scaffold(
+              body: CameraSnapshotSheet(
+                  preview: preview,
+                  favorites: favRepo,
+                  mapBuilder: (_, __) =>
+                      const SizedBox(key: ValueKey('mounted_sheet_map'))))));
+      await pumpCameraTransition(tester);
+      expect(find.byKey(const ValueKey('mounted_sheet_map')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('snapshot_sheet_image')));
+      await pumpCameraTransition(tester);
+      expect(find.byType(CameraImageViewer), findsOneWidget);
+      final requestsBefore = mapRepo.snapshotRequestCount;
+      await tester.pump(const Duration(seconds: 61));
+      await tester.pump();
+      expect(mapRepo.snapshotRequestCount, greaterThan(requestsBefore));
+      expect(
+          find.byKey(const ValueKey('mounted_sheet_map'), skipOffstage: false),
+          findsNothing);
+      Navigator.of(tester.element(find.byType(CameraImageViewer))).pop();
+      await pumpCameraTransition(tester);
+      expect(find.byKey(const ValueKey('mounted_sheet_map')), findsOneWidget);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+      expect(find.byKey(const ValueKey('mounted_sheet_map')), findsNothing);
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await pumpCameraTransition(tester);
+      expect(find.byKey(const ValueKey('mounted_sheet_map')), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
     });
   });
 }

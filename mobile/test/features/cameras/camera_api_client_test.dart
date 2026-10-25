@@ -1,3 +1,4 @@
+import 'package:flutter_starter/src/features/cameras/domain/camera_map_models.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -42,6 +43,61 @@ void main() {
       client = CameraApiClient(dio: dio, config: testConfig);
     });
 
+    test('map viewport serialization and nested metadata', () async {
+      adapter.handler = (options) {
+        expect(options.uri.path, '/v1/map-cameras');
+        expect(options.queryParameters['bbox'], '105.0,9.0,107.0,11.0');
+        expect(options.headers['x-api-key'], testConfig.readerKey);
+        expect(options.followRedirects, false);
+        return ResponseBody.fromString(
+            jsonEncode({
+              'data': [
+                {
+                  'camera': {'id': 'a', 'name': 'A'},
+                  'distanceMeters': null
+                }
+              ],
+              'meta': {
+                'result': {'hasMore': true},
+                'catalog': {
+                  'version': 'v2',
+                  'isStale': true,
+                  'coverage': 'partial',
+                  'syncState': 'syncing'
+                },
+                'dataMode': 'real'
+              }
+            }),
+            200,
+            headers: {
+              Headers.contentTypeHeader: ['application/json']
+            });
+      };
+      final result = await client.getMapCameras(
+          const CameraMapQuery.viewport(bounds: MapBounds(105, 9, 107, 11)));
+      result.fold((f) => fail('$f'), (v) {
+        expect(v.items.single.camera.id, 'a');
+        expect(v.hasMore, true);
+        expect(v.catalogVersion, 'v2');
+        expect(v.isStale, true);
+      });
+    });
+    test('map nearby parameters and malformed payload failure', () async {
+      adapter.handler = (options) {
+        expect(options.queryParameters['lat'], 10);
+        expect(options.queryParameters['lng'], 106);
+        expect(options.queryParameters['radiusMeters'], 2000);
+        expect(options.queryParameters.containsKey('bbox'), false);
+        return ResponseBody.fromString('{}', 200, headers: {
+          Headers.contentTypeHeader: ['application/json']
+        });
+      };
+      expect(
+          (await client.getMapCameras(
+                  const CameraMapQuery.nearby(lat: 10, lng: 106)))
+              .isLeft(),
+          true);
+    });
     test('getCatalog_sends_reader_key_and_correct_params', () async {
       adapter.handler = (options) {
         expect(options.uri.path, equals('/v1/cameras'));
@@ -181,8 +237,7 @@ void main() {
       // PNG signature + IHDR header with a bogus CRC and no IDAT/IEND.
       Uint8List corruptPng() {
         final bytes = Uint8List(256);
-        bytes.setRange(
-            0, 8, [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
+        bytes.setRange(0, 8, [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A]);
         bytes.setRange(8, 12, [0x00, 0x00, 0x00, 0x0D]); // IHDR length
         bytes.setRange(12, 16, [0x49, 0x48, 0x44, 0x52]); // 'IHDR'
         bytes.setRange(16, 20, [0x00, 0x00, 0x00, 0x10]); // width 16

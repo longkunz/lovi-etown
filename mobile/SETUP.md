@@ -143,33 +143,12 @@ end
 
 ---
 
-## 5. 🌍 Environment Variables & Google Maps API Key
+## 5. Environment variables
 
-Your project relies on `flutter_dotenv` to load app-level secrets, and native configuration for Google Maps SDK (T18).
-
-### 5.1 App Variables (`.env`)
-1. Create a [`.env`](.env) file in the `mobile/` project root folder.
-2. Copy the variables from `.env.example`, use `CAMERA_API_BASE_URL=https://api.capyai.site`, and set `CAMERA_READER_KEY` to your reader API key. Keep `CAMERA_DEMO_MODE=false` for the real backend.
-3. For Dart reference, optional: `GOOGLE_MAPS_API_KEY=AIzaSy...`.
-
-The app loads `.env` automatically at startup. Explicit `--dart-define` values override individual `.env` values. Stop and restart the app after changing these values.
-
-### 5.2 Google Maps SDK (Traffic Layer & Camera Locations)
-Maps SDK for Android and iOS requires native API Key registration:
-1. **Google Cloud Console:** Create a project, enable **Maps SDK for Android** and **Maps SDK for iOS**.
-2. **Key Restriction:**
-   - Android: Restrict by package name `com.lovisoft.etown` and debug/release SHA-1 fingerprint.
-   - iOS: Restrict by iOS bundle identifier `com.lovisoft.etown`.
-3. **Android Configuration:**
-   - Add to `mobile/android/local.properties`:
-     ```properties
-     GOOGLE_MAPS_API_KEY=AIzaSyYourActualKeyHere
-     ```
-   - Or export `export GOOGLE_MAPS_API_KEY=AIzaSy...` in your build environment.
-   - The key is injected at build time into `AndroidManifest.xml` via `manifestPlaceholders`.
-4. **iOS Configuration:**
-   - Set `GOOGLE_MAPS_API_KEY` in your environment or Xcode build settings / `Info.plist`.
-   - Pass API Key to `GMSServices.provideAPIKey("...")` in `AppDelegate.swift`.
+Copy `.env.example` to `.env` in `mobile/`. Set `CAMERA_API_BASE_URL`,
+`CAMERA_READER_KEY` and `CAMERA_DEMO_MODE` for your backend. Set
+`VIETMAP_API_KEY` to enable maps. Explicit `--dart-define` values override
+individual `.env` values. Restart the app after changing configuration.
 
 ---
 
@@ -204,3 +183,20 @@ flutter run
 ```
 
 Congratulations, and happy coding!
+
+## Vietmap map canvas
+
+Set `VIETMAP_API_KEY` in `.env` or pass `--dart-define=VIETMAP_API_KEY=...`.
+The camera list works without this key; map surfaces show a configuration message.
+Use a key authorized for `tm` street, `hm` hybrid and `tf` traffic. Keys are never
+sent to the camera backend and backend reader headers are never sent to Vietmap.
+Traffic is merged into the base style, so denied auxiliary access keeps the base
+map available. Validate all three layers on a device with an authorized key.
+
+The pinned SDK is `vietmap_flutter_gl: 4.1.1`. Its Swift Package manifest is empty,
+so this project explicitly disables Flutter Swift Package Manager and uses CocoaPods.
+Run `cd ios && pod install` after `flutter pub get`. Android requires minSdk 24 and JitPack
+(configured). iOS uses the existing iOS 15 deployment target. Foreground location
+permissions are declared; the app requests them only for the explicit nearby action.
+No Google Maps Platform key or SDK setup is needed. External directions remain
+available through the installed maps app.

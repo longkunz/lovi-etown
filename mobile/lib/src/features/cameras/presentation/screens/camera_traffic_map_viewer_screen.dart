@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_canvas.dart';
+export 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_view_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
@@ -11,19 +12,16 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
-/// Màn hình xem bản đồ Google Maps và lớp giao thông kẹt xe toàn màn hình (T18).
-///
-/// Cho phép người dùng quan sát diện rộng các tuyến đường xung quanh camera,
-/// chuyển đổi loại bản đồ (Bình thường / Vệ tinh), bật/tắt dải màu lưu lượng và
-/// dẫn đường trực tiếp sang Google Maps.
 class CameraTrafficMapViewerScreen extends StatefulWidget {
   const CameraTrafficMapViewerScreen({
     required this.camera,
     this.mapBuilder,
+    this.active = true,
     super.key,
   });
 
   final Camera camera;
+  final bool active;
 
   /// Custom map builder for widget testing without headless platform view errors.
   final Widget Function(BuildContext context, CameraTrafficMapConfig config)?
@@ -36,9 +34,10 @@ class CameraTrafficMapViewerScreen extends StatefulWidget {
 
 class _CameraTrafficMapViewerScreenState
     extends State<CameraTrafficMapViewerScreen> {
-  GoogleMapController? _mapController;
+  CameraMapHandle? _mapController;
   bool _trafficEnabled = true;
-  MapType _mapType = MapType.normal;
+  bool _preferenceEdited = false;
+  CameraMapType _mapType = CameraMapType.street;
 
   @override
   void initState() {
@@ -50,13 +49,14 @@ class _CameraTrafficMapViewerScreenState
     try {
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getBool(CameraTrafficMapCard.prefTrafficEnabledKey);
-      if (saved != null && mounted) {
+      if (saved != null && mounted && !_preferenceEdited) {
         setState(() => _trafficEnabled = saved);
       }
     } catch (_) {}
   }
 
   Future<void> _toggleTraffic() async {
+    _preferenceEdited = true;
     final next = !_trafficEnabled;
     setState(() => _trafficEnabled = next);
     try {
@@ -67,7 +67,9 @@ class _CameraTrafficMapViewerScreenState
 
   void _toggleMapType() {
     setState(() {
-      _mapType = _mapType == MapType.normal ? MapType.hybrid : MapType.normal;
+      _mapType = _mapType == CameraMapType.street
+          ? CameraMapType.hybrid
+          : CameraMapType.street;
     });
   }
 
@@ -75,15 +77,17 @@ class _CameraTrafficMapViewerScreenState
     final lat = widget.camera.latitude;
     final lng = widget.camera.longitude;
     if (lat != null && lng != null && _mapController != null) {
-      _mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(LatLng(lat, lng), 16),
+      _mapController!.moveTo(
+        lat,
+        lng,
+        zoom: 16,
       );
     }
   }
 
   @override
   void dispose() {
-    _mapController?.dispose();
+    _mapController = null;
     super.dispose();
   }
 
@@ -101,21 +105,15 @@ class _CameraTrafficMapViewerScreenState
       );
     }
 
-    final cameraPos = LatLng(camera.latitude!, camera.longitude!);
-    final markers = <Marker>{
-      Marker(
-        markerId: MarkerId(camera.id),
-        position: cameraPos,
-        infoWindow: InfoWindow(
-          title: camera.name,
-          snippet: camera.address ?? camera.district,
-        ),
-      ),
+    final cameraPos = MapCoordinate(camera.latitude!, camera.longitude!);
+    final markers = <CameraMapMarker>{
+      CameraMapMarker(id: camera.id, position: cameraPos, title: camera.name)
     };
 
     final mapConfig = CameraTrafficMapConfig(
       center: cameraPos,
       zoom: 16,
+      mapType: _mapType,
       trafficEnabled: _trafficEnabled,
       markers: markers,
       onMapCreated: (controller) => _mapController = controller,
@@ -175,27 +173,11 @@ class _CameraTrafficMapViewerScreenState
         children: [
           // Map Canvas
           Positioned.fill(
-            child: widget.mapBuilder != null
-                ? widget.mapBuilder!(context, mapConfig)
-                : GoogleMap(
-                    key: ValueKey('fullscreen_map_${camera.id}'),
-                    initialCameraPosition: CameraPosition(
-                      target: cameraPos,
-                      zoom: 16,
-                    ),
-                    trafficEnabled: _trafficEnabled,
-                    mapType: _mapType,
-                    markers: markers,
-                    myLocationEnabled: false,
-                    padding: EdgeInsets.only(
-                      top: MediaQuery.paddingOf(context).top + kToolbarHeight,
-                      bottom: MediaQuery.viewPaddingOf(context).bottom,
-                    ),
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    mapToolbarEnabled: false,
-                    onMapCreated: mapConfig.onMapCreated,
-                  ),
+            child: !widget.active || !TickerMode.valuesOf(context).enabled
+                ? const SizedBox.shrink()
+                : widget.mapBuilder != null
+                    ? widget.mapBuilder!(context, mapConfig)
+                    : CameraMapCanvas(config: mapConfig),
           ),
 
           // Floating Controls (Recenter, Toggle Traffic, Toggle Layers, Directions)
@@ -229,14 +211,16 @@ class _CameraTrafficMapViewerScreenState
                 const SizedBox(height: CameraUiTokens.spacing8),
                 CameraGlassIconButton(
                   key: const ValueKey('fullscreen_map_type_button'),
-                  icon: _mapType == MapType.normal ? Icons.layers : Icons.map,
-                  label: _mapType == MapType.normal
+                  icon: _mapType == CameraMapType.street
+                      ? Icons.layers
+                      : Icons.map,
+                  label: _mapType == CameraMapType.street
                       ? 'Bản đồ vệ tinh'
                       : 'Bản đồ chuẩn',
-                  tooltip: _mapType == MapType.normal
+                  tooltip: _mapType == CameraMapType.street
                       ? 'Bản đồ vệ tinh'
                       : 'Bản đồ chuẩn',
-                  selected: _mapType != MapType.normal,
+                  selected: _mapType != CameraMapType.street,
                   forceOpaque: true,
                   onPressed: _toggleMapType,
                 ),

@@ -1,3 +1,4 @@
+import 'package:flutter_starter/src/features/cameras/domain/camera_map_models.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -36,22 +37,102 @@ class CameraApiClient {
 
   bool _isSafeOrigin(String endpoint) {
     final parsedUri = Uri.tryParse(endpoint);
-    if (parsedUri == null) return false;
+    if (parsedUri == null) {
+      return false;
+    }
     if (!parsedUri.hasScheme) {
       // Relative endpoint is safe
       return true;
     }
 
     final baseUri = Uri.tryParse(_config.baseUrl);
-    if (baseUri == null) return false;
+    if (baseUri == null) {
+      return false;
+    }
 
     // Strict origin validation: scheme, host, port, no userInfo
-    if (parsedUri.scheme != baseUri.scheme) return false;
-    if (parsedUri.host != baseUri.host) return false;
-    if (parsedUri.effectivePort != baseUri.effectivePort) return false;
-    if (parsedUri.userInfo.isNotEmpty) return false;
+    if (parsedUri.scheme != baseUri.scheme) {
+      return false;
+    }
+    if (parsedUri.host != baseUri.host) {
+      return false;
+    }
+    if (parsedUri.effectivePort != baseUri.effectivePort) {
+      return false;
+    }
+    if (parsedUri.userInfo.isNotEmpty) {
+      return false;
+    }
 
     return true;
+  }
+
+  FutureEither<CameraMapResult> getMapCameras(CameraMapQuery query,
+      {CancelToken? cancelToken}) async {
+    if (!_isConfigValid) {
+      return const Left(ApiFailure('Chưa cấu hình máy chủ', statusCode: 0));
+    }
+    if (!query.isValid) {
+      return const Left(
+          ApiFailure('Vùng tìm kiếm không hợp lệ', statusCode: 400));
+    }
+    try {
+      final b = query.bounds;
+      final response = await _dio.get<dynamic>(
+          '${_config.baseUrl}/v1/map-cameras',
+          queryParameters: {
+            'provinceId': 'tp_hcm',
+            'limit': query.limit,
+            if (query.district != null && query.district!.trim().isNotEmpty)
+              'district': query.district!.trim(),
+            if (b != null) 'bbox': '${b.west},${b.south},${b.east},${b.north}',
+            if (query.isNearby) ...{
+              'lat': query.lat,
+              'lng': query.lng,
+              'radiusMeters': query.radiusMeters
+            },
+          },
+          options: Options(
+              headers: _buildHeaders(),
+              followRedirects: false,
+              sendTimeout: const Duration(seconds: 15),
+              receiveTimeout: const Duration(seconds: 15)),
+          cancelToken: cancelToken);
+      final decoded = response.data is String
+          ? jsonDecode(response.data as String)
+          : response.data;
+      final json = decoded as Map<String, dynamic>;
+      final meta = json['meta'] as Map<String, dynamic>;
+      final result = meta['result'] as Map<String, dynamic>;
+      final catalog = meta['catalog'] as Map<String, dynamic>;
+      final items = (json['data'] as List).map((raw) {
+        final item = raw as Map<String, dynamic>;
+        final distance = (item['distanceMeters'] as num?)?.toDouble();
+        if (distance != null && (!distance.isFinite || distance < 0)) {
+          throw const FormatException('Invalid distance');
+        }
+        return CameraMapItem(
+            camera: CameraDto.fromJson(item['camera'] as Map<String, dynamic>)
+                .toDomain(),
+            distanceMeters: distance);
+      }).toList();
+      return Right(CameraMapResult(
+          items: items,
+          hasMore: result['hasMore'] as bool,
+          catalogVersion: catalog['version'] as String,
+          fetchedAt: catalog['fetchedAt'] == null
+              ? null
+              : DateTime.parse(catalog['fetchedAt'] as String),
+          isStale: catalog['isStale'] as bool? ?? false,
+          coverage: catalog['coverage'] as String?,
+          syncState: catalog['syncState'] as String?,
+          dataMode: meta['dataMode'] as String? ?? 'real'));
+    } on DioException catch (e) {
+      return Left(_mapDioException(e));
+    } catch (_) {
+      return const Left(
+          ApiFailure('Phản hồi bản đồ không hợp lệ', statusCode: 500));
+    }
   }
 
   FutureEither<CatalogPage> getCatalog({

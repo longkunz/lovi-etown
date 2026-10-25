@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 class CameraFavoritesSection extends StatelessWidget {
@@ -58,7 +59,8 @@ class CameraFavoritesSection extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: CameraUiTokens.primaryTeal.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
+                    borderRadius:
+                        BorderRadius.circular(CameraUiTokens.radiusFull),
                   ),
                   child: Text(
                     '${favorites.length}',
@@ -78,7 +80,10 @@ class CameraFavoritesSection extends StatelessWidget {
                     size: 20,
                   ),
                   tooltip: 'Xem lưới',
-                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints(
+                    minWidth: CameraUiTokens.minTouchTarget,
+                    minHeight: CameraUiTokens.minTouchTarget,
+                  ),
                   onPressed: onViewGrid,
                 ),
             ],
@@ -93,7 +98,8 @@ class CameraFavoritesSection extends StatelessWidget {
               decoration: BoxDecoration(
                 color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-                border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
+                border: Border.all(
+                    color: theme.dividerColor.withValues(alpha: 0.1)),
               ),
               child: Center(
                 child: Text(
@@ -106,11 +112,15 @@ class CameraFavoritesSection extends StatelessWidget {
             )
           else
             SizedBox(
-              height: 96,
+              height: CameraUiTokens.favoriteCardBaseHeight +
+                  MediaQuery.textScalerOf(context)
+                      .scale(CameraUiTokens.favoriteCardTextHeight) -
+                  CameraUiTokens.favoriteCardTextHeight,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: favorites.length,
-                separatorBuilder: (_, __) => const SizedBox(width: CameraUiTokens.spacing8),
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: CameraUiTokens.spacing8),
                 itemBuilder: (context, index) {
                   final fav = favorites[index];
                   return Container(
@@ -118,7 +128,8 @@ class CameraFavoritesSection extends StatelessWidget {
                     padding: const EdgeInsets.all(CameraUiTokens.spacing8),
                     decoration: BoxDecoration(
                       color: theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
+                      borderRadius:
+                          BorderRadius.circular(CameraUiTokens.radius12),
                       border: Border.all(
                         color: fav.isMissingFromCatalog
                             ? CameraUiTokens.errorRed.withValues(alpha: 0.4)
@@ -156,8 +167,13 @@ class CameraFavoritesSection extends StatelessWidget {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
+                              CameraGlassIconButton(
+                                embedded: true,
+                                icon: Icons.star,
+                                label: 'Bỏ quan tâm',
+                                selected: true,
+                                iconSize: 20,
+                                onPressed: () {
                                   if (onToggleFavorite != null) {
                                     onToggleFavorite!(
                                       Camera(
@@ -170,11 +186,6 @@ class CameraFavoritesSection extends StatelessWidget {
                                     );
                                   }
                                 },
-                                child: const Icon(
-                                  Icons.star,
-                                  color: CameraUiTokens.starActive,
-                                  size: 20,
-                                ),
                               ),
                             ],
                           ),

@@ -1,7 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 Future<void> showCameraImageViewer(
@@ -90,36 +94,41 @@ class _CameraImageViewerState extends State<CameraImageViewer> {
             child: Column(
               children: [
                 // Top viewer bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: CameraUiTokens.spacing8,
-                    vertical: CameraUiTokens.spacing8,
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: CameraUiTokens.minTouchTarget,
-                        height: CameraUiTokens.minTouchTarget,
-                        child: IconButton(
+                CameraGlassSurface(
+                  role: CameraGlassRole.header,
+                  brightness: Brightness.dark,
+                  borderRadius: BorderRadius.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: CameraUiTokens.spacing8,
+                      vertical: CameraUiTokens.spacing8,
+                    ),
+                    child: Row(
+                      children: [
+                        CameraGlassIconButton(
                           key: const ValueKey('viewer_close_button'),
-                          icon: const Icon(Icons.close, color: Colors.white, size: 28),
+                          icon: Icons.close,
+                          label: 'shared.close'.tr(),
+                          embedded: true,
+                          iconColor: Colors.white,
+                          iconSize: 28,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
-                      ),
-                      const SizedBox(width: CameraUiTokens.spacing8),
-                      Expanded(
-                        child: Text(
-                          cameraName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        const SizedBox(width: CameraUiTokens.spacing8),
+                        Expanded(
+                          child: Text(
+                            cameraName,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
 

@@ -83,3 +83,7 @@ docs/
 2. **Bảo mật:** Không hardcode API key, không commit file `.env`. Client chỉ dùng `x-api-key` dạng reader công khai được cấp phép.
 3. **Quản lý state & Lifecycle:** Mọi luồng polling ảnh phải tự hủy khi widget unmount, modal đóng hoặc app vào background để tiết kiệm tài nguyên.
 4. **Kiểm thử trước khi commit mã nguồn:** Chạy lần lượt `npm run test:unit`, `npm run test:api`, `npm run test:db` ở `backend/` và `flutter test` ở `mobile/`. Chuẩn bị PostgreSQL/PostGIS theo [hướng dẫn backend](../backend/README.md) trước các suite API/database.
+
+- [superpowers/specs/2026-10-24-liquid-glass-refresh-design.md](superpowers/specs/2026-10-24-liquid-glass-refresh-design.md): Đặc tả thiết kế Liquid Glass Refresh — Chuẩn hóa trải nghiệm thị giác, độ mờ có chiều sâu, tương phản cao, và khả năng tiếp cận (touch target ≥ 48×48 px) xuyên suốt toàn bộ app.
+- [superpowers/plans/2026-10-24-liquid-glass-refresh.md](superpowers/plans/2026-10-24-liquid-glass-refresh.md): Kế hoạch thực thi 6 tác vụ refresh giao diện Liquid Glass.
+- [ui/liquid-glass-refresh-verification.md](ui/liquid-glass-refresh-verification.md): Báo cáo nghiệm thu Liquid Glass Refresh (165/165 tests Flutter PASS, 86/86 tests Backend PASS, 12 mockup PNG review, đạt AC1–AC8).

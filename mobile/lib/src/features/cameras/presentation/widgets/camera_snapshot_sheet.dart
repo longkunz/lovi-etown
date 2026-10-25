@@ -10,10 +10,12 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
-import 'package:liquid_glass_widgets/liquid_glass_widgets.dart';
 
 Future<void> showCameraSnapshotSheet(
   BuildContext context, {
@@ -54,6 +56,8 @@ class CameraSnapshotSheet extends StatefulWidget {
 
   /// Optional: enables the traffic brief card (T17) when provided.
   final CameraRepository? repository;
+
+  /// Optional: custom map builder for testing (T18).
   final Widget Function(BuildContext, CameraTrafficMapConfig)? mapBuilder;
 
   @override
@@ -114,36 +118,26 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
     final maxHeight = MediaQuery.of(context).size.height * 0.9;
     final isDark = theme.brightness == Brightness.dark;
 
-    return AdaptiveGlass(
-      shape: const LiquidRoundedSuperellipse(
-        borderRadius: CameraUiTokens.radius20,
-      ),
-      settings: LiquidGlassSettings(
-        blur: CameraUiTokens.glassSheetBlur,
-        thickness: 16,
-        glassColor: isDark ? const Color(0x26004D40) : const Color(0x1A00796B),
-        ambientStrength: 0.1,
-      ),
-      child: Container(
-        constraints: BoxConstraints(maxHeight: maxHeight),
-        decoration: BoxDecoration(
-          color: isDark
-              ? CameraUiTokens.surfaceDark.withValues(alpha: CameraUiTokens.glassOpacityDark)
-              : CameraUiTokens.surfaceLight.withValues(alpha: CameraUiTokens.glassOpacityLight),
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(CameraUiTokens.radius20),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.15),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
+    return Container(
+      constraints: BoxConstraints(maxHeight: maxHeight),
+      decoration: BoxDecoration(
+        color:
+            isDark ? CameraUiTokens.surfaceDark : CameraUiTokens.surfaceLight,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(CameraUiTokens.radius24),
         ),
-        child: SafeArea(
-          top: false,
-          child: BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 16,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: SafeArea(
+        top: false,
+        child: BlocBuilder<CameraPreviewCubit, CameraPreviewState>(
           bloc: widget.preview,
           builder: (context, state) {
             final camera = state.camera;
@@ -161,209 +155,233 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
               });
             }
 
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Handle bar
-                  Center(
-                    child: Container(
-                      margin:
-                          const EdgeInsets.only(top: CameraUiTokens.spacing8),
-                      width: 40,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: theme.dividerColor.withValues(alpha: 0.3),
-                        borderRadius:
-                            BorderRadius.circular(CameraUiTokens.radiusFull),
-                      ),
-                    ),
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header Glass Surface
+                CameraGlassSurface(
+                  role: CameraGlassRole.sheetHeader,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(CameraUiTokens.radius24),
                   ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Handle bar
+                      Center(
+                        child: Container(
+                          margin: const EdgeInsets.only(
+                              top: CameraUiTokens.spacing8),
+                          width: 40,
+                          height: 4,
+                          decoration: BoxDecoration(
+                            color: theme.dividerColor.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(
+                                CameraUiTokens.radiusFull),
+                          ),
+                        ),
+                      ),
 
-                  // Header with Close, Title, Favorite Star
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: CameraUiTokens.spacing8,
-                      vertical: CameraUiTokens.spacing4,
-                    ),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: CameraUiTokens.minTouchTarget,
-                          height: CameraUiTokens.minTouchTarget,
-                          child: IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
+                      // Header with Close, Title, Favorite Star
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: CameraUiTokens.spacing8,
+                          vertical: CameraUiTokens.spacing4,
                         ),
-                        Expanded(
-                          child: Text(
-                            camera?.name ?? '...',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
+                        child: Row(
+                          children: [
+                            CameraGlassIconButton(
+                              key: const ValueKey('sheet_close_button'),
+                              icon: Icons.close,
+                              label: 'shared.close'.tr(),
+                              embedded: true,
+                              onPressed: () => Navigator.of(context).pop(),
                             ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (camera != null)
-                          SizedBox(
-                            width: CameraUiTokens.minTouchTarget,
-                            height: CameraUiTokens.minTouchTarget,
-                            child: IconButton(
-                              onPressed: () {
-                                widget.favorites.setSaved(camera, !isFavorite);
-                              },
-                              icon: Icon(
-                                isFavorite ? Icons.star : Icons.star_border,
-                                color: isFavorite
-                                    ? CameraUiTokens.starActive
-                                    : CameraUiTokens.starInactive,
+                            Expanded(
+                              child: Text(
+                                camera?.name ?? '...',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  // District/address subtitle if available
-                  if (camera?.district != null || camera?.address != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: CameraUiTokens.spacing16,
-                      ),
-                      child: Text(
-                        camera?.address ?? camera?.district ?? '',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: CameraUiTokens.primaryTeal,
+                            if (camera != null)
+                              CameraGlassIconButton(
+                                key: const ValueKey('sheet_favorite_button'),
+                                icon:
+                                    isFavorite ? Icons.star : Icons.star_border,
+                                label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+                                selected: isFavorite,
+                                embedded: true,
+                                onPressed: () {
+                                  widget.favorites
+                                      .setSaved(camera, !isFavorite);
+                                },
+                              ),
+                          ],
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
 
-                  const SizedBox(height: CameraUiTokens.spacing8),
+                      // District/address subtitle if available
+                      if (camera?.district != null || camera?.address != null)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            CameraUiTokens.spacing16,
+                            0,
+                            CameraUiTokens.spacing16,
+                            CameraUiTokens.spacing8,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              camera?.address ?? camera?.district ?? '',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: CameraUiTokens.primaryTeal,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
 
-                  // Media area: snapshot polling by default; a live HLS
-                  // player when the camera supports it and the user
-                  // switches to "Trực tiếp" (T14). A live failure falls
-                  // back to the snapshot with a note.
-                  Padding(
-                    padding: const EdgeInsets.all(CameraUiTokens.spacing16),
+                // Media & details scrollable body (outside glass)
+                Flexible(
+                  child: SingleChildScrollView(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        if (camera != null && camera.canLive) ...[
-                          SegmentedButton<bool>(
-                            key: const ValueKey('live_mode_toggle'),
-                            segments: const [
-                              ButtonSegment(
-                                value: false,
-                                icon: Icon(Icons.image_outlined),
-                                label: Text('Ảnh tĩnh'),
-                              ),
-                              ButtonSegment(
-                                value: true,
-                                icon: Icon(Icons.live_tv_outlined),
-                                label: Text('Trực tiếp'),
-                              ),
-                            ],
-                            selected: {_liveMode},
-                            onSelectionChanged: (selection) {
-                              setState(() => _liveMode = selection.first);
-                            },
-                          ),
-                          const SizedBox(height: CameraUiTokens.spacing12),
-                        ],
-                        if (_liveFailed) ...[
-                          const Row(
+                        const SizedBox(height: CameraUiTokens.spacing8),
+
+                        // Media area: snapshot polling by default; a live HLS
+                        // player when the camera supports it and the user
+                        // switches to "Trực tiếp" (T14). A live failure falls
+                        // back to the snapshot with a note.
+                        Padding(
+                          padding:
+                              const EdgeInsets.all(CameraUiTokens.spacing16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              Icon(
-                                Icons.info_outline,
-                                size: 16,
-                                color: CameraUiTokens.errorRed,
-                              ),
-                              SizedBox(width: CameraUiTokens.spacing4),
-                              Expanded(
-                                child: Text(
-                                  'Không phát được trực tiếp — đang hiện ảnh tĩnh',
-                                  style: TextStyle(
-                                    color: CameraUiTokens.errorRed,
-                                    fontSize: 12,
-                                  ),
+                              if (camera != null && camera.canLive) ...[
+                                SegmentedButton<bool>(
+                                  key: const ValueKey('live_mode_toggle'),
+                                  segments: const [
+                                    ButtonSegment(
+                                      value: false,
+                                      icon: Icon(Icons.image_outlined),
+                                      label: Text('Ảnh tĩnh'),
+                                    ),
+                                    ButtonSegment(
+                                      value: true,
+                                      icon: Icon(Icons.live_tv_outlined),
+                                      label: Text('Trực tiếp'),
+                                    ),
+                                  ],
+                                  selected: {_liveMode},
+                                  onSelectionChanged: (selection) {
+                                    setState(() => _liveMode = selection.first);
+                                  },
                                 ),
-                              ),
+                                const SizedBox(
+                                    height: CameraUiTokens.spacing12),
+                              ],
+                              if (_liveFailed) ...[
+                                const Row(
+                                  children: [
+                                    Icon(
+                                      Icons.info_outline,
+                                      size: 16,
+                                      color: CameraUiTokens.errorRed,
+                                    ),
+                                    SizedBox(width: CameraUiTokens.spacing4),
+                                    Expanded(
+                                      child: Text(
+                                        'Không phát được trực tiếp — đang hiện ảnh tĩnh',
+                                        style: TextStyle(
+                                          color: CameraUiTokens.errorRed,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: CameraUiTokens.spacing8),
+                              ],
+                              if (_liveMode && camera != null && camera.canLive)
+                                CameraLivePlayer(
+                                  key: ValueKey('live_player_${camera.id}'),
+                                  streamUrl: camera.streamUrl!,
+                                  onUnavailable: _handleLiveUnavailable,
+                                )
+                              else
+                                _buildSnapshotContent(context, state),
                             ],
                           ),
-                          const SizedBox(height: CameraUiTokens.spacing8),
-                        ],
-                        if (_liveMode && camera != null && camera.canLive)
-                          CameraLivePlayer(
-                            key: ValueKey('live_player_${camera.id}'),
-                            streamUrl: camera.streamUrl!,
-                            onUnavailable: _handleLiveUnavailable,
-                          )
-                        else
-                          _buildSnapshotContent(context, state),
+                        ),
+
+                        // Google Maps Traffic Layer Card (T18) — rendered when the
+                        // camera has location coordinates.
+                        if (camera != null && camera.hasLocation)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              CameraUiTokens.spacing16,
+                              0,
+                              CameraUiTokens.spacing16,
+                              CameraUiTokens.spacing16,
+                            ),
+                            child: CameraTrafficMapCard(
+                              key: ValueKey('traffic_map_${camera.id}'),
+                              camera: camera,
+                              mapBuilder: widget.mapBuilder,
+                            ),
+                          ),
+
+                        // Directions handoff (T10) — only when the catalog
+                        // provided coordinates for this camera.
+                        if (camera != null && camera.hasLocation)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              CameraUiTokens.spacing16,
+                              0,
+                              CameraUiTokens.spacing16,
+                              CameraUiTokens.spacing16,
+                            ),
+                            child: OutlinedButton.icon(
+                              key: const ValueKey('directions_button'),
+                              onPressed: () => openCameraDirections(camera),
+                              icon: const Icon(Icons.directions),
+                              label: const Text('Chỉ đường'),
+                            ),
+                          ),
+
+                        // Traffic brief (T17) — rendered when a repository is
+                        // available; the card hides itself without data.
+                        if (camera != null && widget.repository != null)
+                          TrafficBriefCard(
+                            key: ValueKey('traffic_brief_${camera.id}'),
+                            camera: camera,
+                            repository: widget.repository!,
+                            onSelectCamera: (related) =>
+                                widget.preview.open(related.id),
+                          ),
                       ],
                     ),
                   ),
-
-                  // Google Maps Traffic Layer Card (T18) — rendered when the
-                  // camera has location coordinates.
-                  if (camera != null && camera.hasLocation)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        CameraUiTokens.spacing16,
-                        0,
-                        CameraUiTokens.spacing16,
-                        CameraUiTokens.spacing16,
-                      ),
-                      child: CameraTrafficMapCard(
-                        key: ValueKey('traffic_map_${camera.id}'),
-                        camera: camera,
-                        mapBuilder: widget.mapBuilder,
-                      ),
-                    ),
-
-                  // Directions handoff (T10) — only when the catalog
-                  // provided coordinates for this camera.
-                  if (camera != null && camera.hasLocation)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(
-                        CameraUiTokens.spacing16,
-                        0,
-                        CameraUiTokens.spacing16,
-                        CameraUiTokens.spacing16,
-                      ),
-                      child: OutlinedButton.icon(
-                        key: const ValueKey('directions_button'),
-                        onPressed: () => openCameraDirections(camera),
-                        icon: const Icon(Icons.directions),
-                        label: const Text('Chỉ đường'),
-                      ),
-                    ),
-
-                  // Traffic brief (T17) — rendered when a repository is
-                  // available; the card hides itself without data.
-                  if (camera != null && widget.repository != null)
-                    TrafficBriefCard(
-                      key: ValueKey('traffic_brief_${camera.id}'),
-                      camera: camera,
-                      repository: widget.repository!,
-                      onSelectCamera: (related) =>
-                          widget.preview.open(related.id),
-                    ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildSnapshotContent(BuildContext context, CameraPreviewState state) {
     if (state.snapshotState.isLoading && state.currentFrame == null) {

@@ -10,6 +10,7 @@
   "camera": {
     "title": "Camera giao thông",
     "search_hint": "Tìm tên đường, giao lộ...",
+    "clear_search": "Xóa tìm kiếm",
     "search_min_chars": "Nhập ít nhất 2 ký tự để tìm kiếm",
     "all_districts": "Tất cả quận/huyện",
     "favorites_title": "Quan tâm",

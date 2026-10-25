@@ -115,3 +115,19 @@ Literal cấu hình `url-api-camera` ở `0x135ae0` và `area-camera` ở `0x16a
 Phân loại: C-01/C-02 là ứng viên endpoint nghiệp vụ camera; C-03 là ứng viên transit; C-04 là nguồn media; C-05 chưa xác định có network. Chưa có cơ sở phân loại host camera là dịch vụ nội bộ hay bên thứ ba. Không điều tra telemetry/quảng cáo ngoài phạm vi.
 
 Để đóng catalog: capture có mục tiêu với từng thao tác, đối chiếu timestamp/UI, lưu request/response đã che token/cookie/dữ liệu cá nhân; xác định quyền nguồn dữ liệu cho app mới độc lập với app gốc.
+
+## Map discovery — GET `/v1/map-cameras`
+
+Reader/admin `x-api-key` authentication, key rotation, request IDs and rate limits follow the catalog API.
+Send exactly one query mode:
+
+- `/v1/map-cameras?provinceId=tp_hcm&bbox=106.69,10.76,106.71,10.78`
+- `/v1/map-cameras?provinceId=tp_hcm&lat=10.7769&lng=106.7009&radiusMeters=2000`
+
+Optional `district` is trimmed (maximum 80 characters), normalized like the list filter. `limit` is an integer 1–200, default 200. Nearby requires latitude −90..90, longitude −180..180 and integer radius 100–5000 meters. Bbox is west,south,east,north, includes its boundary, and requires west < east and south < north; crossing the antimeridian is unsupported. Unknown/repeated query parameters, mixed modes, missing fields, empty/non-finite numbers and malformed integers return `400 INVALID_INPUT`; unsupported provinces return `400 UNSUPPORTED_PROVINCE`.
+
+```json
+{"data":[{"camera":{"id":"camera-uuid","name":"Camera","provinceId":"tp_hcm"},"distanceMeters":123.4}],"meta":{"requestId":"request-id","dataMode":"fixture","result":{"limit":200,"returned":1,"hasMore":false},"catalog":{"version":"1","fetchedAt":"2026-10-24T00:00:00.000Z","isStale":false,"coverage":"partial","syncState":"synced"}}}
+```
+
+The illustrative camera above is abbreviated; each `camera` uses the complete existing public `CameraDto`, without internal source references. `distanceMeters` is the straight-line geographic distance in meters, not a travel distance; bbox returns null. Nearby sorts by distance then camera ID; bbox sorts by ID. Cameras without coordinates remain in the regular catalog and are excluded here. `hasMore=true` means additional matching cameras were omitted: zoom in or reduce the radius. No map pagination is provided. Empty results describe only the requested area; `coverage` may be incomplete even when `hasMore=false`. Rows and catalog metadata are read from the same database snapshot.

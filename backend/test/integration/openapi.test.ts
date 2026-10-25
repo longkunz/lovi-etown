@@ -29,6 +29,9 @@ describe('OpenAPI & Swagger Documentation (Integration)', () => {
       // Assert paths exist
       const paths = Object.keys(spec.paths);
       assert.ok(paths.includes('/v1/cameras'));
+      assert.ok(paths.includes('/v1/map-cameras'));
+      assert.ok(spec.paths['/v1/map-cameras'].get.security.some((entry:any)=>entry.ApiKeyAuth));
+      assert.equal(spec.paths['/v1/map-cameras'].get.parameters.length,7);
       assert.ok(paths.includes('/v1/camera-districts'));
       assert.ok(paths.includes('/v1/cameras/{id}'));
       assert.ok(paths.includes('/v1/cameras/{id}/playback'));

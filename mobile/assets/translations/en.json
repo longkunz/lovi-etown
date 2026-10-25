@@ -78,5 +78,40 @@
     "forgot_password_title": "Forgot Password",
     "forgot_password_subtitle": "Enter your email address to receive a reset link\nand regain access to your account.",
     "reset_link_sent": "Password reset link sent to your email."
+  },
+  "navigation": {
+    "map": "Map",
+    "cameras": "Cameras"
+  },
+  "map_discovery": {
+    "title": "Map",
+    "viewport": "Visible area",
+    "nearby": "Near me",
+    "refresh_location": "Update location",
+    "district": "District",
+    "all_districts": "All districts",
+    "traffic": "Traffic",
+    "street": "Streets",
+    "hybrid": "Satellite",
+    "open_cameras": "Open cameras",
+    "locating": "Getting location…",
+    "location_denied": "Location permission denied. Try again",
+    "app_settings": "Open app settings",
+    "location_settings": "Enable location services",
+    "location_timeout": "Location timed out. Try again",
+    "location_failed": "Could not get location. Try again",
+    "missing_key": "Vietmap key is not configured. You can still browse cameras.",
+    "demo_map": "Illustrative map · demo data",
+    "invalid_viewport": "Zoom in to select a valid map area.",
+    "update_required": "Camera access key has expired. Please update your connection settings.",
+    "load_failed": "Could not load cameras in this area.",
+    "retry": "Try again",
+    "stale_results": "Previous results — not updated for the current search.",
+    "incomplete_catalog": "The camera catalog may be incomplete.",
+    "viewport_limit": "Zoom in to see all cameras",
+    "nearby_limit": "Showing the nearest cameras. Reduce the radius to see all cameras",
+    "empty": "No cameras found in the selected area.",
+    "loading": "Loading cameras",
+    "straight_distance": "straight-line distance"
   }
 }

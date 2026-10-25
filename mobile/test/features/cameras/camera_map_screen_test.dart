@@ -1,0 +1,184 @@
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_results.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_map_state.dart';
+import 'package:flutter_starter/src/utils/failure.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:dio/dio.dart';
+import 'package:fpdart/fpdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_starter/src/config/map_config.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_map_repository.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_map_models.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_location_gateway.dart';
+import 'package:flutter_starter/src/features/cameras/data/repositories/fixture_camera_repository.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_map_screen.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_map_view_config.dart';
+import 'package:flutter_starter/src/utils/typedefs.dart';
+
+class Maps implements CameraMapRepository {
+  int calls = 0;
+  @override
+  FutureEither<CameraMapResult> search(CameraMapQuery query,
+      {CancelToken? cancelToken}) async {
+    calls++;
+    return const Right(
+        CameraMapResult(items: [], hasMore: false, catalogVersion: 'v1'));
+  }
+}
+
+class GPS implements CameraLocationGateway {
+  int calls = 0;
+  @override
+  Future<CameraLocationResult> locate() async {
+    calls++;
+    return const CameraLocationResult(
+        status: CameraLocationStatus.deniedForever);
+  }
+
+  @override
+  Future<bool> checkPermission() async => false;
+  @override
+  Future<bool> openAppSettings() async => true;
+  @override
+  Future<bool> openLocationSettings() async => true;
+}
+
+class RejectedCatalog extends FixtureCameraRepository {
+  @override
+  FutureEither<List<DistrictOption>> districts(
+          {CancelToken? cancelToken}) async =>
+      const Left(ApiFailure('Expired', statusCode: 401));
+}
+
+void main() {
+  setUp(() => SharedPreferences.setMockInitialValues({}));
+  testWidgets(
+      'results show stale coverage distance limits and route selected camera',
+      (tester) async {
+    const camera = Camera(
+        id: 'c', name: 'Camera C', provinceId: 'tp_hcm', playbackEndpoint: '');
+    Camera? selected;
+    const result = CameraMapResult(
+        items: [CameraMapItem(camera: camera, distanceMeters: 1450)],
+        hasMore: true,
+        catalogVersion: 'v1',
+        isStale: true,
+        coverage: 'partial');
+    Future<void> render(CameraMapMode mode) => tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: CameraMapResults(
+                state: CameraMapState(mode: mode, result: result),
+                onSelectCamera: (camera) => selected = camera,
+                onRetry: () {}))));
+    await render(CameraMapMode.viewport);
+    expect(find.textContaining('Kết quả cũ'), findsOneWidget);
+    expect(find.textContaining('chưa đầy đủ'), findsOneWidget);
+    expect(find.textContaining('Phóng to để xem đủ'), findsOneWidget);
+    expect(find.textContaining('1.4 km'), findsOneWidget);
+    await tester.tap(find.text('Camera C'));
+    expect(selected, camera);
+    await render(CameraMapMode.nearby);
+    expect(find.textContaining('hãy giảm bán kính'), findsOneWidget);
+  });
+  testWidgets('district unauthorized reports update required without a map key',
+      (tester) async {
+    await tester.pumpWidget(MaterialApp(
+        home: CameraMapScreen(
+            repository: Maps(),
+            locationGateway: GPS(),
+            cameraRepository: RejectedCatalog(),
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            connectionConfig: const MapConnectionConfig())));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Mã truy cập camera đã hết hiệu lực'),
+        findsOneWidget);
+  });
+  testWidgets('320dp and large text keep controls and fallback usable',
+      (tester) async {
+    tester.view.resetPhysicalSize();
+    tester.view.physicalSize = const Size(320, 1000);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(MaterialApp(
+        builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(2)),
+            child: child!),
+        home: CameraMapScreen(
+            repository: Maps(),
+            locationGateway: GPS(),
+            cameraRepository: FixtureCameraRepository(),
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            connectionConfig: const MapConnectionConfig())));
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+  });
+  testWidgets(
+      'initial viewport does not ask for GPS and inactive removes canvas',
+      (tester) async {
+    final gps = GPS(), maps = Maps();
+    CameraMapViewConfig? config;
+    Widget screen(bool active) => MaterialApp(
+        home: CameraMapScreen(
+            repository: maps,
+            locationGateway: gps,
+            cameraRepository: FixtureCameraRepository(),
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            active: active,
+            connectionConfig: const MapConnectionConfig(apiKey: 'test'),
+            mapBuilder: (context, value) {
+              config = value;
+              return const SizedBox(key: ValueKey('fake-map'));
+            }));
+    await tester.pumpWidget(screen(true));
+    await tester.pumpAndSettle();
+    expect(config!.center.latitude, 10.7769);
+    expect(config!.zoom, 13);
+    expect(gps.calls, 0);
+    config!.onIdle!(const MapBounds(106, 10, 107, 11), 13,
+        const MapCoordinate(10.7769, 106.7009));
+    await tester.pump(const Duration(milliseconds: 401));
+    await tester.pumpAndSettle();
+    expect(maps.calls, 1);
+    await tester.pumpWidget(screen(false));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('fake-map')), findsNothing);
+    await tester.pumpWidget(screen(true));
+    await tester.pumpAndSettle();
+    (tester.state(find.byType(CameraMapScreen)) as WidgetsBindingObserver)
+        .didChangeAppLifecycleState(AppLifecycleState.paused);
+    await tester.pump();
+    expect(find.byKey(const ValueKey('fake-map')), findsNothing);
+    (tester.state(find.byType(CameraMapScreen)) as WidgetsBindingObserver)
+        .didChangeAppLifecycleState(AppLifecycleState.resumed);
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('fake-map')), findsOneWidget);
+    expect(gps.calls, 0);
+  });
+  testWidgets('missing key explains fallback and nearby denial offers settings',
+      (tester) async {
+    final gps = GPS();
+    await tester.pumpWidget(MaterialApp(
+        home: CameraMapScreen(
+            repository: Maps(),
+            locationGateway: gps,
+            cameraRepository: FixtureCameraRepository(),
+            onSelectCamera: (_) {},
+            onOpenCameras: () {},
+            connectionConfig: const MapConnectionConfig())));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Chưa cấu hình khóa Vietmap'), findsOneWidget);
+    await tester.tap(find.text('Gần tôi'));
+    await tester.pumpAndSettle();
+    expect(gps.calls, 1);
+    expect(find.text('1 km'), findsOneWidget);
+    expect(find.text('2 km'), findsOneWidget);
+    expect(find.text('5 km'), findsOneWidget);
+    expect(find.text('Mở cài đặt ứng dụng'), findsOneWidget);
+  });
+}

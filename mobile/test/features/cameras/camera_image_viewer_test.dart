@@ -1,3 +1,4 @@
+import '../../support/pump_camera_transition.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -178,19 +179,19 @@ void main() {
 
       // Open sheet
       await tester.tap(find.text('Open Sheet'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
       expect(find.byType(CameraSnapshotSheet), findsOneWidget);
 
       // Open viewer
       await tester.tap(find.byKey(const ValueKey('snapshot_sheet_image')));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
       expect(find.byType(CameraImageViewer), findsOneWidget);
 
       // First back closes viewer
       final closeButton = find.byKey(const ValueKey('viewer_close_button'));
       expect(closeButton, findsOneWidget);
       await tester.tap(closeButton);
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // Viewer closed, sheet STILL OPEN
       expect(find.byType(CameraImageViewer), findsNothing);
@@ -198,7 +199,7 @@ void main() {
 
       // Second back closes sheet
       await tester.tap(find.byIcon(Icons.close));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // Sheet closed
       expect(find.byType(CameraSnapshotSheet), findsNothing);
@@ -227,10 +228,10 @@ void main() {
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Open Sheet'));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       await tester.tap(find.byKey(const ValueKey('snapshot_sheet_image')));
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       expect(find.byType(InteractiveViewer), findsOneWidget);
 
@@ -240,7 +241,7 @@ void main() {
         const Offset(0, 100),
         warnIfMissed: false,
       );
-      await tester.pumpAndSettle();
+      await pumpCameraTransition(tester);
 
       // Viewer should still be open!
       expect(find.byType(CameraImageViewer), findsOneWidget);

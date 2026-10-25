@@ -12,6 +12,8 @@ class CameraPreviewState extends Equatable {
     this.snapshotState = const RequestInitial(),
     this.isStale = false,
     this.isForeground = true,
+    this.nextRefreshAt,
+    this.refreshDelay,
   });
 
   final String? cameraId;
@@ -22,6 +24,8 @@ class CameraPreviewState extends Equatable {
   final RequestState<SnapshotReply> snapshotState;
   final bool isStale;
   final bool isForeground;
+  final DateTime? nextRefreshAt;
+  final Duration? refreshDelay;
 
   CameraPreviewState copyWith({
     String? cameraId,
@@ -32,6 +36,9 @@ class CameraPreviewState extends Equatable {
     RequestState<SnapshotReply>? snapshotState,
     bool? isStale,
     bool? isForeground,
+    DateTime? nextRefreshAt,
+    Duration? refreshDelay,
+    bool clearRefreshSchedule = false,
     bool clearCurrentFrame = false,
     bool clearCamera = false,
     bool clearDescriptor = false,
@@ -46,6 +53,10 @@ class CameraPreviewState extends Equatable {
       snapshotState: snapshotState ?? this.snapshotState,
       isStale: isStale ?? this.isStale,
       isForeground: isForeground ?? this.isForeground,
+      nextRefreshAt:
+          clearRefreshSchedule ? null : (nextRefreshAt ?? this.nextRefreshAt),
+      refreshDelay:
+          clearRefreshSchedule ? null : (refreshDelay ?? this.refreshDelay),
     );
   }
 
@@ -59,5 +70,7 @@ class CameraPreviewState extends Equatable {
         snapshotState,
         isStale,
         isForeground,
+        nextRefreshAt,
+        refreshDelay,
       ];
 }

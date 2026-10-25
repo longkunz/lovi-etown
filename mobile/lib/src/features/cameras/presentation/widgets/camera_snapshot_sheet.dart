@@ -10,6 +10,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/providers/came
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_image_viewer.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_live_player.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_refresh_countdown.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
@@ -211,6 +212,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             if (camera != null)
                               CameraGlassIconButton(
                                 key: const ValueKey('sheet_favorite_button'),
+                                iconSize: CameraUiTokens.controlIconSize,
                                 icon:
                                     isFavorite ? Icons.star : Icons.star_border,
                                 label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
@@ -450,6 +452,16 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
             fit: StackFit.passthrough,
             children: [
               imageWidget,
+              if (state.currentFrame != null)
+                Positioned(
+                  bottom: CameraUiTokens.spacing8,
+                  left: CameraUiTokens.spacing8,
+                  right: CameraUiTokens.spacing8,
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: CameraRefreshCountdown(state: state),
+                  ),
+                ),
               if (state.isStale)
                 Positioned(
                   top: CameraUiTokens.spacing8,

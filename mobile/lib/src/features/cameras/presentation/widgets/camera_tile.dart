@@ -2,6 +2,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 class CameraTile extends StatelessWidget {
@@ -34,7 +36,8 @@ class CameraTile extends StatelessWidget {
     }
   }
 
-  Widget _buildThumbnail({required double height, double? width, BoxFit fit = BoxFit.cover}) {
+  Widget _buildThumbnail(
+      {required double height, double? width, BoxFit fit = BoxFit.cover}) {
     // If real thumbnail bytes are provided from cache/scheduler
     Widget imageWidget;
     if (thumbnailBytes != null && thumbnailBytes!.isNotEmpty) {
@@ -43,15 +46,18 @@ class CameraTile extends StatelessWidget {
         fit: fit,
         width: width,
         height: height,
-        errorBuilder: (_, __, ___) => _buildPlaceholder(height: height, width: width),
+        errorBuilder: (_, __, ___) =>
+            _buildPlaceholder(height: height, width: width),
       );
-    } else if (camera.thumbnailEndpoint != null && camera.thumbnailEndpoint!.startsWith('assets/')) {
+    } else if (camera.thumbnailEndpoint != null &&
+        camera.thumbnailEndpoint!.startsWith('assets/')) {
       imageWidget = Image.asset(
         camera.thumbnailEndpoint!,
         fit: fit,
         width: width,
         height: height,
-        errorBuilder: (_, __, ___) => _buildPlaceholder(height: height, width: width),
+        errorBuilder: (_, __, ___) =>
+            _buildPlaceholder(height: height, width: width),
       );
     } else {
       // Default fixture image placeholder
@@ -60,7 +66,8 @@ class CameraTile extends StatelessWidget {
         fit: fit,
         width: width,
         height: height,
-        errorBuilder: (_, __, ___) => _buildPlaceholder(height: height, width: width),
+        errorBuilder: (_, __, ___) =>
+            _buildPlaceholder(height: height, width: width),
       );
     }
 
@@ -123,14 +130,34 @@ class CameraTile extends StatelessWidget {
     );
   }
 
-  Widget _buildGlassFavoriteButton() {
-    return CameraGlassIconButton(
-      icon: isFavorite ? Icons.star : Icons.star_border,
+  Widget _buildGlassFavoriteButton(BuildContext context) {
+    final foreground = Theme.of(context).brightness == Brightness.light
+        ? CameraUiTokens.controlForegroundLight
+        : CameraUiTokens.controlForegroundDark;
+    return Semantics(
       label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
       selected: isFavorite,
-      onPressed: onToggleFavorite,
-      size: CameraUiTokens.minTouchTarget,
-      iconSize: 24,
+      child: SizedBox.square(
+        dimension: CameraUiTokens.minTouchTarget,
+        child: IconButton(
+          tooltip: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+          padding: EdgeInsets.zero,
+          onPressed: onToggleFavorite,
+          icon: CameraGlassSurface(
+            role: CameraGlassRole.control,
+            borderRadius:
+                BorderRadius.circular(CameraUiTokens.overlayControlSize / 2),
+            child: SizedBox.square(
+              dimension: CameraUiTokens.overlayControlSize,
+              child: Icon(
+                isFavorite ? Icons.star : Icons.star_border,
+                size: CameraUiTokens.controlIconSize,
+                color: isFavorite ? CameraUiTokens.starActive : foreground,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -142,7 +169,7 @@ class CameraTile extends StatelessWidget {
       embedded: true,
       onPressed: onToggleFavorite,
       size: CameraUiTokens.minTouchTarget,
-      iconSize: 24,
+      iconSize: CameraUiTokens.controlIconSize,
     );
   }
 
@@ -182,7 +209,7 @@ class CameraTile extends StatelessWidget {
                   Positioned(
                     top: CameraUiTokens.spacing8,
                     right: CameraUiTokens.spacing8,
-                    child: _buildGlassFavoriteButton(),
+                    child: _buildGlassFavoriteButton(context),
                   ),
                   if (camera.district != null && camera.district!.isNotEmpty)
                     Positioned(
@@ -194,8 +221,10 @@ class CameraTile extends StatelessWidget {
                           vertical: CameraUiTokens.spacing4,
                         ),
                         decoration: BoxDecoration(
-                          color: CameraUiTokens.primaryTealDark.withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
+                          color: CameraUiTokens.primaryTealDark
+                              .withValues(alpha: 0.85),
+                          borderRadius:
+                              BorderRadius.circular(CameraUiTokens.radius8),
                         ),
                         child: Text(
                           camera.district!,
@@ -221,12 +250,14 @@ class CameraTile extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (camera.address != null && camera.address!.isNotEmpty) ...[
+                    if (camera.address != null &&
+                        camera.address!.isNotEmpty) ...[
                       const SizedBox(height: CameraUiTokens.spacing4),
                       Text(
                         camera.address!,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.75),
+                          color: theme.textTheme.bodySmall?.color
+                              ?.withValues(alpha: 0.75),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -244,6 +275,17 @@ class CameraTile extends StatelessWidget {
 
   Widget _buildGrid(BuildContext context) {
     final theme = Theme.of(context);
+    final nameStyle = theme.textTheme.bodyMedium!.copyWith(
+      fontWeight: FontWeight.w600,
+    );
+    // Reserve two lines even for short names to align thumbnails and labels.
+    final nameMetrics = TextPainter(
+      text: TextSpan(text: camera.name, style: nameStyle),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    );
+    final nameHeight = nameMetrics.preferredLineHeight * 2;
+    nameMetrics.dispose();
     return Card(
       key: ValueKey('camera_grid_${camera.id}'),
       margin: EdgeInsets.zero,
@@ -260,7 +302,8 @@ class CameraTile extends StatelessWidget {
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  _buildThumbnail(height: double.infinity, width: double.infinity),
+                  _buildThumbnail(
+                      height: double.infinity, width: double.infinity),
                   if (camera.canLive)
                     Positioned(
                       top: CameraUiTokens.spacing8,
@@ -270,7 +313,7 @@ class CameraTile extends StatelessWidget {
                   Positioned(
                     top: 2,
                     right: 2,
-                    child: _buildGlassFavoriteButton(),
+                    child: _buildGlassFavoriteButton(context),
                   ),
                 ],
               ),
@@ -281,26 +324,25 @@ class CameraTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    camera.name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (camera.district != null && camera.district!.isNotEmpty) ...[
-                    const SizedBox(height: CameraUiTokens.spacing2),
-                    Text(
-                      camera.district!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: CameraUiTokens.primaryTeal,
-                        fontSize: 11,
-                      ),
-                      maxLines: 1,
+                  SizedBox(
+                    height: nameHeight,
+                    child: Text(
+                      camera.name,
+                      style: nameStyle,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ],
+                  ),
+                  const SizedBox(height: CameraUiTokens.spacing2),
+                  Text(
+                    camera.district ?? '',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: CameraUiTokens.primaryTeal,
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
@@ -353,7 +395,8 @@ class CameraTile extends StatelessWidget {
                         ],
                       ],
                     ),
-                    if (camera.district != null && camera.district!.isNotEmpty) ...[
+                    if (camera.district != null &&
+                        camera.district!.isNotEmpty) ...[
                       const SizedBox(height: CameraUiTokens.spacing2),
                       Text(
                         camera.district!,

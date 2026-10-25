@@ -1,3 +1,4 @@
+import '../../support/pump_camera_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -91,7 +92,7 @@ void main() {
     // 5. Open the full-screen camera viewer
     final firstTile = find.byType(CameraTile).first;
     await tester.tap(firstTile);
-    await tester.pumpAndSettle();
+    await pumpCameraTransition(tester);
 
     expect(find.byType(CameraViewerScreen), findsOneWidget);
 
@@ -99,7 +100,7 @@ void main() {
     final viewerImage = find.byKey(const ValueKey('viewer_snapshot_image'));
     expect(viewerImage, findsOneWidget);
     await tester.tap(viewerImage);
-    await tester.pumpAndSettle();
+    await pumpCameraTransition(tester);
 
     expect(find.byKey(const ValueKey('viewer_fullscreen_page')), findsOneWidget);
 
@@ -109,19 +110,19 @@ void main() {
     await tester.tap(interactiveViewer);
     await tester.pump(const Duration(milliseconds: 50));
     await tester.tap(interactiveViewer);
-    await tester.pumpAndSettle();
+    await pumpCameraTransition(tester);
 
     // Close full screen with its close button
     final closeViewerBtn = find.byKey(const ValueKey('viewer_fullscreen_close'));
     await tester.tap(closeViewerBtn);
-    await tester.pumpAndSettle();
+    await pumpCameraTransition(tester);
     expect(find.byKey(const ValueKey('viewer_fullscreen_page')), findsNothing);
     expect(find.byType(CameraViewerScreen), findsOneWidget);
 
     // 7. Go back from the viewer to the catalog
     final backBtn = find.byIcon(Icons.arrow_back).first;
     await tester.tap(backBtn);
-    await tester.pumpAndSettle();
+    await pumpCameraTransition(tester);
     expect(find.byType(CameraViewerScreen), findsNothing);
 
     // 8. Verify camera items still present with same anchor

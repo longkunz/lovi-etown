@@ -11,6 +11,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
 import 'package:flutter_starter/src/theme/theme.dart';
 import '../test/support/camera_fakes.dart';
+import '../test/support/pump_camera_transition.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -165,11 +166,21 @@ void main() {
     }
 
     expect(find.byType(CameraViewerScreen), findsOneWidget);
+    await pumpCameraTransition(tester);
 
     // 6. Open the zoomable full-screen media page.
     final fullScreenButton =
         find.byKey(const ValueKey('viewer_fullscreen_button'));
     expect(fullScreenButton, findsOneWidget);
+    final mediaAspectRatio = find.ancestor(
+      of: fullScreenButton,
+      matching: find.byType(AspectRatio),
+    );
+    debugPrint(
+      'T04_LAYOUT view=${tester.view.physicalSize / tester.view.devicePixelRatio} '
+      'media=${tester.getRect(mediaAspectRatio.first)} '
+      'button=${tester.getRect(fullScreenButton)}',
+    );
     await tester.tap(fullScreenButton);
     for (var i = 0;
         i < 20 &&

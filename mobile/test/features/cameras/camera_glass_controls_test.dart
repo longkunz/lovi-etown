@@ -126,6 +126,26 @@ void main() {
   });
 
   group('CameraGlassIconButton', () {
+    testWidgets('exposes its accessibility label exactly once', (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: CameraGlassIconButton(
+              icon: Icons.close,
+              label: 'Đóng',
+              onPressed: () {},
+            ),
+          ),
+        ),
+      );
+
+      final semantics = tester.getSemantics(
+        find.byType(CameraGlassIconButton),
+      );
+      expect(semantics.label, 'Đóng');
+      expect(semantics.tooltip, isEmpty);
+    });
+
     testWidgets('has at least 48x48 tap target and correct semantics',
         (tester) async {
       var tapped = false;

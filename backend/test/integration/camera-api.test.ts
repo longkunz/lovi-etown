@@ -171,12 +171,23 @@ describe('Camera Public APIs (Integration)', () => {
     }
   });
 
-  it('GET /v1/camera-districts: returns distinct non-null district counts', async () => {
+  it('GET /v1/camera-districts: returns district totals and online counts including zero', async () => {
     const { pool, schema, cleanup } = await createTestSchemaContext();
     try {
       const clock = new FakeClock();
       const repo = new PgCatalogRepository(pool, schema, clock);
       await seedTestCameras(repo);
+
+      const cameras = await repo.list({ provinceId: 'tp_hcm', limit: 50, offset: 0 });
+      for (const camera of cameras.items) {
+        if (camera.providerCameraId === 'cam_q1_01') {
+          await repo.updateAvailability(camera.id, 'online', clock.nowDate());
+        } else if (camera.providerCameraId === 'cam_q1_02') {
+          await repo.updateAvailability(camera.id, 'offline', clock.nowDate());
+        } else if (camera.providerCameraId === 'cam_stream_only') {
+          await repo.updateAvailability(camera.id, 'degraded', clock.nowDate());
+        }
+      }
 
       const config = loadConfig({
         DATABASE_URL: TEST_DATABASE_URL,
@@ -199,8 +210,10 @@ describe('Camera Public APIs (Integration)', () => {
         assert.equal(json.data.length, 2);
         assert.equal(json.data[0].district, 'Quận 1');
         assert.equal(json.data[0].cameraCount, 3);
+        assert.equal(json.data[0].onlineCount, 1);
         assert.equal(json.data[1].district, 'Quận 3');
         assert.equal(json.data[1].cameraCount, 1);
+        assert.equal(json.data[1].onlineCount, 0);
       } finally {
         await app.close();
       }

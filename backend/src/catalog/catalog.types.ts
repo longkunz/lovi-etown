@@ -66,6 +66,7 @@ export interface CatalogState {
 export interface DistrictCount {
   district: string;
   cameraCount: number;
+  onlineCount?: number;
 }
 
 export interface ImportResult {

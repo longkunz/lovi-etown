@@ -226,7 +226,8 @@ class CameraApiClient {
         if (item is Map<String, dynamic>) {
           return DistrictOption(
             name: item['name'] as String? ?? item['district'] as String? ?? '',
-            count: item['count'] as int? ?? 0,
+            count: item['count'] as int? ?? item['cameraCount'] as int? ?? 0,
+            onlineCount: item['onlineCount'] as int?,
           );
         }
         return DistrictOption(name: item.toString(), count: 0);

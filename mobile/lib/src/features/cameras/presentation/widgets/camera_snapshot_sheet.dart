@@ -397,6 +397,11 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             repository: widget.repository!,
                             onSelectCamera: (related) =>
                                 widget.preview.open(related.id),
+                            snapshotFetchedAt: state.currentFrame?.fetchedAt,
+                            isStale: state.isStale,
+                            onDirectionsTap: camera.hasLocation
+                                ? () => openCameraDirections(camera)
+                                : null,
                           ),
                       ],
                     ),

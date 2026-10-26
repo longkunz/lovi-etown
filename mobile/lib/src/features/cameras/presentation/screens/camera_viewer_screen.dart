@@ -374,6 +374,11 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                   camera: camera,
                   repository: widget.repository,
                   onSelectCamera: _openCamera,
+                  snapshotFetchedAt: state.currentFrame?.fetchedAt,
+                  isStale: state.isStale,
+                  onDirectionsTap: camera.hasLocation
+                      ? () => openCameraDirections(camera)
+                      : null,
                 ),
                 if (_related.isNotEmpty) _buildRelatedSection(context),
                 const SizedBox(height: CameraUiTokens.spacing24),

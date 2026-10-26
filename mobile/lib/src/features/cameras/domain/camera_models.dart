@@ -25,6 +25,9 @@ class Camera extends Equatable {
   final bool liveCapable;
   final String? streamUrl;
 
+  /// Availability status from catalog ('online', 'offline', 'degraded', 'unknown').
+  final String availability;
+
   const Camera({
     required this.id,
     required this.name,
@@ -39,12 +42,17 @@ class Camera extends Equatable {
     this.longitude,
     this.liveCapable = false,
     this.streamUrl,
+    this.availability = 'unknown',
   });
 
   bool get hasLocation => latitude != null && longitude != null;
 
   bool get canLive =>
       liveCapable && streamUrl != null && streamUrl!.isNotEmpty;
+
+  bool get isOnline => availability == 'online';
+  bool get isOffline => availability == 'offline';
+  bool get isDegraded => availability == 'degraded';
 
   Camera copyWith({
     String? id,
@@ -60,6 +68,7 @@ class Camera extends Equatable {
     double? longitude,
     bool? liveCapable,
     String? streamUrl,
+    String? availability,
   }) {
     return Camera(
       id: id ?? this.id,
@@ -75,6 +84,7 @@ class Camera extends Equatable {
       longitude: longitude ?? this.longitude,
       liveCapable: liveCapable ?? this.liveCapable,
       streamUrl: streamUrl ?? this.streamUrl,
+      availability: availability ?? this.availability,
     );
   }
 
@@ -93,6 +103,7 @@ class Camera extends Equatable {
         longitude,
         liveCapable,
         streamUrl,
+        availability,
       ];
 }
 
@@ -141,14 +152,16 @@ class CatalogPage extends Equatable {
 class DistrictOption extends Equatable {
   final String name;
   final int count;
+  final int? onlineCount;
 
   const DistrictOption({
     required this.name,
     required this.count,
+    this.onlineCount,
   });
 
   @override
-  List<Object?> get props => [name, count];
+  List<Object?> get props => [name, count, onlineCount];
 }
 
 class PlaybackDescriptor extends Equatable {

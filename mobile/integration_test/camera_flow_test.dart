@@ -3,8 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/config/app_config.dart';
+import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/camera_feature.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_district_picker.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_filters.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
 import 'package:flutter_starter/src/theme/theme.dart';
 import '../test/support/camera_fakes.dart';
@@ -87,38 +90,57 @@ void main() {
     expect(find.byType(CameraFeature), findsOneWidget);
     expect(find.byType(CameraTile), findsWidgets);
 
-    // 2. Switch display mode to Card and List
-    final cardButton = find.byTooltip('Chế độ thẻ');
-    if (cardButton.evaluate().isNotEmpty) {
-      await tester.tap(cardButton);
-      await tester.pumpAndSettle();
+    // 2. Apply a district filter and require every display mode control.
+    final districtPicker = find.byType(CameraDistrictPicker);
+    expect(districtPicker, findsOneWidget);
+    await tester.tap(districtPicker);
+    await tester.pumpAndSettle();
+    final districtOption = find.text('Quan 1 (10)');
+    expect(districtOption, findsOneWidget);
+    await tester.tap(districtOption);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(
+      tester.widget<CameraFilters>(find.byType(CameraFilters)).selectedDistrict,
+      equals('Quan 1'),
+    );
+
+    for (final mode in <(String, CameraViewMode)>[
+      ('Lưới', CameraViewMode.grid),
+      ('Thẻ', CameraViewMode.card),
+      ('Danh sách', CameraViewMode.list),
+    ]) {
+      final modeButton = find.byTooltip(mode.$1);
+      expect(modeButton, findsOneWidget);
+      await tester.tap(modeButton);
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(
+        tester.widget<CameraFilters>(find.byType(CameraFilters)).viewMode,
+        equals(mode.$2),
+      );
     }
 
-    final listButton = find.byTooltip('Chế độ danh sách');
-    if (listButton.evaluate().isNotEmpty) {
-      await tester.tap(listButton);
-      await tester.pumpAndSettle();
-    }
-
-    // 3. Search query filter
+    // 3. Search query filter (mandatory, not conditionally skipped).
     final searchField = find.byType(TextField);
-    if (searchField.evaluate().isNotEmpty) {
-      await tester.enterText(searchField, 'Nguyen Hue');
-      await tester.pump(const Duration(milliseconds: 700));
-      // Leave enough viewport for the filtered item before locating its
-      // trailing actions on a real device or a compact emulator.
-      FocusManager.instance.primaryFocus?.unfocus();
-      await tester.pump(const Duration(milliseconds: 400));
-      for (var i = 0;
-          i < 20 && find.byType(CameraTile).evaluate().isEmpty;
-          i++) {
-        await tester.pump(const Duration(milliseconds: 100));
-      }
-      expect(find.byType(CameraTile), findsWidgets);
+    expect(searchField, findsOneWidget);
+    await tester.enterText(searchField, 'Nguyen Hue');
+    await tester.pump(const Duration(milliseconds: 700));
+    // Leave enough viewport for the filtered item before locating its
+    // trailing actions on a real device or a compact emulator.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pump(const Duration(milliseconds: 400));
+    for (var i = 0; i < 20 && find.byType(CameraTile).evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
     }
+    expect(find.byType(CameraTile), findsWidgets);
+    final activeFilters =
+        tester.widget<CameraFilters>(find.byType(CameraFilters));
+    expect(activeFilters.query, equals('Nguyen Hue'));
+    expect(activeFilters.selectedDistrict, equals('Quan 1'));
+    expect(activeFilters.viewMode, equals(CameraViewMode.list));
 
     // 4. Save star to favorites from tile
     final firstTile = find.byType(CameraTile).hitTestable().first;
+    final anchorCamera = tester.widget<CameraTile>(firstTile).camera;
     final favoriteButton = find
         .descendant(
           of: firstTile,
@@ -195,8 +217,21 @@ void main() {
     }
     expect(find.byType(CameraViewerScreen), findsNothing);
 
-    // 8. Verify camera items still present with same anchor
-    expect(find.byType(CameraTile), findsWidgets);
+    // 8. Verify Back preserved the complete catalog context and anchor.
+    final restoredFilters =
+        tester.widget<CameraFilters>(find.byType(CameraFilters));
+    expect(restoredFilters.query, equals('Nguyen Hue'));
+    expect(restoredFilters.selectedDistrict, equals('Quan 1'));
+    expect(restoredFilters.viewMode, equals(CameraViewMode.list));
+    final restoredAnchor =
+        find.byKey(ValueKey<String>('cam_${anchorCamera.id}'));
+    expect(restoredAnchor, findsOneWidget);
+    expect(tester.widget<CameraTile>(restoredAnchor).isFavorite, isTrue);
+    final restoredFavorites = await favRepo.load();
+    expect(
+      restoredFavorites.getOrElse((_) => const []).map((item) => item.id),
+      contains(anchorCamera.id),
+    );
   });
 
   testWidgets('preview lifecycle keeps exactly one polling chain',

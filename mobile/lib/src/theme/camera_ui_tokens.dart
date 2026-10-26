@@ -74,6 +74,8 @@ abstract final class CameraUiTokens {
   static const Color badgeDemoBg = Color(0xFFFFF3E0);
   static const Color badgeDemoText = Color(0xFFE65100);
   static const Color errorRed = Color(0xFFD32F2F);
+  static const Color successGreen = Color(0xFF2E7D32);
+  static const Color warningOrange = Color(0xFFE65100);
 
   // ── Cache & Constraints ───────────────────────────────────────────────────
   static const int thumbnailMaxConcurrent = 4;

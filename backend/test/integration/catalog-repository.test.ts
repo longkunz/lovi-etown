@@ -6,6 +6,63 @@ import { PgCatalogRepository } from '../../src/catalog/catalog.repository.js';
 import { ProviderCamera } from '../../src/catalog/catalog.types.js';
 
 describe('Catalog Repository (Integration)', () => {
+  it('counts only online cameras per district within the requested province', async () => {
+    const { pool, schema, cleanup } = await createTestSchemaContext();
+    try {
+      const clock = new FakeClock();
+      const repo = new PgCatalogRepository(pool, schema, clock);
+      const statuses = ['online', 'offline', 'degraded', 'unknown'] as const;
+      await repo.commitImport({
+        provider: 'notis',
+        provinceId: 'tp_hcm',
+        bbox: [106.69, 10.76, 106.71, 10.78],
+        fetchedAt: clock.nowDate(),
+        cameras: [
+          ...statuses.map((status): ProviderCamera => ({
+            provider: 'notis', providerCameraId: status, name: status,
+            provinceId: 'tp_hcm', district: 'Quận 1',
+            sourceKind: 'snapshot', sourceRef: status,
+          })),
+          ...['Quận 3', null, ''].map((district, i): ProviderCamera => ({
+            provider: 'notis', providerCameraId: `extra_${i}`, name: `Extra ${i}`,
+            provinceId: 'tp_hcm', district,
+            sourceKind: 'snapshot', sourceRef: `extra_${i}`,
+          })),
+        ],
+      });
+      const catalog = await repo.list({ provinceId: 'tp_hcm', limit: 50, offset: 0 });
+      for (const camera of catalog.items) {
+        const status = camera.providerCameraId;
+        if (status === 'online' || status === 'offline' || status === 'degraded') {
+          await repo.updateAvailability(camera.id, status, clock.nowDate());
+        } else if (camera.district === 'Quận 3') {
+          await repo.updateAvailability(camera.id, 'offline', clock.nowDate());
+        }
+      }
+      await repo.commitImport({
+        provider: 'notis', provinceId: 'ha_noi',
+        bbox: [105.7, 20.9, 105.9, 21.1], fetchedAt: clock.nowDate(),
+        cameras: [{
+          provider: 'notis', providerCameraId: 'other_province', name: 'Other province',
+          provinceId: 'ha_noi', district: 'Quận 1',
+          sourceKind: 'snapshot', sourceRef: 'other_province',
+        }],
+      });
+      const other = await repo.list({ provinceId: 'ha_noi', limit: 50, offset: 0 });
+      await repo.updateAvailability(other.items[0].id, 'online', clock.nowDate());
+
+      assert.deepEqual(await repo.districts('tp_hcm'), [
+        { district: 'Quận 1', cameraCount: 4, onlineCount: 1 },
+        { district: 'Quận 3', cameraCount: 1, onlineCount: 0 },
+      ]);
+      assert.deepEqual(await repo.districts('ha_noi'), [
+        { district: 'Quận 1', cameraCount: 1, onlineCount: 1 },
+      ]);
+    } finally {
+      await cleanup();
+    }
+  });
+
   it('imports same camera twice preserving stable domain UUID and updating metadata without duplicates', async () => {
     const { pool, schema, cleanup } = await createTestSchemaContext();
     try {

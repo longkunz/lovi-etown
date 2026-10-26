@@ -121,7 +121,7 @@ class FixtureCameraRepository implements CameraRepository {
         .map((e) => DistrictOption(
               name: e.key,
               count: e.value,
-              onlineCount: onlineCounts[e.key] ?? e.value,
+              onlineCount: onlineCounts[e.key] ?? 0,
             ))
         .toList();
     list.sort((a, b) => a.name.compareTo(b.name));

@@ -40,7 +40,6 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
   List<Camera> _related = const [];
   int? _districtTotal;
   int? _districtOnlineCount;
-  bool _loaded = false;
 
   @override
   void initState() {
@@ -73,7 +72,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
       }
     });
 
-    setState(() => _loaded = true);
+    setState(() {});
   }
 
   Widget _buildStatusBadge(String availability) {
@@ -83,7 +82,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
 
     switch (availability) {
       case 'online':
-        color = const Color(0xFF2E7D32);
+        color = CameraUiTokens.successGreen;
         label = 'Đang hoạt động';
         icon = Icons.check_circle_outline;
         break;
@@ -93,19 +92,22 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
         icon = Icons.error_outline;
         break;
       case 'degraded':
-        color = const Color(0xFFE65100);
+        color = CameraUiTokens.warningOrange;
         label = 'Chập chờn';
         icon = Icons.warning_amber_outlined;
         break;
       default:
-        color = Colors.grey;
+        color = Theme.of(context).colorScheme.onSurfaceVariant;
         label = 'Chưa rõ';
         icon = Icons.help_outline;
     }
 
     return Container(
       key: ValueKey('traffic_brief_status_$availability'),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+      padding: const EdgeInsets.symmetric(
+        horizontal: CameraUiTokens.spacing8,
+        vertical: CameraUiTokens.spacing4,
+      ),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(CameraUiTokens.radiusFull),
@@ -115,15 +117,15 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: color),
-          const SizedBox(width: 4),
-          Text(
+          const SizedBox(width: CameraUiTokens.spacing4),
+          Flexible(
+              child: Text(
             label,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: color,
-            ),
-          ),
+            style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+          )),
         ],
       ),
     );
@@ -159,7 +161,8 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
         children: [
           Icon(icon, size: 14, color: color),
           const SizedBox(width: CameraUiTokens.spacing4),
-          Text(
+          Expanded(
+              child: Text(
             text,
             key: ValueKey(isStale
                 ? 'traffic_brief_freshness_stale'
@@ -168,7 +171,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
                   color: color,
                   fontWeight: FontWeight.w500,
                 ),
-          ),
+          )),
         ],
       ),
     );
@@ -177,13 +180,6 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
   @override
   Widget build(BuildContext context) {
     final camera = widget.camera;
-    if (!_loaded || camera.district == null) {
-      return const SizedBox.shrink();
-    }
-    if (_related.isEmpty && _districtTotal == null) {
-      return const SizedBox.shrink();
-    }
-
     final theme = Theme.of(context);
     final liveCount =
         _related.where((c) => c.canLive).length + (camera.canLive ? 1 : 0);
@@ -191,13 +187,17 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
 
     final String districtDetail;
     if (_districtTotal != null && _districtOnlineCount != null) {
-      districtDetail =
-          '$_districtOnlineCount/$_districtTotal camera hoạt động';
+      districtDetail = '$_districtOnlineCount/$_districtTotal camera hoạt động';
     } else if (_districtTotal != null) {
       districtDetail = '$_districtTotal camera trong khu vực';
     } else {
       districtDetail = '';
     }
+    final districtInfo = [
+      if (camera.district?.trim().isNotEmpty ?? false) camera.district!,
+      if (districtDetail.isNotEmpty) districtDetail,
+      if (liveCount > 0) '$liveCount camera có trực tiếp',
+    ].join(' · ');
 
     return Container(
       key: const ValueKey('traffic_brief_card'),
@@ -219,34 +219,37 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
+          Wrap(
+            spacing: CameraUiTokens.spacing8,
+            runSpacing: CameraUiTokens.spacing8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              const Icon(
-                Icons.traffic_outlined,
-                size: 18,
-                color: CameraUiTokens.primaryTeal,
-              ),
-              const SizedBox(width: CameraUiTokens.spacing8),
-              Text(
-                'Tình trạng tại điểm',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+              Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(
+                  Icons.traffic_outlined,
+                  size: 18,
+                  color: CameraUiTokens.primaryTeal,
                 ),
-              ),
-              const Spacer(),
+                const SizedBox(width: CameraUiTokens.spacing8),
+                Flexible(
+                    child: Text(
+                  'Tình trạng tại điểm',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+              ]),
               _buildStatusBadge(camera.availability),
             ],
           ),
-          const SizedBox(height: CameraUiTokens.spacing8),
-          Text(
-            [
-              camera.district!,
-              if (districtDetail.isNotEmpty) districtDetail,
-              if (liveCount > 0) '$liveCount camera có trực tiếp',
-            ].join(' · '),
-            key: const ValueKey('traffic_brief_district_info'),
-            style: theme.textTheme.bodySmall,
-          ),
+          if (districtInfo.isNotEmpty) ...[
+            const SizedBox(height: CameraUiTokens.spacing8),
+            Text(
+              districtInfo,
+              key: const ValueKey('traffic_brief_district_info'),
+              style: theme.textTheme.bodySmall,
+            ),
+          ],
           _buildFreshnessRow(context),
           if (camera.hasLocation) ...[
             const SizedBox(height: CameraUiTokens.spacing8),
@@ -258,8 +261,9 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
               label: const Text('Chỉ đường'),
               style: OutlinedButton.styleFrom(
                 visualDensity: VisualDensity.compact,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: CameraUiTokens.spacing12,
+                    vertical: CameraUiTokens.spacing4),
               ),
             ),
           ],

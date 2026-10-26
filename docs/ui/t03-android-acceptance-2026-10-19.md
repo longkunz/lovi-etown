@@ -11,13 +11,13 @@ Báo cáo này ghi bằng chứng nghiệm thu cho ticket #3 (T03). Lần chạy
 | Thiết bị | Android Emulator `sdk_gphone64_arm64` |
 | Hệ điều hành / SDK | Android 16 / API 36 |
 | Flutter / Dart | Flutter 3.47.7 stable / Dart 3.13.5 |
-| Commit mã được nghiệm thu | `5754615` (`test(mobile): complete Android T03 acceptance`) |
+| Commit mã được nghiệm thu | `df1a997` (gồm fixture bắt buộc toàn bộ catalog context) |
 | Backend | NestJS cục bộ, PostgreSQL 17 + PostGIS, catalog sync trong bbox nhỏ |
 
 ### AC1 — Integration fixture và debug APK: **PASS**
 
 - `flutter test integration_test/camera_flow_test.dart -d emulator-5556` → **2/2 PASS** trong 58 giây sau khi build/install debug APK.
-- Fixture đi qua danh sách, đổi Card/List, tìm kiếm, gắn Quan tâm, mở detail, mở fullscreen, zoom, đóng viewer và quay lại đúng catalog.
+- Fixture bắt buộc chọn district `Quan 1`, đi qua Grid → Card → List, tìm kiếm, gắn Quan tâm, mở detail, mở fullscreen, zoom và đóng viewer. Sau Back, test xác nhận nguyên vẹn query, district, mode List, camera anchor và trạng thái yêu thích; control bị thiếu sẽ làm test fail thay vì bị bỏ qua.
 - Xoay ngang và zoom được kiểm tra thêm trực tiếp bằng gesture/device rotation; ảnh nằm trong [`t03-android-acceptance-2026-10-26/`](t03-android-acceptance-2026-10-26/README.md).
 - Sau `am force-stop` và mở lại ứng dụng, mục Quan tâm và thẻ catalog cùng giữ trạng thái `Bỏ quan tâm`. Trong quá trình nghiệm thu đã phát hiện và sửa race condition ở `LocalFavoritesRepository.watch()` khiến emission của `load()` có thể rơi vào khe giữa cached snapshot và stream subscription. Regression test `watch_does_not_miss_a_concurrent_load_emission` đã được bổ sung.
 
@@ -42,6 +42,7 @@ T03_DISMISS calls=4 stable=true
 - `flutter test integration_test/camera_backend_smoke_test.dart -d emulator-5556 ...` → **2/2 PASS**:
   - API: list → detail → playback descriptor → snapshot `200` có ETag → request lại nhận `304`/`SnapshotUnchanged`.
   - UI: `CameraViewerScreen` tải và render snapshot thật qua backend proxy.
+- Ảnh [`04-real-backend-camera.png`](t03-android-acceptance-2026-10-26/04-real-backend-camera.png) xác nhận đúng camera thật và snapshot được render trong app.
 - Lệnh chạy truyền key qua biến cục bộ; report và log không ghi giá trị key hay URL upstream.
 
 ### Kiểm tra hồi quy
@@ -49,6 +50,9 @@ T03_DISMISS calls=4 stable=true
 - `flutter analyze` → **No issues found**.
 - `flutter test` → **243 PASS, 1 skipped** (skip theo cấu hình hiện hữu).
 - `flutter test test/features/cameras/local_favorites_repository_test.dart` → **4/4 PASS**.
+- `npm run test:unit` → **59/59 PASS**.
+- `npm run test:api` → **21/21 PASS**.
+- `npm run test:db` → **16/16 PASS**.
 
 ## Lịch sử lần chạy bị chặn — 2026-10-19
 

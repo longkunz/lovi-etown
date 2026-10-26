@@ -83,6 +83,7 @@ docs/
 ---
 
 - [ui/camera-map-discovery-verification.md](ui/camera-map-discovery-verification.md): #40 — Bản đồ mặc định/Vietmap/Gần tôi, API PostGIS, automated checks, build Android/iOS và Android demo smoke; nghiệm thu native với key thật còn thiếu.
+- [ui/t04-ios-acceptance-2026-10-26.md](ui/t04-ios-acceptance-2026-10-26.md): #4/T04 — nghiệm thu runtime A1 trên iPhone/iPad simulator, backend thật, restart favorites, lifecycle, xoay và zoom.
 
 ## 3. Quy tắc Dành cho Nhà phát triển Tiếp nối
 

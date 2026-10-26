@@ -8,7 +8,8 @@ import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 class LocalFavoritesRepository implements FavoritesRepository {
-  LocalFavoritesRepository({required FavoritesLocalStore store}) : _store = store;
+  LocalFavoritesRepository({required FavoritesLocalStore store})
+      : _store = store;
 
   final FavoritesLocalStore _store;
   final List<FavoriteCamera> _cachedFavorites = [];
@@ -34,9 +35,18 @@ class LocalFavoritesRepository implements FavoritesRepository {
   }
 
   @override
-  Stream<List<FavoriteCamera>> watch() async* {
-    yield List.unmodifiable(_cachedFavorites);
-    yield* _controller.stream;
+  Stream<List<FavoriteCamera>> watch() {
+    return Stream<List<FavoriteCamera>>.multi((listener) {
+      // Subscribe before publishing the cached snapshot so a concurrent load()
+      // cannot emit into the gap between `yield` and `yield*`.
+      final subscription = _controller.stream.listen(
+        listener.add,
+        onError: listener.addError,
+        onDone: listener.close,
+      );
+      listener.add(List.unmodifiable(_cachedFavorites));
+      listener.onCancel = subscription.cancel;
+    });
   }
 
   @override
@@ -64,7 +74,8 @@ class LocalFavoritesRepository implements FavoritesRepository {
 
               final rawItems = decoded['items'] as List<dynamic>? ?? [];
               final items = rawItems
-                  .map((item) => FavoriteCamera.fromJson(item as Map<String, dynamic>))
+                  .map((item) =>
+                      FavoriteCamera.fromJson(item as Map<String, dynamic>))
                   .toList();
 
               _cachedFavorites
@@ -80,7 +91,8 @@ class LocalFavoritesRepository implements FavoritesRepository {
       });
 
   @override
-  FutureEither<void> setSaved(Camera camera, bool saved) => _synchronized(() async {
+  FutureEither<void> setSaved(Camera camera, bool saved) =>
+      _synchronized(() async {
         final nextList = List<FavoriteCamera>.from(_cachedFavorites);
 
         if (saved) {

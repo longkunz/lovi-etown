@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
@@ -81,6 +83,40 @@ void main() {
       expect(items.any((c) => c.id == 'cam-01'), isTrue);
       expect(items.any((c) => c.id == 'cam-02'), isTrue);
       newRepo.dispose();
+    });
+
+    test('watch_does_not_miss_a_concurrent_load_emission', () async {
+      await repo.load();
+      await repo.setSaved(sampleCam1, true);
+
+      final restartedRepo = LocalFavoritesRepository(store: store);
+      final firstEmission = Completer<void>();
+      final loadedEmission = Completer<List<FavoriteCamera>>();
+      late final StreamSubscription<List<FavoriteCamera>> subscription;
+
+      subscription = restartedRepo.watch().listen((items) {
+        if (!firstEmission.isCompleted) {
+          firstEmission.complete();
+          subscription.pause();
+          return;
+        }
+        if (items.any((camera) => camera.id == sampleCam1.id) &&
+            !loadedEmission.isCompleted) {
+          loadedEmission.complete(items);
+        }
+      });
+
+      await firstEmission.future;
+      await restartedRepo.load();
+      subscription.resume();
+
+      final items = await loadedEmission.future.timeout(
+        const Duration(seconds: 1),
+      );
+      expect(items.map((camera) => camera.id), contains(sampleCam1.id));
+
+      await subscription.cancel();
+      restartedRepo.dispose();
     });
 
     test('failed_write_rolls_back_all_surfaces', () async {

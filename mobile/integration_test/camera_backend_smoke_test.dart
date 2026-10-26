@@ -24,9 +24,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:flutter_starter/src/config/app_config.dart';
 import 'package:flutter_starter/src/features/cameras/data/repositories/api_camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/camera_feature.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_snapshot_sheet.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
 import 'package:flutter_starter/src/services/camera_api_client.dart';
 import 'package:flutter_starter/src/theme/theme.dart';
 import '../test/support/camera_fakes.dart';
@@ -36,11 +34,13 @@ const _backendUrl = String.fromEnvironment(
   defaultValue: 'http://10.0.2.2:3000',
 );
 const _readerKey = String.fromEnvironment('T03_READER_KEY');
+const _cameraQuery = String.fromEnvironment('T03_CAMERA_QUERY');
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   late ApiCameraRepository repo;
+  late String smokeCameraId;
 
   setUpAll(() async {
     EasyLocalization.logger.enableLevels = [];
@@ -57,24 +57,36 @@ void main() {
         config: AppConfig.cameraConfig,
       ),
     );
+    final page = (await repo.list(
+      query: _cameraQuery.isEmpty ? null : _cameraQuery,
+      limit: 10,
+    ))
+        .getOrElse((failure) => throw StateError(
+              'smoke camera lookup failed: ${failure.message}',
+            ));
+    smokeCameraId = page.items
+        .firstWhere(
+          (camera) => camera.snapshotCapable,
+          orElse: () => throw StateError('No snapshot-capable smoke camera'),
+        )
+        .id;
   });
 
-  test('AC3 API path: list/detail/playback/snapshot 200 then 304',
-      () async {
+  test('AC3 API path: list/detail/playback/snapshot 200 then 304', () async {
     expect(_readerKey, isNotEmpty,
         reason: 'Pass --dart-define=T03_READER_KEY=<BACKEND_API_KEY>');
 
     // 1. List — real catalog from the seeded backend.
-    final pageResult = await repo.list(limit: 10);
+    final pageResult = await repo.list(
+      query: _cameraQuery.isEmpty ? null : _cameraQuery,
+      limit: 10,
+    );
     final page = pageResult.getOrElse(
       (f) => throw StateError('list failed: ${f.message}'),
     );
     expect(page.items, isNotEmpty,
         reason: 'Backend catalog is empty — did seed:fixture run?');
-    final camera = page.items.firstWhere(
-      (c) => c.snapshotCapable,
-      orElse: () => page.items.first,
-    );
+    final camera = page.items.firstWhere((c) => c.id == smokeCameraId);
 
     // 2. Detail — same camera id round-trips.
     final detailResult = await repo.detail(camera.id);
@@ -116,7 +128,7 @@ void main() {
         reason: 'Expected 304/SnapshotUnchanged for a matching ETag');
   });
 
-  testWidgets('AC3 UI path: catalog from backend opens snapshot sheet',
+  testWidgets('AC3 UI path: backend camera renders in camera viewer',
       (tester) async {
     final favRepo = InMemoryFavoritesRepository();
 
@@ -133,8 +145,9 @@ void main() {
               supportedLocales: context.supportedLocales,
               locale: context.locale,
               theme: buildLightTheme(primaryColorHex: '#00897B'),
-              home: CameraFeature(
-                cameraRepository: repo,
+              home: CameraViewerScreen(
+                cameraId: smokeCameraId,
+                repository: repo,
                 favoritesRepository: favRepo,
               ),
             );
@@ -145,21 +158,18 @@ void main() {
 
     // Real network + polling timers: pump in steps instead of
     // pumpAndSettle, which never settles while preview polling is armed.
-    for (var i = 0; i < 20 && find.byType(CameraTile).evaluate().isEmpty; i++) {
-      await tester.pump(const Duration(milliseconds: 500));
-    }
-    expect(find.byType(CameraTile), findsWidgets,
-        reason: 'No camera tiles — backend list did not reach the UI');
-
-    await tester.tap(find.byType(CameraTile).first);
     for (var i = 0;
-        i < 20 && find.byType(CameraSnapshotSheet).evaluate().isEmpty;
+        i < 20 &&
+            find
+                .byKey(const ValueKey('viewer_snapshot_image'))
+                .evaluate()
+                .isEmpty;
         i++) {
       await tester.pump(const Duration(milliseconds: 500));
     }
-    expect(find.byType(CameraSnapshotSheet), findsOneWidget);
+    expect(find.byType(CameraViewerScreen), findsOneWidget);
     expect(
-      find.byKey(const ValueKey('snapshot_sheet_image')),
+      find.byKey(const ValueKey('viewer_snapshot_image')),
       findsOneWidget,
     );
   });

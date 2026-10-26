@@ -1,6 +1,6 @@
 # Hiện trạng dự án Lovi Etown
 
-Cập nhật: **2026-10-25**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
+Cập nhật: **2026-10-26**. Trang này ghi hiện trạng repository và bằng chứng kiểm thử gần nhất; spec/plan lưu chi tiết thiết kế và lịch sử thực thi.
 
 ## Repository và cấu hình làm việc
 
@@ -29,7 +29,7 @@ Backend API/database tests cần PostgreSQL/PostGIS; lần chạy trong sandbox 
 
 ### T01/T02 (issue #1, #2) — 2026-10-19
 
-- T03 (issue #3, đang thực hiện qua pull request trên branch `t03-android-acceptance`): bằng chứng từng phần và các việc còn lại để nghiệm thu luồng A1 trên Android nằm ở [báo cáo T03](ui/t03-android-acceptance-2026-10-19.md). Tóm tắt: **debug APK đã build thành công trên môi trường agent** (sau khi gỡ hai lớp chặn hạ tầng: quyền `other_tcp` của Muse chặn TCP nội bộ của Gradle và CA riêng của proxy egress chưa có trong trust store của JDK); luồng fixture có bản sao widget-harness PASS trong bộ 66/66 test. Còn thiếu: chạy fixture trên emulator/thiết bị (VM không có KVM — image x86_64 đòi tăng tốc phần cứng, image arm64 bị emulator từ chối khác kiến trúc host) và smoke backend (không có PostgreSQL/PostGIS).
+- T03 (issue #3): **hoàn tất nghiệm thu Android ngày 2026-10-26** trên emulator Android 16/API 36 tại commit `df1a997`. Fixture UI và lifecycle 2/2 PASS; smoke backend camera thật 2/2 PASS (list/detail/playback/snapshot 200→304 và UI render ảnh); restart giữ Quan tâm sau khi sửa race condition của favorites stream; `flutter analyze` sạch, `flutter test` 243 PASS/1 skipped, backend unit 59/59, API 21/21, DB 16/16. Log đã khử key/URL upstream và ảnh thiết bị nằm trong [báo cáo T03](ui/t03-android-acceptance-2026-10-19.md).
 - T01: `CameraApiClient.getSnapshot` nay decode thật payload (ngoài kiểm tra magic bytes ở header) trước khi tạo `SnapshotFrame`; payload JPEG/PNG/WebP có header hợp lệ nhưng không giải mã được bị từ chối với lỗi 422, nên không thể thay last-good frame trong preview/viewer hay đi vào snapshot cache dùng chung. Có regression test ở tầng client và test đầu-cuối client → repository → preview/cache (kể cả thumbnail scheduler).
 - T02: `CameraPreviewCubit` được tách thành các stage detail → descriptor → snapshot; backoff tự động và retry thủ công làm lại đúng stage còn thiếu thay vì gọi snapshot khi chưa có endpoint, descriptor lỗi vẫn thử snapshot qua endpoint của camera và được khôi phục ở chu kỳ poll kế tiếp, lỗi refresh đánh dấu ảnh hiện tại là cũ (`isStale`) ngay cả trước ngưỡng 60 giây, và bộ đếm backoff đặt lại khi mỗi stage thành công.
 - Kiểm thử đã chạy lại trên môi trường agent (Flutter 3.47.7 / Dart 3.13.5): targeted tests cho T01/T02 đỏ trước khi sửa (8 test fail) và xanh sau khi sửa; `flutter test` toàn bộ **66/66 PASS**; `flutter analyze` không có issue. Backend không thay đổi mã nguồn; `npm run test:unit` **22/22 PASS**. `test:api`/`test:db` chưa chạy được trên môi trường agent vì không có Docker/PostgreSQL và kho gói hệ điều hành không truy cập được; cần chạy lại ở môi trường có PostgreSQL/PostGIS tại `127.0.0.1:5433` để hoàn tất bằng chứng backend.

@@ -5,6 +5,7 @@ import 'package:fpdart/fpdart.dart' hide State;
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/favorites_repository.dart';
+import 'package:flutter_starter/src/utils/failure.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 class InMemoryFavoritesRepository implements FavoritesRepository {
@@ -60,6 +61,8 @@ class FakeIntegrationCameraRepository implements CameraRepository {
       : _items = items ?? _defaultItems;
 
   final List<Camera> _items;
+  int snapshotCallCount = 0;
+  int snapshotFailuresRemaining = 0;
 
   static final List<Camera> _defaultItems = List.generate(
     20,
@@ -139,6 +142,15 @@ class FakeIntegrationCameraRepository implements CameraRepository {
     String? etag,
     CancelToken? cancelToken,
   }) async {
+    snapshotCallCount++;
+    if (snapshotFailuresRemaining > 0) {
+      snapshotFailuresRemaining--;
+      return const Left(ApiFailure(
+        'T03 simulated network failure',
+        statusCode: 503,
+        retryable: true,
+      ));
+    }
     return Right(SnapshotReceived(SnapshotFrame(
       bytes: Uint8List.fromList([0xFF, 0xD8, 0xFF, 0xE0]),
       etag: 'etag-1',

@@ -1,0 +1,17 @@
+import sys,time
+sys.path.insert(0,'/tmp')
+from pr41_ui import *
+nodes=dump();tile=next(n for n in nodes if n.get('class')=='android.widget.ImageView' and 'Nguyễn Huệ - Lê Lợi' in label(n))
+tap_node(tile);tap_label('Toàn màn hình')
+try:
+    command(['shell','wm','user-rotation','lock','1']);time.sleep(1)
+    capture('after-landscape-font1_6')
+    for _ in range(2):command(['shell','input','tap','1200','540'])
+    time.sleep(.6);capture('after-landscape-doubletap-zoom')
+    for _ in range(2):command(['shell','input','tap','1200','540'])
+    time.sleep(.6)
+finally:
+    command(['shell','wm','user-rotation','lock','0'])
+    command(['shell','wm','user-rotation','free']);time.sleep(.7)
+back();expect('Toàn màn hình');back()
+print('Rotation and double-tap flow completed.',flush=True)

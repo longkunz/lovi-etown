@@ -1,0 +1,34 @@
+import sys,time,re,xml.etree.ElementTree as E
+from pathlib import Path
+from pr41_direct import command,screenshot
+APP='site.capyai.lovi'
+D=Path('/Users/admin/Sources/lovi-etown/docs/ui/liquid-glass-refresh/device-2026-10-25-rmx2205')
+def dump(name=None):
+    command(['shell','uiautomator','dump','--compressed','/sdcard/Download/pr41-ui.xml'],timeout=10)
+    path=str(D/(name+'.xml')) if name else '/tmp/pr41-ui.xml'
+    command(['pull','/sdcard/Download/pr41-ui.xml',path])
+    root=E.parse(path).getroot()
+    nodes=[n for n in root.iter('node') if n.get('package')==APP]
+    assert nodes,'App is not the visible window'
+    return nodes
+
+def label(n):return n.get('content-desc') or n.get('text') or ''
+def tap_label(text,partial=False,cls=None):
+    nodes=dump()
+    matches=[n for n in nodes if ((text in label(n)) if partial else (label(n)==text)) and (cls is None or n.get('class')==cls)]
+    assert len(matches)==1,[(label(n),n.get('class'),n.get('bounds')) for n in matches]
+    return tap_node(matches[0])
+def tap_node(n):
+    x1,y1,x2,y2=map(int,re.findall(r'\d+',n.get('bounds')))
+    print('SEMANTIC TAP',label(n).replace('\n',' / '),n.get('bounds'),flush=True)
+    command(['shell','input','tap',str((x1+x2)//2),str((y1+y2)//2)])
+    time.sleep(.5)
+    return ((x1+x2)//2,(y1+y2)//2)
+def back():
+    command(['shell','input','keyevent','KEYCODE_BACK']);time.sleep(.5)
+def capture(name):screenshot(str(D/(name+'.png')))
+def expect(text,selected=None):
+    matches=[n for n in dump() if label(n)==text]
+    assert matches,text+' absent'
+    if selected is not None:assert any(n.get('selected')==str(selected).lower() for n in matches)
+    print('VERIFIED',text,'selected='+str(selected),flush=True)

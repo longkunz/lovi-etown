@@ -1,0 +1,17 @@
+import sys,time
+sys.path.insert(0,'/tmp')
+from pr41_ui import *
+for mode,name in [('Lưới','grid'),('Danh sách','list')]:
+    tap_label(mode);expect(mode,True);capture('after-light-'+name)
+tap_label('Tất cả quận/huyện');capture('after-light-district');dump('after-district-semantics');back()
+tap_label('Thẻ')
+command(['shell','cmd','uimode','night','yes']);time.sleep(.6)
+capture('after-dark-card')
+for mode,name in [('Lưới','grid'),('Danh sách','list')]:
+    tap_label(mode);expect(mode,True);capture('after-dark-'+name)
+tap_label('Tất cả quận/huyện');capture('after-dark-district');back();tap_label('Thẻ')
+nodes=dump()
+tile=next(n for n in nodes if n.get('class')=='android.widget.ImageView' and 'Nguyễn Huệ - Lê Lợi' in label(n))
+tap_node(tile);expect('Toàn màn hình');capture('after-dark-detail')
+tap_label('Toàn màn hình');capture('after-dark-fullscreen');back()
+print('Candidate modes and dark walkthrough finished.',flush=True)

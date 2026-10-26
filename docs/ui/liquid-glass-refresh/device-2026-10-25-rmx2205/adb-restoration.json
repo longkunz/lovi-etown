@@ -1,0 +1,46 @@
+[
+  {
+    "args": [
+      "-P",
+      "5039",
+      "-s",
+      "192.168.0.100:5555",
+      "usb"
+    ],
+    "returncode": 0,
+    "stdout": "restarting in USB mode",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "-P",
+      "5039",
+      "kill-server"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "-s",
+      "CYMVLJHAQC4XPV49",
+      "wait-for-device"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "args": [
+      "-s",
+      "CYMVLJHAQC4XPV49",
+      "shell",
+      "getprop",
+      "service.adb.tcp.port"
+    ],
+    "returncode": 0,
+    "stdout": "0",
+    "stderr": ""
+  }
+]

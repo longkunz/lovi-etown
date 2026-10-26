@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-25",
+  "device": "realme RMX2205",
+  "android": "12/API31",
+  "physicalSize": "1080x2400",
+  "densityDpi": 480,
+  "baseline": "cc12d9ca352953bfd8fd5c7600b3e64b371e51ea",
+  "candidate": "cbd8ea03e3a3ae9701fa721eb5034a61dece4cba",
+  "mode": "profile",
+  "appId": "site.capyai.lovi",
+  "fixture": "original assets/fixtures/cameras.json; no coordinates or live descriptors",
+  "instrumentation": "uncommitted acceptance_main.dart logs Flutter FrameTiming build/raster; unchanged production entrypoint and UI",
+  "initialSettings": {
+    "system/font_scale": "1.0",
+    "system/accelerometer_rotation": "1",
+    "system/user_rotation": "0",
+    "system/screen_off_timeout": "30000",
+    "secure/enabled_accessibility_services": "null",
+    "secure/accessibility_enabled": "1",
+    "secure/high_text_contrast_enabled": "null"
+  },
+  "beforeApkSha256": "97b8bd3c18e0c02fd3c21bc93d83e2ac8accd059284130dd670a58e03cef2774",
+  "baselineBuild": "flutter build apk --profile --target=lib/acceptance_main.dart --dart-define=CAMERA_DEMO_MODE=true --target-platform=android-arm64",
+  "afterApkSha256": "6f652653f71b18b9a404df5da39ba11a30b49ab840a60b4e69f8a1997aa80522",
+  "candidateBuild": "flutter build apk --profile --target=lib/acceptance_main.dart --dart-define=CAMERA_DEMO_MODE=true --target-platform=android-arm64",
+  "productionHostPreflight": {
+    "catalogHttp": 200,
+    "count": 45,
+    "withCoordinates": 45,
+    "capabilityGroups": {
+      "{\"live\": false, \"snapshot\": true}": 45
+    },
+    "deviceNetworkVerified": false
+  },
+  "adb": {
+    "initial": "35.0.2, LIBUSB, /opt/homebrew/bin/adb",
+    "current": "37.0.1, NATIVE, Android SDK platform-tools",
+    "tcpipAttempt": "diagnostic TCP5555 restored to USB; service.adb.tcp.port reads0",
+    "releaseNotes": "https://developer.android.com/tools/releases/platform-tools",
+    "finalTransport": "USB; private server5039 stopped"
+  },
+  "retry": {
+    "candidateInstalled": true,
+    "candidateSha256OnDevice": "6f652653f71b18b9a404df5da39ba11a30b49ab840a60b4e69f8a1997aa80522",
+    "transport": "isolated ADB37 server 5039, Wi-Fi 192.168.0.100:5555; direct commands and file-based screenshots; avoid agent-device dumpsys window timeout",
+    "userDeviceResponsive": true,
+    "usbCableRetainedByUser": true
+  },
+  "initialAttemptPreflight": {
+    "profileBuildBefore": "PASS",
+    "profileBuildAfter": "PASS",
+    "baselineApkInstall": "PASS after OEM installer confirmation",
+    "deviceUi": "initial existing app error screen only; baseline UI not yet captured",
+    "connection": "Repeated physical USB shell/screenshot timeouts; emulators remain responsive. Both ADB35/libusb and ADB37/native tried. Current device offline.",
+    "mapsKey": "not configured",
+    "screenReader": "TalkBack installed; walkthrough not yet run",
+    "baselineUi": "PASS: baseline fixture catalog opened and grid selection reflected in accessibility tree; candidate not yet installed"
+  },
+  "preflight": {
+    "profileBuildBefore": "PASS",
+    "profileBuildAfter": "PASS",
+    "baselineApkInstall": "PASS; on-device APK hash matched",
+    "candidateApkInstall": "PASS; on-device APK hash matched; reinstalled at end",
+    "connection": "Retry completed using direct ADB37 on private Wi-Fi server5039; finally restored USB, tcp port0, private server stopped",
+    "mapsKey": "not configured",
+    "screenReader": "TalkBack keyboard focus observed; no audible speech reported; walkthrough incomplete; restored OFF",
+    "baselineUi": "before light/dark screenshots captured",
+    "candidateUi": "after light/dark screenshots and listed Android interactions captured"
+  },
+  "userDecisions": [
+    {
+      "date": "2026-10-25",
+      "quote": "chấp nhận hiệu năng như vậy",
+      "decision": "Accept measured performance; no further performance optimization required for this acceptance session",
+      "scope": "Does not certify untested Maps/LIVE/iOS or change measured raster p95 threshold result"
+    }
+  ],
+  "outcome": {
+    "androidSession": "completed for documented scope",
+    "performance": "accepted by user",
+    "performanceThreshold16_7ms": "raster p95 exceeded by baseline and candidate",
+    "talkbackSpeech": "not confirmed; user reported no audio",
+    "unverified": [
+      "native Maps",
+      "LIVE",
+      "iOS/VoiceOver",
+      "pinch/zoom1-5x",
+      "physical full layout/accessibility matrix",
+      "physical search/clear/district selection/keyboard",
+      "legacy CameraSnapshotSheet"
+    ],
+    "favoritesInitialState": "mismatch observed in both baseline and candidate; resolves after another favorite toggle",
+    "finalInstalledBuild": "cbd8ea03e3a3ae9701fa721eb5034a61dece4cba",
+    "productCodeChanged": false,
+    "publishedToPR": false
+  },
+  "restoredSettings": {
+    "system/font_scale": "1.0",
+    "system/accelerometer_rotation": "1",
+    "system/user_rotation": "0",
+    "system/screen_off_timeout": "600000",
+    "secure/enabled_accessibility_services": "null",
+    "secure/accessibility_enabled": "0",
+    "secure/touch_exploration_enabled": "0",
+    "nightMode": "Night mode: no"
+  },
+  "performance": {
+    "baselineSummary": "baseline-profile/profile-summary.json",
+    "candidateSummary": "profile-summary.json",
+    "warmupCycles": 5,
+    "measuredCyclesPerBuild": 20,
+    "baselineRasterP95Ms": 17.035,
+    "candidateRasterP95Ms": 18.536,
+    "baselineBuildP95Ms": 5.912,
+    "candidateBuildP95Ms": 6.304,
+    "limitations": "one pass each, non-randomized order, different initial cache, refresh auto; no causality/leak conclusion"
+  },
+  "merge": {
+    "pr": 41,
+    "state": "MERGED",
+    "mergedAt": "2026-10-25T07:48:43Z",
+    "base": "review/t18-google-maps-prerequisite",
+    "head": "cbd8ea03e3a3ae9701fa721eb5034a61dece4cba",
+    "mergeCommit": "fd4a591d9c48b70145040d5b10fc435c2e193c33",
+    "userInstruction": "merge đi",
+    "verification": {
+      "flutter": "185/185 PASS, fresh run",
+      "backendUnit": "56/56 PASS, fresh run",
+      "backendAPI": "rerun unavailable: ECONNREFUSED127.0.0.1:5433; no Docker/PostGIS runtime present; previous same-head pass retained",
+      "backendDB": "not rerun: same missing test database; previous same-head pass retained"
+    },
+    "reportPublishedToPR": false
+  }
+}

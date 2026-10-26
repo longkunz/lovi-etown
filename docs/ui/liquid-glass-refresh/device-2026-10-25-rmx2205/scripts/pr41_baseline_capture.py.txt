@@ -1,0 +1,22 @@
+import sys,time,shutil
+sys.path.insert(0,'/tmp')
+from pr41_direct import command,screenshot
+D='/Users/admin/Sources/lovi-etown/docs/ui/liquid-glass-refresh/device-2026-10-25-rmx2205/'
+def tap(x,y):
+    command(['shell','input','tap',str(x),str(y)])
+    time.sleep(0.6)
+def back():
+    command(['shell','input','keyevent','KEYCODE_BACK'])
+    time.sleep(0.6)
+shutil.copy2('/tmp/pr41-direct-app.png',D+'before-dark-list.png')
+tap(477,542);screenshot(D+'before-dark-card.png')
+tap(699,542);screenshot(D+'before-dark-grid.png')
+tap(189,542);screenshot(D+'before-dark-district.png')
+back();tap(477,542);tap(540,1600);screenshot(D+'before-dark-detail.png')
+tap(996,359);screenshot(D+'before-dark-fullscreen.png')
+back()
+command(['shell','cmd','uimode','night','no']);time.sleep(0.8)
+screenshot(D+'before-light-detail.png')
+back()
+screenshot(D+'before-light-card.png')
+print('Baseline capture sequence complete.',flush=True)

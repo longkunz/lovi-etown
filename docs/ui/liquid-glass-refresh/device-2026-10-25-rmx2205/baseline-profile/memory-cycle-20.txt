@@ -1,0 +1,46 @@
+Applications Memory Usage (in Kilobytes):
+Uptime: 32323977 Realtime: 240169953
+
+** MEMINFO in pid 30512 [site.capyai.lovi] **
+ 
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:    21004                          46272
+         Native Heap:    52996                          55640
+                Code:    55872                         174268
+               Stack:     1276                           1288
+            Graphics:   310828                         310828
+       Private Other:    38904
+              System:    10782
+             Unknown:                                   43148
+ 
+           TOTAL PSS:   491662            TOTAL RSS:   631444       TOTAL SWAP PSS:       92
+ 
+ Objects
+               Views:        8         ViewRootImpl:        1
+         AppContexts:        6           Activities:        1
+              Assets:      100        AssetManagers:        0
+       Local Binders:       21        Proxy Binders:       49
+       Parcel memory:       11         Parcel count:       48
+    Death Recipients:        2      OpenSSL Sockets:        0
+            WebViews:        0
+ 
+ SQL
+         MEMORY_USED:      321
+  PAGECACHE_OVERFLOW:       93          MALLOC_SIZE:       46
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4      104            124       11/73/12  /data/user/0/site.capyai.lovi/no_backup/androidx.work.workdb
+         4        8                         0/0/0    (attached) temp
+         4      104             56         7/37/6  /data/user/0/site.capyai.lovi/no_backup/androidx.work.workdb (1)
+ 
+ Asset Allocations
+    : 55K
+    : 33K
+    : 14K
+    : 1210K
+    : 120K
+    : 7K
+    : 21K

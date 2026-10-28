@@ -1,0 +1,19 @@
+import 'dart:convert';
+import 'package:flutter/widgets.dart';
+import 'package:flutter/scheduler.dart';
+import 'main.dart' as application;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SchedulerBinding.instance.addTimingsCallback((timings) {
+    print('ACCEPTANCE_TIMINGS ${jsonEncode({
+      'at': DateTime.now().toUtc().toIso8601String(),
+      'frames': timings.map((t) => {
+        'buildUs': t.buildDuration.inMicroseconds,
+        'rasterUs': t.rasterDuration.inMicroseconds,
+        'totalUs': t.totalSpan.inMicroseconds,
+      }).toList(),
+    })}');
+  });
+  await application.main();
+}

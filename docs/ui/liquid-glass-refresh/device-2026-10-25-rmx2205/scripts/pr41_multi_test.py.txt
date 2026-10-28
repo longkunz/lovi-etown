@@ -1,0 +1,14 @@
+import sys,time
+sys.path.insert(0,'/tmp')
+from pr41_ui import *
+command(['shell','input','swipe','540','1950','540','750','450']);time.sleep(.5)
+nodes=dump()
+second=next(n for n in nodes if n.get('class')=='android.widget.ImageView' and 'Đồng Khởi - Mạc Thị Bưởi' in label(n))
+tap_node(second)
+tap_label('Quan tâm');expect('Bỏ quan tâm')
+tap_label('Lưới camera');capture('after-dark-multi');dump('after-multi-semantics')
+command(['shell','cmd','uimode','night','no']);time.sleep(.6);capture('after-light-multi')
+back();tap_label('Bỏ quan tâm');expect('Quan tâm');back()
+command(['shell','input','swipe','540','450','540','2100','450']);time.sleep(.5)
+capture('after-favorites-after-toggle');dump('after-favorites-after-toggle')
+print('Multi-camera path and favorite add/remove completed.',flush=True)

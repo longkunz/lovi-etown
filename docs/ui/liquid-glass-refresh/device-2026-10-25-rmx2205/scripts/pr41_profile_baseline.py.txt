@@ -1,0 +1,71 @@
+import sys,time,json,re,subprocess,threading,math,datetime
+from pathlib import Path
+sys.path.insert(0,'/tmp')
+from pr41_ui import command,dump,label,back,D
+D=D/'baseline-profile'
+D.mkdir(exist_ok=True)
+ADB=['/Users/admin/Library/Android/sdk/platform-tools/adb','-P','5039','-s','192.168.0.100:5555']
+frames=[]
+pid=command(['shell','pidof','site.capyai.lovi']).decode().strip()
+log=subprocess.Popen(ADB+['logcat','--pid='+pid,'-T','1','-v','raw','flutter:I','*:S'],stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True,bufsize=1)
+def reader():
+    with (D/'frame-timings.jsonl').open('w') as out:
+        for line in log.stdout:
+            if 'ACCEPTANCE_TIMINGS ' not in line:continue
+            try: payload=json.loads(line.split('ACCEPTANCE_TIMINGS ',1)[1])
+            except json.JSONDecodeError:continue
+            frames.append(payload);out.write(json.dumps(payload)+'\n');out.flush()
+thread=threading.Thread(target=reader,daemon=True);thread.start()
+
+def memory(n):
+    r=subprocess.run(ADB+['shell','dumpsys','meminfo','-s','site.capyai.lovi'],capture_output=True,text=True,timeout=6)
+    (D/('memory-cycle-%02d.txt'%n)).write_text(r.stdout)
+    pss=re.search(r'TOTAL PSS:\s*(\d+)',r.stdout)
+    rss=re.search(r'TOTAL RSS:\s*(\d+)',r.stdout)
+    value={'cycle':n,'totalPssKb':int(pss[1]) if pss else None,'totalRssKb':int(rss[1]) if rss else None}
+    print('MEMORY',value,flush=True);return value
+
+def root_point():
+    nodes=dump()
+    assert any(label(n)=='Camera giao thông' for n in nodes),'Expected catalog after Back'
+    n=next(n for n in nodes if n.get('class')=='android.widget.ImageView' and 'Nguyễn Huệ - Lê Lợi' in label(n))
+    x1,y1,x2,y2=map(int,re.findall(r'\d+',n.get('bounds')))
+    return ((x1+x2)//2,(y1+y2)//2)
+
+def cycle(xy):
+    command(['shell','input','tap',str(xy[0]),str(xy[1])]);time.sleep(.4)
+    command(['shell','input','tap','996','359']);time.sleep(.4)
+    command(['shell','input','keyevent','KEYCODE_BACK']);time.sleep(.4)
+    command(['shell','input','keyevent','KEYCODE_BACK']);time.sleep(.5)
+
+result={'pid':pid,'build':'cc12d9ca352953bfd8fd5c7600b3e64b371e51ea','mode':'profile','warmupCycles':5,'cycles':20,'flow':'catalog card -> camera detail -> fullscreen image -> Android Back -> Android Back -> catalog','mapsIncluded':False,'liveIncluded':False,'memory':[]}
+try:
+    back();xy=root_point()
+    for i in range(5):cycle(xy);print('WARMUP',i+1,flush=True)
+    xy=root_point();result['memory'].append(memory(0))
+    result['deviceStartEpoch']=float(command(['shell','date','+%s.%N']).decode().strip())
+    for i in range(1,21):
+        cycle(xy);print('MEASURED CYCLE',i,flush=True)
+        if i%5==0:
+            xy=root_point();result['memory'].append(memory(i))
+    result['deviceEndEpoch']=float(command(['shell','date','+%s.%N']).decode().strip())
+    assert command(['shell','pidof','site.capyai.lovi']).decode().strip()==pid,'App process changed'
+    result['completedCycles']=20
+    time.sleep(1)
+finally:
+    log.terminate()
+    try:log.wait(timeout=3)
+    except subprocess.TimeoutExpired:log.kill()
+    thread.join(timeout=2)
+    selected=[]
+    for payload in frames:
+        at=datetime.datetime.fromisoformat(payload['at'].replace('Z','+00:00')).timestamp()
+        if result.get('deviceStartEpoch',float('inf'))<=at<=result.get('deviceEndEpoch',float('-inf')):
+            selected.extend(payload['frames'])
+    result['frameCount']=len(selected)
+    if selected:
+        for kind in ['buildUs','rasterUs']:
+            values=sorted(x[kind]/1000 for x in selected)
+            result[kind.replace('Us','Ms')]={'p50':values[math.ceil(.5*len(values))-1],'p95':values[math.ceil(.95*len(values))-1],'max':values[-1],'over16_7ms':sum(v>16.7 for v in values)}
+    (D/'profile-summary.json').write_text(json.dumps(result,indent=2)+'\n')
+    print('PROFILE RESULT',json.dumps(result),flush=True)

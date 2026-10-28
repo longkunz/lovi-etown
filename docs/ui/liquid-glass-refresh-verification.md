@@ -4,6 +4,8 @@ Ngày review: 2026-10-24. Phạm vi: [plan](../superpowers/plans/2026-10-24-liqu
 
 **Kết luận:** Có triển khai Dart cho theme/policy, controls, catalog, sheet, viewers, favorites, lưới nhiều camera và controls map. Kiểm thử tự động PASS sau sửa review. **Chưa hoàn tất toàn bộ kế hoạch nghiệm thu**: còn screenshot app trước/sau, shader/native Maps, TalkBack/VoiceOver và profile p95/RAM. PR để Draft.
 
+> Cập nhật 2026-10-26: phần thiết bị của T05 đã được chạy và chốt trong [báo cáo T05](t05-device-acceptance-2026-10-26.md). Đoạn trên giữ nguyên kết luận tại thời điểm review 2026-10-24; không dùng nó thay cho kết quả/giới hạn mới hơn.
+
 ## Phạm vi PR và tiền đề
 
 - Baseline ban đầu: `a87f44c` trên `main`.

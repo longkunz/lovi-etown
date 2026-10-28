@@ -1,0 +1,16 @@
+{
+  "pr": 41,
+  "state": "MERGED",
+  "mergedAt": "2026-10-25T07:48:43Z",
+  "base": "review/t18-google-maps-prerequisite",
+  "head": "cbd8ea03e3a3ae9701fa721eb5034a61dece4cba",
+  "mergeCommit": "fd4a591d9c48b70145040d5b10fc435c2e193c33",
+  "userInstruction": "merge đi",
+  "verification": {
+    "flutter": "185/185 PASS, fresh run",
+    "backendUnit": "56/56 PASS, fresh run",
+    "backendAPI": "rerun unavailable: ECONNREFUSED127.0.0.1:5433; no Docker/PostGIS runtime present; previous same-head pass retained",
+    "backendDB": "not rerun: same missing test database; previous same-head pass retained"
+  },
+  "reportPublishedToPR": false
+}

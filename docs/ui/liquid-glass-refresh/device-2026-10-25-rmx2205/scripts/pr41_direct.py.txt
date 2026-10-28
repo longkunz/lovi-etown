@@ -1,0 +1,31 @@
+import subprocess,time,json,sys,struct
+from pathlib import Path
+ADB=['/Users/admin/Library/Android/sdk/platform-tools/adb','-P','5039','-s','192.168.0.100:5555']
+def command(args,timeout=10):
+    t=time.time()
+    try:
+        r=subprocess.run(ADB+args,capture_output=True,timeout=timeout)
+    except subprocess.TimeoutExpired:
+        print('TIMEOUT:',args,flush=True)
+        raise SystemExit(2)
+    output=r.stdout.decode(errors='replace').strip()
+    errors=r.stderr.decode(errors='replace').strip()
+    print('ADB',args,'exit',r.returncode,'seconds',round(time.time()-t,2),output[:1000],errors[:300],flush=True)
+    with Path('/Users/admin/Sources/lovi-etown/docs/ui/liquid-glass-refresh/device-2026-10-25-rmx2205/direct-actions.jsonl').open('a') as f:
+        f.write(json.dumps({'time':t,'args':args,'exit':r.returncode,'duration':time.time()-t,'stdout':output[:1000],'stderr':errors[:300]})+'\n')
+    if r.returncode: raise SystemExit(r.returncode)
+    return r.stdout
+
+def screenshot(path):
+    remote='/sdcard/Download/pr41-capture.png'
+    command(['shell','screencap','-p',remote])
+    command(['pull',remote,path])
+    data=Path(path).read_bytes()
+    assert data.startswith(b'\x89PNG\r\n\x1a\n')
+    print('PNG',struct.unpack('>II',data[16:24]),'bytes',len(data),flush=True)
+
+if __name__=='__main__':
+    if sys.argv[1]=='screen': screenshot(sys.argv[2])
+    elif sys.argv[1]=='shell': command(['shell',*sys.argv[2:]])
+    elif sys.argv[1]=='install': command(['install','-r',sys.argv[2]],timeout=120)
+    else: raise SystemExit('Unsupported operation')

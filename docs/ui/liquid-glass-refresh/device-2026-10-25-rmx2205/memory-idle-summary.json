@@ -1,0 +1,17 @@
+[
+  {
+    "idleSeconds": 0,
+    "totalPssKb": 511185,
+    "totalRssKb": 653488
+  },
+  {
+    "idleSeconds": 10,
+    "totalPssKb": 511185,
+    "totalRssKb": 653492
+  },
+  {
+    "idleSeconds": 30,
+    "totalPssKb": 511193,
+    "totalRssKb": 653504
+  }
+]

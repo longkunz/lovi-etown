@@ -1,0 +1,53 @@
+{
+  "pid": "30512",
+  "build": "cc12d9ca352953bfd8fd5c7600b3e64b371e51ea",
+  "mode": "profile",
+  "warmupCycles": 5,
+  "cycles": 20,
+  "flow": "catalog card -> camera detail -> fullscreen image -> Android Back -> Android Back -> catalog",
+  "mapsIncluded": false,
+  "liveIncluded": false,
+  "memory": [
+    {
+      "cycle": 0,
+      "totalPssKb": 312252,
+      "totalRssKb": 449000
+    },
+    {
+      "cycle": 5,
+      "totalPssKb": 366748,
+      "totalRssKb": 504552
+    },
+    {
+      "cycle": 10,
+      "totalPssKb": 401650,
+      "totalRssKb": 540176
+    },
+    {
+      "cycle": 15,
+      "totalPssKb": 445776,
+      "totalRssKb": 584940
+    },
+    {
+      "cycle": 20,
+      "totalPssKb": 491662,
+      "totalRssKb": 631444
+    }
+  ],
+  "deviceStartEpoch": 1792910283.7030613,
+  "deviceEndEpoch": 1792910337.8736887,
+  "completedCycles": 20,
+  "frameCount": 2188,
+  "buildMs": {
+    "p50": 2.993,
+    "p95": 5.912,
+    "max": 27.567,
+    "over16_7ms": 15
+  },
+  "rasterMs": {
+    "p50": 9.886,
+    "p95": 17.035,
+    "max": 39.872,
+    "over16_7ms": 113
+  }
+}

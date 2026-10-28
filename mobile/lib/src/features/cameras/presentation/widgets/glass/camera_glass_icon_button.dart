@@ -97,7 +97,11 @@ class CameraGlassIconButton extends StatelessWidget {
 
     final effectiveTooltip = tooltip ?? label;
     final buttonWithTooltip = effectiveTooltip.isNotEmpty
-        ? Tooltip(message: effectiveTooltip, child: buttonWidget)
+        ? Tooltip(
+            message: effectiveTooltip,
+            excludeFromSemantics: true,
+            child: buttonWidget,
+          )
         : buttonWidget;
 
     return Semantics(

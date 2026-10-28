@@ -57,6 +57,11 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // R8 rules for OkHttp's optional TLS providers (see proguard-rules.pro).
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/data/open_meteo_weather_repository.dart';
 import 'package:flutter_starter/src/features/cameras/domain/weather_models.dart';
@@ -43,6 +44,23 @@ class _WeatherCardState extends State<WeatherCard> {
     return Icons.cloud_outlined;
   }
 
+  String _weatherLabel(int code) {
+    final key = switch (code) {
+      0 => 'clear',
+      1 || 2 => 'partly_cloudy',
+      3 => 'cloudy',
+      45 || 48 => 'fog',
+      51 || 53 || 55 || 56 || 57 => 'drizzle',
+      61 || 63 || 65 || 66 || 67 => 'rain',
+      71 || 73 || 75 || 77 => 'snow',
+      80 || 81 || 82 => 'showers',
+      85 || 86 => 'snow_showers',
+      95 || 96 || 99 => 'storm',
+      _ => 'unknown',
+    };
+    return 'camera.weather_$key'.tr();
+  }
+
   @override
   Widget build(BuildContext context) {
     final snapshot = _snapshot;
@@ -51,8 +69,10 @@ class _WeatherCardState extends State<WeatherCard> {
     final theme = Theme.of(context);
     final temp = snapshot.temperatureC.round();
     final extremes = [
-      if (snapshot.tempMaxC != null) 'Cao nhất ${snapshot.tempMaxC!.round()}°',
-      if (snapshot.tempMinC != null) 'Thấp nhất ${snapshot.tempMinC!.round()}°',
+      if (snapshot.tempMaxC != null)
+        'camera.weather_high'.tr(args: ['${snapshot.tempMaxC!.round()}']),
+      if (snapshot.tempMinC != null)
+        'camera.weather_low'.tr(args: ['${snapshot.tempMinC!.round()}']),
     ].join(' · ');
 
     return Container(
@@ -84,13 +104,15 @@ class _WeatherCardState extends State<WeatherCard> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '$temp°C · ${snapshot.conditionLabel}',
+                  '$temp°C · ${_weatherLabel(snapshot.weatherCode)}',
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  extremes.isEmpty ? 'TP. Hồ Chí Minh' : 'TP. Hồ Chí Minh · $extremes',
+                  extremes.isEmpty
+                      ? 'camera.weather_city'.tr()
+                      : '${'camera.weather_city'.tr()} · $extremes',
                   style: theme.textTheme.bodySmall,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

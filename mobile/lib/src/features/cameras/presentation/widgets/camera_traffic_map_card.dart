@@ -158,7 +158,9 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
                 ]),
                 const SizedBox(height: CameraUiTokens.spacing4),
                 Text(
-                  _trafficEnabled ? 'Giao thông ON' : 'Giao thông OFF',
+                  _trafficEnabled
+                      ? 'camera.traffic_on'.tr()
+                      : 'camera.traffic_off'.tr(),
                   style: theme.textTheme.bodySmall,
                 ),
               ],

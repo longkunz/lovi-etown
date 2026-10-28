@@ -79,7 +79,7 @@ class CameraFavoritesSection extends StatelessWidget {
                     color: CameraUiTokens.primaryTeal,
                     size: 20,
                   ),
-                  tooltip: 'Xem lưới',
+                  tooltip: 'camera.view_grid_tooltip'.tr(),
                   constraints: const BoxConstraints(
                     minWidth: CameraUiTokens.minTouchTarget,
                     minHeight: CameraUiTokens.minTouchTarget,
@@ -170,7 +170,7 @@ class CameraFavoritesSection extends StatelessWidget {
                               CameraGlassIconButton(
                                 embedded: true,
                                 icon: Icons.star,
-                                label: 'Bỏ quan tâm',
+                                label: 'camera.unfavorite'.tr(),
                                 selected: true,
                                 iconSize: 20,
                                 onPressed: () {

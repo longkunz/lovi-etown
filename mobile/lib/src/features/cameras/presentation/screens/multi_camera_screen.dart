@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memory_cache.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_scheduler.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
@@ -131,7 +132,7 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
     final selected = _selected;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lưới camera'),
+        title: Text('camera.grid_title'.tr()),
         elevation: 0,
         backgroundColor: Colors.transparent,
         flexibleSpace: const CameraGlassSurface(
@@ -141,7 +142,7 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
         ),
       ),
       body: selected.isEmpty
-          ? const Center(child: Text('Chưa có camera Quan tâm khả dụng'))
+          ? Center(child: Text('camera.multi_empty'.tr()))
           : GridView.builder(
               padding: const EdgeInsets.all(CameraUiTokens.spacing8),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -237,8 +238,8 @@ class _CameraMapCanvasState extends State<CameraMapCanvas>
               ? const CircularProgressIndicator()
               : Text(
                   _failure!.kind == VietmapStyleFailureKind.missingKey
-                      ? 'Chưa cấu hình khóa Vietmap'
-                      : 'Không tải được bản đồ Vietmap',
+                      ? 'camera.map_key_missing'.tr()
+                      : 'camera.map_load_failed'.tr(),
                   textAlign: TextAlign.center));
     }
     final generation = _renderGeneration;
@@ -286,8 +287,8 @@ class _CameraMapCanvasState extends State<CameraMapCanvas>
                 child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Text(_failure != null
-                        ? 'Không tải lại được bản đồ Vietmap. Đang giữ bản đồ trước đó.'
-                        : 'Không tải được lớp giao thông hoặc vệ tinh. Bản đồ nền vẫn khả dụng.'))))
+                        ? 'camera.map_reload_failed'.tr()
+                        : 'camera.map_layer_failed'.tr()))))
     ]);
   }
 }

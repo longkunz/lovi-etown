@@ -67,7 +67,7 @@ class CameraNotConfiguredScreen extends StatelessWidget {
               ),
               const SizedBox(height: CameraUiTokens.spacing8),
               Text(
-                'Vui lòng kiểm tra cấu hình kết nối máy chủ.',
+                'camera.check_server_config'.tr(),
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey.shade600,
@@ -214,7 +214,7 @@ class _CameraViewerFeatureState extends State<CameraViewerFeature> {
       future: _favoritesReady,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return _buildFavoritesFailure('Không thể tải danh sách quan tâm');
+          return _buildFavoritesFailure('camera.favorites_load_error'.tr());
         }
         if (snapshot.connectionState != ConnectionState.done) {
           return const Scaffold(
@@ -223,7 +223,7 @@ class _CameraViewerFeatureState extends State<CameraViewerFeature> {
           );
         }
         return snapshot.data!.fold(
-          (failure) => _buildFavoritesFailure(failure.message),
+          (_) => _buildFavoritesFailure('camera.favorites_load_error'.tr()),
           (_) => CameraViewerScreen(
             key: ValueKey((widget.cameraId, _repository, _favoritesRepository)),
             cameraId: widget.cameraId,

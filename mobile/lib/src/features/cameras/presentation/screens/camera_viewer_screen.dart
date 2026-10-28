@@ -302,22 +302,22 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 ),
                 if (_liveFailed) ...[
                   const SizedBox(height: CameraUiTokens.spacing8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: CameraUiTokens.spacing16,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline,
                           size: 16,
                           color: CameraUiTokens.errorRed,
                         ),
-                        SizedBox(width: CameraUiTokens.spacing4),
+                        const SizedBox(width: CameraUiTokens.spacing4),
                         Expanded(
                           child: Text(
-                            'Không phát được trực tiếp — đang hiện ảnh tĩnh',
-                            style: TextStyle(
+                            'camera.live_unavailable'.tr(),
+                            style: const TextStyle(
                               color: CameraUiTokens.errorRed,
                               fontSize: 12,
                             ),
@@ -329,22 +329,22 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 ],
                 if (liveSelected && !camera.canLive) ...[
                   const SizedBox(height: CameraUiTokens.spacing8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: CameraUiTokens.spacing16,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline,
                           size: 16,
                           color: Colors.white70,
                         ),
-                        SizedBox(width: CameraUiTokens.spacing4),
+                        const SizedBox(width: CameraUiTokens.spacing4),
                         Expanded(
                           child: Text(
-                            'Camera này không có luồng trực tiếp',
-                            style: TextStyle(
+                            'camera.no_live'.tr(),
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
                             ),
@@ -403,9 +403,9 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
           const Icon(Icons.error_outline,
               size: 48, color: CameraUiTokens.errorRed),
           const SizedBox(height: CameraUiTokens.spacing8),
-          const Text(
-            'Không thể tải thông tin camera',
-            style: TextStyle(color: Colors.white),
+          Text(
+            'camera.camera_info_error'.tr(),
+            style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: CameraUiTokens.spacing12),
           ElevatedButton(
@@ -632,7 +632,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             horizontal: CameraUiTokens.spacing16,
           ),
           child: Text(
-            'Camera liên quan',
+            'camera.related_cameras'.tr(),
             style: theme.textTheme.titleSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -699,9 +699,9 @@ class _SnapshotView extends StatelessWidget {
             const Icon(Icons.broken_image,
                 size: 40, color: CameraUiTokens.errorRed),
             const SizedBox(height: CameraUiTokens.spacing8),
-            const Text(
-              'Không thể tải hình ảnh camera',
-              style: TextStyle(color: Colors.white),
+            Text(
+              'camera.camera_image_error'.tr(),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: CameraUiTokens.spacing8),
             ElevatedButton(
@@ -998,7 +998,7 @@ class _LiveChip extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            'TRỰC TIẾP',
+            'camera.live_upper'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: compact ? 9 : 10,

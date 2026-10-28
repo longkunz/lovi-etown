@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'localized_widget_test_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,11 @@ Map<String, dynamic> samplePayload() => {
     };
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+  });
   group('weatherCodeLabel', () {
     test('maps the main WMO codes to Vietnamese labels', () {
       expect(weatherCodeLabel(0), 'Trời quang');
@@ -95,7 +102,8 @@ void main() {
       expect(fetches, 0);
     });
 
-    test('stale cache is refreshed; failure falls back to the stale value', () async {
+    test('stale cache is refreshed; failure falls back to the stale value',
+        () async {
       final seed = OpenMeteoWeatherRepository(
         fetchJson: (uri) async => samplePayload(),
         now: () => now,
@@ -128,8 +136,9 @@ void main() {
         tempMinC: 25.2,
         fetchedAt: DateTime(2026, 10, 20, 9),
       ));
-      await tester.pumpWidget(MaterialApp(home: WeatherCard(repository: repo)));
-      await tester.pump();
+      await tester
+          .pumpWidget(localizedApp(home: WeatherCard(repository: repo)));
+      await tester.pumpAndSettle();
       expect(find.byKey(const ValueKey('weather_card')), findsOneWidget);
       expect(find.text('28°C · Mưa rào'), findsOneWidget);
       expect(find.textContaining('Cao nhất 33°'), findsOneWidget);
@@ -138,7 +147,7 @@ void main() {
 
     testWidgets('renders nothing when weather is unavailable', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(home: WeatherCard(repository: _FakeWeatherRepo(null))),
+        localizedApp(home: WeatherCard(repository: _FakeWeatherRepo(null))),
       );
       await tester.pump();
       expect(find.byKey(const ValueKey('weather_card')), findsNothing);

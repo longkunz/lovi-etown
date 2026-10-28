@@ -1,3 +1,4 @@
+import 'localized_widget_test_helper.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -19,6 +20,7 @@ class TrafficMapTestAssetLoader extends AssetLoader {
         'close': 'Đóng',
       },
       'camera': {
+        ...cameraTestTranslations,
         'traffic_map_title': 'Bản đồ lưu lượng',
         'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
         'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',

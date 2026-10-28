@@ -1,3 +1,6 @@
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'localized_widget_test_helper.dart';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +102,11 @@ class _Repo implements CameraRepository {
 }
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+  });
   group('FixtureCameraRepository.related', () {
     final fixtureJson = jsonEncode({
       'catalogVersion': 'fixture-v1',
@@ -184,6 +192,41 @@ void main() {
     });
   });
 
+  testWidgets('traffic details switch between English and Vietnamese',
+      (tester) async {
+    final repo = _Repo(relatedItems: const [], districtOptions: const []);
+    await tester.pumpWidget(EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('vi')],
+      startLocale: const Locale('en'),
+      fallbackLocale: const Locale('vi'),
+      saveLocale: false,
+      path: 'assets/translations',
+      child: Builder(
+          builder: (context) => MaterialApp(
+                locale: context.locale,
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                home: Scaffold(
+                    body: Column(children: [
+                  TextButton(
+                      onPressed: () => context.setLocale(const Locale('vi')),
+                      child: const Text('switch')),
+                  TrafficBriefCard(
+                      camera: cam('c1', 'Cam', availability: 'online'),
+                      repository: repo,
+                      onSelectCamera: (_) {}),
+                ])),
+              )),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.text('Location status'), findsOneWidget);
+    expect(find.text('Online'), findsOneWidget);
+    await tester.tap(find.text('switch'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tình trạng tại điểm'), findsOneWidget);
+    expect(find.text('Đang hoạt động'), findsOneWidget);
+  });
+
   group('TrafficBriefCard', () {
     testWidgets('shows district totals, live count and related cameras',
         (tester) async {
@@ -194,7 +237,7 @@ void main() {
         ],
         districtOptions: const [DistrictOption(name: 'Quận 3', count: 61)],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('self', 'Camera chính', district: 'Quận 3'),
@@ -223,7 +266,7 @@ void main() {
         relatedItems: const [],
         districtOptions: const [DistrictOption(name: 'Quận 1', count: 10)],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera:
@@ -246,7 +289,7 @@ void main() {
         relatedItems: const [],
         districtOptions: const [DistrictOption(name: 'Quận 1', count: 10)],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera:
@@ -271,7 +314,7 @@ void main() {
       );
 
       // Fresh snapshot (15s ago)
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('c1', 'Cam 1', district: 'Quận 1'),
@@ -289,7 +332,7 @@ void main() {
       expect(find.text('Ảnh mới: Cập nhật 15s trước'), findsOneWidget);
 
       // Stale snapshot (90s ago)
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('c1', 'Cam 1', district: 'Quận 1'),
@@ -316,7 +359,7 @@ void main() {
           DistrictOption(name: 'Quận 3', count: 61, onlineCount: 45)
         ],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('self', 'Camera chính', district: 'Quận 3'),
@@ -337,7 +380,7 @@ void main() {
         relatedItems: const [],
         districtOptions: const [DistrictOption(name: 'Quận 1', count: 10)],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('c1', 'Cam 1',
@@ -362,7 +405,7 @@ void main() {
         relatedItems: [cam('r1', 'Lân cận 1', district: 'Quận 3')],
         districtOptions: const [],
       );
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('self', 'Camera chính', district: 'Quận 3'),
@@ -386,7 +429,7 @@ void main() {
       );
       var directionsTapped = false;
       final fetchedAt = DateTime(2026, 10, 25, 12);
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
         home: Scaffold(
           body: TrafficBriefCard(
             camera: cam('self', 'Camera chính',
@@ -417,7 +460,7 @@ void main() {
           districtOptions: const [],
           failDistrictData: true);
       final fetchedAt = DateTime(2026, 10, 25, 12);
-      await tester.pumpWidget(MaterialApp(
+      await tester.pumpWidget(localizedApp(
           home: Scaffold(
               body: TrafficBriefCard(
         camera: cam('self', 'Camera chính',
@@ -450,7 +493,7 @@ void main() {
           DistrictOption(name: 'Quận 1', count: 4, onlineCount: 1)
         ]);
         final fetchedAt = DateTime(2026, 10, 25, 12);
-        await tester.pumpWidget(MaterialApp(
+        await tester.pumpWidget(localizedApp(
             home: MediaQuery(
           data: const MediaQueryData(textScaler: TextScaler.linear(2)),
           child: Scaffold(

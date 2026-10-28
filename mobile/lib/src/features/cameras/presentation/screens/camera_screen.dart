@@ -176,7 +176,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Không thể đặt lại: ${failure.message}'),
+              content: Text('camera.reset_failed'.tr(args: [failure.message])),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -330,7 +330,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Lỗi cập nhật Quan tâm: ${failure.message}'),
+              content: Text('camera.favorites_update_failed'.tr(args: [failure.message])),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -458,7 +458,7 @@ class _CameraScreenState extends State<CameraScreen>
                           ),
                           TextButton(
                             onPressed: _handleResetCorruptData,
-                            child: const Text('Đặt lại'),
+                            child: Text('camera.reset'.tr()),
                           ),
                         ],
                       ),
@@ -544,7 +544,7 @@ class _CameraScreenState extends State<CameraScreen>
               const Icon(Icons.error_outline,
                   size: 48, color: CameraUiTokens.errorRed),
               const SizedBox(height: CameraUiTokens.spacing8),
-              const Text('Không thể tải danh sách camera'),
+              Text('camera.load_failed'.tr()),
               const SizedBox(height: CameraUiTokens.spacing12),
               ElevatedButton(
                 onPressed: _catalogCubit.retry,
@@ -557,9 +557,9 @@ class _CameraScreenState extends State<CameraScreen>
     }
 
     if (state.items.isEmpty) {
-      return const SliverFillRemaining(
+      return SliverFillRemaining(
         child: Center(
-          child: Text('Không tìm thấy camera phù hợp'),
+          child: Text('camera.empty_search'.tr()),
         ),
       );
     }

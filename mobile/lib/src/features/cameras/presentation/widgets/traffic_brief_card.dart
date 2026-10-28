@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
@@ -258,7 +259,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
               onPressed:
                   widget.onDirectionsTap ?? () => openCameraDirections(camera),
               icon: const Icon(Icons.directions, size: 16),
-              label: const Text('Chỉ đường'),
+              label: Text('camera.directions'.tr()),
               style: OutlinedButton.styleFrom(
                 visualDensity: VisualDensity.compact,
                 padding: const EdgeInsets.symmetric(

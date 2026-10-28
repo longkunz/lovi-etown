@@ -18,7 +18,10 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/distri
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/weather_card.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memory_cache.dart';
 import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_scheduler.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/routing/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
@@ -358,8 +361,18 @@ class _CameraScreenState extends State<CameraScreen>
           title: Text(
             'camera.title'.tr(),
             style: const TextStyle(fontWeight: FontWeight.bold),
+            // The settings action added in #52 shrinks the title slot; at
+            // large text scales the title must truncate, not overflow.
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           actions: [
+            CameraGlassIconButton(
+              key: const ValueKey('camera_settings_button'),
+              icon: Icons.settings_outlined,
+              label: 'settings.title'.tr(),
+              onPressed: () => context.push(AppRoutes.settings),
+            ),
             if (widget.isDemoMode)
               Padding(
                 padding: const EdgeInsets.only(right: CameraUiTokens.spacing16),
@@ -377,12 +390,27 @@ class _CameraScreenState extends State<CameraScreen>
                           color: CameraUiTokens.badgeDemoText
                               .withValues(alpha: 0.3)),
                     ),
-                    child: Text(
-                      'shared.demo_mode_badge'.tr(),
-                      style: const TextStyle(
-                        color: CameraUiTokens.badgeDemoText,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                    // AppBar actions are laid out in a Row with unbounded
+                    // main-axis constraints, so an unbounded badge text can
+                    // push the toolbar Row past narrow screens at large text
+                    // scales (T05: 29px overflow at 320dp/2.0 once the settings
+                    // button joined the actions). Cap the badge only on
+                    // narrow screens; wider screens keep the full text.
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.sizeOf(context).width < 360
+                            ? 120
+                            : double.infinity,
+                      ),
+                      child: Text(
+                        'shared.demo_mode_badge'.tr(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: CameraUiTokens.badgeDemoText,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

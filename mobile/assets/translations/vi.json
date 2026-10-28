@@ -148,5 +148,12 @@
     "empty": "Chưa tìm thấy camera trong vùng đã chọn.",
     "loading": "Đang tải camera",
     "straight_distance": "khoảng cách đường thẳng"
+  },
+  "settings": {
+    "title": "Cài đặt",
+    "language": "Ngôn ngữ",
+    "language_vietnamese": "Tiếng Việt",
+    "language_english": "Tiếng Anh",
+    "language_note": "Áp dụng ngay, không cần khởi động lại. Lựa chọn được lưu trên máy."
   }
 }

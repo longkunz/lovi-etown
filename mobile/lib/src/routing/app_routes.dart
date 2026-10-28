@@ -13,6 +13,9 @@ abstract final class AppRoutes {
   static const String splash = '/splash';
   static const String onboarding = '/onboarding';
 
+  /// Language + app settings (#52), entered from the camera screen AppBar.
+  static const String settings = '/settings';
+
   /// Debug-only component gallery.
   static const String uiShowcase = '/debug/ui-showcase';
 }

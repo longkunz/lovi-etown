@@ -13,6 +13,7 @@ import 'package:flutter_starter/src/routing/global_navigator.dart';
 import 'package:flutter_starter/src/routing/app_routes.dart';
 
 import 'package:flutter_starter/src/features/onboarding/presentation/screens/onboarding_page.dart';
+import 'package:flutter_starter/src/features/settings/presentation/screens/settings_screen.dart';
 
 import 'package:flutter_starter/src/shared/widgets/ui/ui_showcase_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -76,6 +77,11 @@ GoRouter createAppRouter({
         path: AppRoutes.onboarding,
         name: 'onboarding',
         builder: (context, state) => const OnboardingPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
       if (kDebugMode)
         GoRoute(

@@ -18,7 +18,10 @@ class LocalizationWrapper extends StatelessWidget {
       ],
       path: 'assets/translations',
       fallbackLocale: const Locale('vi'),
-      startLocale: const Locale('vi'),
+      // No startLocale: EasyLocalization resolves the device locale when it
+      // is supported and falls back to Vietnamese otherwise. An explicit
+      // choice in SettingsScreen persists via saveLocale.
+      saveLocale: true,
       child: child,
     );
   }

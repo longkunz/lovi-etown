@@ -97,5 +97,12 @@
     "empty": "No cameras found in the selected area.",
     "loading": "Loading cameras",
     "straight_distance": "straight-line distance"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "language_vietnamese": "Vietnamese",
+    "language_english": "English",
+    "language_note": "Applies immediately, no restart needed. Your choice is saved on device."
   }
 }

@@ -431,19 +431,30 @@ class _CameraScreenState extends State<CameraScreen>
             // T06-D4: a rejected reader key gets a dedicated screen, not a
             // retryable error. Favorites stay untouched in local storage.
             if (state.isUpdateRequired) {
+              // Same inset rule as the spacer below: Scaffold already
+              // bumped body padding.top to the full AppBar height.
               return Padding(
                 padding: EdgeInsets.only(
-                    top: MediaQuery.paddingOf(context).top + kToolbarHeight),
+                    top: MediaQuery.paddingOf(context).top),
                 child: _buildUpdateRequiredView(context),
               );
             }
             return CustomScrollView(
               controller: _scrollController,
               slivers: [
+                // Top-inset contract (#56): the shell adds no SafeArea, so
+                // this spacer is the camera tab's ONLY top inset. It must
+                // be exactly MediaQuery padding.top — NOT padding.top +
+                // kToolbarHeight: with extendBodyBehindAppBar, Scaffold
+                // already bumps the body's padding.top up to the full
+                // AppBar height (status bar + toolbar), so adding the
+                // toolbar height again double-counts 56px and leaves a
+                // gap under the glass header. Pinned by
+                // camera_shell_inset_test.dart; do not wrap this body in
+                // a SafeArea.
                 SliverToBoxAdapter(
                   child: SizedBox(
-                      height:
-                          MediaQuery.paddingOf(context).top + kToolbarHeight),
+                      height: MediaQuery.paddingOf(context).top),
                 ),
                 // Filters
                 SliverToBoxAdapter(

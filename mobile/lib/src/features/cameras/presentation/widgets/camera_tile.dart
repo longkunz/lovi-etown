@@ -181,18 +181,9 @@ class CameraTile extends StatelessWidget {
         horizontal: CameraUiTokens.spacing16,
         vertical: CameraUiTokens.spacing8,
       ),
-      child: Card(
+      child: CameraGlassSurface(
         key: ValueKey('camera_card_${camera.id}'),
-        margin: EdgeInsets.zero,
-        color: theme.cardColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
-          side: BorderSide(
-            color: theme.dividerColor.withValues(alpha: 0.1),
-          ),
-        ),
-        elevation: 0,
-        clipBehavior: Clip.antiAlias,
+        borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
         child: InkWell(
           onTap: onTap,
           child: Column(
@@ -287,13 +278,9 @@ class CameraTile extends StatelessWidget {
     );
     final nameHeight = nameMetrics.preferredLineHeight * 2;
     nameMetrics.dispose();
-    return Card(
+    return CameraGlassSurface(
       key: ValueKey('camera_grid_${camera.id}'),
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-      ),
-      clipBehavior: Clip.antiAlias,
+      borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
       child: InkWell(
         onTap: onTap,
         child: Column(
@@ -355,19 +342,18 @@ class CameraTile extends StatelessWidget {
 
   Widget _buildList(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      key: ValueKey('camera_list_${camera.id}'),
-      margin: const EdgeInsets.symmetric(
+    return Padding(
+      padding: const EdgeInsets.symmetric(
         horizontal: CameraUiTokens.spacing16,
         vertical: CameraUiTokens.spacing4,
       ),
-      shape: RoundedRectangleBorder(
+      child: CameraGlassSurface(
+        key: ValueKey('camera_list_${camera.id}'),
         borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-        child: Padding(
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
+          child: Padding(
           padding: const EdgeInsets.all(CameraUiTokens.spacing8),
           child: Row(
             children: [
@@ -414,6 +400,7 @@ class CameraTile extends StatelessWidget {
               _buildFavoriteButton(),
             ],
           ),
+        ),
         ),
       ),
     );

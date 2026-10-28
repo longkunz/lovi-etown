@@ -41,7 +41,8 @@ class FailingCameraRepository implements CameraRepository {
       Left(_failure);
 
   @override
-  FutureEither<List<DistrictOption>> districts({CancelToken? cancelToken}) async =>
+  FutureEither<List<DistrictOption>> districts(
+          {CancelToken? cancelToken}) async =>
       Left(_failure);
 
   @override
@@ -82,6 +83,24 @@ class FakeAssetLoader extends AssetLoader {
         'update_required_title': 'Cần cập nhật ứng dụng',
         'update_required_body':
             'Phiên bản này không còn được hỗ trợ. Vui lòng cài bản mới nhất để tiếp tục xem camera.',
+        'reset_failed': 'Không thể đặt lại: {}',
+        'favorites_update_failed': 'Lỗi cập nhật Quan tâm: {}',
+        'reset': 'Đặt lại',
+        'load_failed': 'Không thể tải danh sách camera',
+        'live': 'Trực tiếp',
+        'snapshot': 'Ảnh',
+        'snapshot_static': 'Ảnh tĩnh',
+        'snapshot_load_failed': 'Không thể tải hình ảnh camera',
+        'directions': 'Chỉ đường',
+        'grid_title': 'Lưới camera',
+        'multi_empty': 'Chưa có camera Quan tâm khả dụng',
+        'back': 'Quay lại',
+        'fullscreen': 'Toàn màn hình',
+        'favorite': 'Quan tâm',
+        'unfavorite': 'Bỏ quan tâm',
+        'view_grid_tooltip': 'Xem lưới',
+        'close': 'Đóng',
+        'clear_search': 'Xóa tìm kiếm',
       },
     };
   }
@@ -179,8 +198,7 @@ void main() {
     testWidgets('500 keeps the generic error with a retry button',
         (tester) async {
       await tester.pumpWidget(buildApp(500));
-      await pumpUntilFound(
-          tester, find.text('Không thể tải danh sách camera'));
+      await pumpUntilFound(tester, find.text('Không thể tải danh sách camera'));
       expect(find.text('Không thể tải danh sách camera'), findsOneWidget);
       expect(find.text('Thử lại'), findsOneWidget);
       expect(find.text('Cần cập nhật ứng dụng'), findsNothing);

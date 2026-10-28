@@ -57,6 +57,9 @@ abstract final class CameraUiTokens {
   static const double favoriteCardTextHeight = 64;
 
   // ── Brand & Accent Colors (Teal theme based on Stitch prototype) ───────────
+  // Accent lock (#53): primaryTeal is the app's single accent — the same
+  // teal seeds the Material3 theme and tints the glass surfaces. Do not
+  // introduce a second accent color for new chrome; use these teal shades.
   static const Color primaryTeal = Color(0xFF00796B);
   static const Color primaryTealLight = Color(0xFF48A999);
   static const Color primaryTealDark = Color(0xFF004C40);

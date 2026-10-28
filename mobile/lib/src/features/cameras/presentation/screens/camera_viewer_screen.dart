@@ -16,6 +16,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_segmented_control.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -267,32 +268,36 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                   padding: const EdgeInsets.symmetric(
                     horizontal: CameraUiTokens.spacing16,
                   ),
-                  child: SegmentedButton<bool>(
-                    key: const ValueKey('viewer_mode_switcher'),
-                    style: SegmentedButton.styleFrom(
-                      foregroundColor: Colors.white70,
-                      selectedForegroundColor: Colors.white,
-                      selectedBackgroundColor: CameraUiTokens.primaryTeal,
+                  // The viewer background is always dark: pin the glass
+                  // control to dark brightness instead of the system theme.
+                  child: Theme(
+                    data: Theme.of(context).copyWith(
+                      brightness: Brightness.dark,
                     ),
-                    segments: [
-                      ButtonSegment(
-                        value: true,
-                        icon: const Icon(Icons.live_tv_outlined),
-                        label: Text('camera.live'.tr()),
+                    child: Center(
+                      child: CameraGlassSegmentedControl<bool>(
+                        key: const ValueKey('viewer_mode_switcher'),
+                        segments: [
+                          ButtonSegment(
+                            value: true,
+                            icon: const Icon(Icons.live_tv_outlined),
+                            label: Text('camera.live'.tr()),
+                          ),
+                          ButtonSegment(
+                            value: false,
+                            icon: const Icon(Icons.image_outlined),
+                            label: Text('camera.snapshot'.tr()),
+                          ),
+                        ],
+                        value: liveSelected,
+                        onChanged: (value) {
+                          setState(() {
+                            _liveOverride = value;
+                            if (value) _liveFailed = false;
+                          });
+                        },
                       ),
-                      ButtonSegment(
-                        value: false,
-                        icon: const Icon(Icons.image_outlined),
-                        label: Text('camera.snapshot'.tr()),
-                      ),
-                    ],
-                    selected: {liveSelected},
-                    onSelectionChanged: (selection) {
-                      setState(() {
-                        _liveOverride = selection.first;
-                        if (selection.first) _liveFailed = false;
-                      });
-                    },
+                    ),
                   ),
                 ),
                 if (_liveFailed) ...[
@@ -442,24 +447,16 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             Positioned(
               top: CameraUiTokens.spacing4,
               right: CameraUiTokens.spacing4,
-              child: SizedBox.square(
-                dimension: CameraUiTokens.minTouchTarget,
-                child: IconButton(
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  brightness: Brightness.dark,
+                ),
+                child: CameraGlassIconButton(
                   key: const ValueKey('viewer_fullscreen_button'),
-                  padding: EdgeInsets.zero,
-                  icon: Container(
-                    width: CameraUiTokens.overlayControlSize,
-                    height: CameraUiTokens.overlayControlSize,
-                    decoration: const BoxDecoration(
-                      color: Colors.black45,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: const Icon(Icons.fullscreen,
-                        color: Colors.white,
-                        size: CameraUiTokens.controlIconSize),
-                  ),
-                  tooltip: 'camera.fullscreen'.tr(),
+                  icon: Icons.fullscreen,
+                  label: 'camera.fullscreen'.tr(),
+                  iconColor: Colors.white,
+                  iconSize: CameraUiTokens.controlIconSize,
                   onPressed: () =>
                       _openFullScreen(camera, liveSelected: liveSelected),
                 ),
@@ -573,56 +570,54 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
     Camera camera,
     bool isFavorite,
   ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: CameraUiTokens.spacing16,
-      ),
-      child: Row(
-        children: [
-          if (camera.hasLocation)
-            Expanded(
-              child: OutlinedButton.icon(
-                key: const ValueKey('directions_button'),
-                onPressed: () => openCameraDirections(camera),
-                icon: const Icon(Icons.directions),
-                label: Text('camera.directions'.tr()),
+    // The viewer background is always dark: pin the glass buttons to dark
+    // brightness instead of the system theme.
+    return Theme(
+      data: Theme.of(context).copyWith(brightness: Brightness.dark),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: CameraUiTokens.spacing16,
+        ),
+        child: Row(
+          children: [
+            if (camera.hasLocation)
+              Expanded(
+                child: OutlinedButton.icon(
+                  key: const ValueKey('directions_button'),
+                  onPressed: () => openCameraDirections(camera),
+                  icon: const Icon(Icons.directions),
+                  label: Text('camera.directions'.tr()),
+                ),
               ),
-            ),
-          if (camera.hasLocation)
-            const SizedBox(width: CameraUiTokens.spacing8),
-          SizedBox(
-            width: CameraUiTokens.minTouchTarget,
-            height: CameraUiTokens.minTouchTarget,
-            child: IconButton(
+            if (camera.hasLocation)
+              const SizedBox(width: CameraUiTokens.spacing8),
+            CameraGlassIconButton(
               key: const ValueKey('viewer_favorite_button'),
-              tooltip: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
+              icon: isFavorite ? Icons.star : Icons.star_border,
+              label: isFavorite
+                  ? 'camera.unfavorite'.tr()
+                  : 'camera.favorite'.tr(),
+              selected: isFavorite,
+              iconSize: CameraUiTokens.controlIconSize,
+              // The viewer background is always dark, so pin the icon colors
+              // instead of the theme-driven defaults.
+              iconColor: isFavorite
+                  ? CameraUiTokens.starActive
+                  : CameraUiTokens.starInactive,
               onPressed: () {
                 widget.favoritesRepository.setSaved(camera, !isFavorite);
               },
-              icon: Icon(
-                isFavorite ? Icons.star : Icons.star_border,
-                size: CameraUiTokens.controlIconSize,
-                color: isFavorite
-                    ? CameraUiTokens.starActive
-                    : CameraUiTokens.starInactive,
-              ),
             ),
-          ),
-          if (widget.onOpenMultiCamera != null)
-            SizedBox(
-              width: CameraUiTokens.minTouchTarget,
-              height: CameraUiTokens.minTouchTarget,
-              child: IconButton(
+            if (widget.onOpenMultiCamera != null)
+              CameraGlassIconButton(
                 key: const ValueKey('viewer_grid_button'),
-                tooltip: 'camera.grid_title'.tr(),
+                icon: Icons.grid_view,
+                label: 'camera.grid_title'.tr(),
+                iconColor: Colors.white70,
                 onPressed: widget.onOpenMultiCamera,
-                icon: const Icon(
-                  Icons.grid_view,
-                  color: Colors.white70,
-                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -755,29 +750,31 @@ class _SnapshotView extends StatelessWidget {
           Positioned(
             top: CameraUiTokens.spacing8,
             left: CameraUiTokens.spacing8,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: CameraUiTokens.spacing8,
-                vertical: CameraUiTokens.spacing4,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black.withValues(alpha: 0.65),
-                borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.history_rounded, size: 14, color: Colors.white),
-                  SizedBox(width: 4),
-                  Text(
-                    'Ảnh cũ',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
+            child: CameraGlassSurface(
+              role: CameraGlassRole.control,
+              brightness: Brightness.dark,
+              borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: CameraUiTokens.spacing8,
+                  vertical: CameraUiTokens.spacing4,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.history_rounded,
+                        size: 14, color: Colors.white),
+                    const SizedBox(width: 4),
+                    Text(
+                      'camera.stale_chip'.tr(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -890,75 +887,73 @@ class _RelatedCameraCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final thumbnail = camera.thumbnailEndpoint;
-    return InkWell(
-      key: ValueKey('related_camera_${camera.id}'),
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-      child: Container(
-        width: 150,
-        decoration: BoxDecoration(
-          color: CameraUiTokens.surfaceDark,
+    return SizedBox(
+      width: 150,
+      child: CameraGlassSurface(
+        brightness: Brightness.dark,
+        borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
+        child: InkWell(
+          key: ValueKey('related_camera_${camera.id}'),
+          onTap: onTap,
           borderRadius: BorderRadius.circular(CameraUiTokens.radius12),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 72,
-              width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  if (thumbnail != null && thumbnail.startsWith('assets/'))
-                    Image.asset(
-                      thumbnail,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => _buildThumbPlaceholder(),
-                    )
-                  else
-                    _buildThumbPlaceholder(),
-                  if (camera.canLive)
-                    const Positioned(
-                      top: CameraUiTokens.spacing4,
-                      left: CameraUiTokens.spacing4,
-                      child: _LiveChip(compact: true),
-                    ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(CameraUiTokens.spacing8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    camera.name,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  if (camera.district != null &&
-                      camera.district!.isNotEmpty) ...[
-                    const SizedBox(height: CameraUiTokens.spacing2),
-                    Text(
-                      camera.district!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: CameraUiTokens.primaryTealLight,
-                        fontSize: 11,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 72,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (thumbnail != null && thumbnail.startsWith('assets/'))
+                      Image.asset(
+                        thumbnail,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _buildThumbPlaceholder(),
+                      )
+                    else
+                      _buildThumbPlaceholder(),
+                    if (camera.canLive)
+                      const Positioned(
+                        top: CameraUiTokens.spacing4,
+                        left: CameraUiTokens.spacing4,
+                        child: _LiveChip(compact: true),
                       ),
-                      maxLines: 1,
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(CameraUiTokens.spacing8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      camera.name,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    if (camera.district != null &&
+                        camera.district!.isNotEmpty) ...[
+                      const SizedBox(height: CameraUiTokens.spacing2),
+                      Text(
+                        camera.district!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: CameraUiTokens.primaryTealLight,
+                          fontSize: 11,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

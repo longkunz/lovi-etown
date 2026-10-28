@@ -53,7 +53,8 @@
     "unfavorite": "Bỏ quan tâm",
     "view_grid_tooltip": "Xem lưới",
     "close": "Đóng",
-    "clear_search": "Xóa tìm kiếm"
+    "clear_search": "Xóa tìm kiếm",
+    "stale_chip": "Ảnh cũ"
   },
   "onboarding": {
     "onboarding_title_1": "Hành trình của bạn,\nĐược lên kế hoạch hoàn hảo",

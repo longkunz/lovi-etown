@@ -17,6 +17,7 @@ import '../../support/fake_video_platform.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_viewer_screen.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_segmented_control.dart';
 import 'package:flutter_starter/src/utils/typedefs.dart';
 import '../../support/camera_fakes.dart';
 
@@ -259,11 +260,20 @@ Widget _app({
   );
 }
 
+/// The viewer's outer (vertical) scroll view. The glass mode switcher adds
+/// its own horizontal SingleChildScrollView, so a bare byType finder is
+/// ambiguous since #53a.
+Finder _verticalScrollView() => find.byWidgetPredicate(
+      (widget) =>
+          widget is SingleChildScrollView &&
+          widget.scrollDirection == Axis.vertical,
+    );
+
 Set<bool> _selectedModes(WidgetTester tester) {
-  final button = tester.widget<SegmentedButton<bool>>(
+  final control = tester.widget<CameraGlassSegmentedControl<bool>>(
     find.byKey(const ValueKey('viewer_mode_switcher')),
   );
-  return button.selected;
+  return {control.value};
 }
 
 class _DelayedFavorites extends InMemoryFavoritesRepository {
@@ -491,7 +501,7 @@ void main() {
     // scrollUntilVisible cannot pick a scrollable here because the
     // viewer has two (outer vertical + the horizontal related list).
     await tester.drag(
-      find.byType(SingleChildScrollView),
+      _verticalScrollView(),
       const Offset(0, -600),
     );
     await tester.pump();
@@ -669,8 +679,7 @@ void main() {
     });
     await pumpViewer(tester,
         cameraId: plainCam.id, repo: repo, favs: InMemoryFavoritesRepository());
-    await tester.drag(
-        find.byType(SingleChildScrollView), const Offset(0, -600));
+    await tester.drag(_verticalScrollView(), const Offset(0, -600));
     await _pumpFrames(tester);
     await tester.tap(find.byKey(const ValueKey('related_camera_cam-rel-1')));
     await _pumpFrames(tester);
@@ -708,8 +717,7 @@ void main() {
     await pumpViewer(tester,
         cameraId: liveCam.id, repo: repo, favs: InMemoryFavoritesRepository());
     expect(platform.playing.length, 1);
-    await tester.drag(
-        find.byType(SingleChildScrollView), const Offset(0, -650));
+    await tester.drag(_verticalScrollView(), const Offset(0, -650));
     await _pumpFrames(tester);
     await tester.tap(find.byKey(const ValueKey('related_camera_cam-rel-1')));
     await _pumpFrames(tester);

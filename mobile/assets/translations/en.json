@@ -53,7 +53,8 @@
     "unfavorite": "Unfavorite",
     "view_grid_tooltip": "View grid",
     "close": "Close",
-    "clear_search": "Clear search"
+    "clear_search": "Clear search",
+    "stale_chip": "Old image"
   },
   "onboarding": {
     "onboarding_title_1": "Your Journey,\nPerfectly Planned",

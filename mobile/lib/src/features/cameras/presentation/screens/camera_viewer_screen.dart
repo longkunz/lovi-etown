@@ -274,16 +274,16 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                       selectedForegroundColor: Colors.white,
                       selectedBackgroundColor: CameraUiTokens.primaryTeal,
                     ),
-                    segments: const [
+                    segments: [
                       ButtonSegment(
                         value: true,
-                        icon: Icon(Icons.live_tv_outlined),
-                        label: Text('Trực tiếp'),
+                        icon: const Icon(Icons.live_tv_outlined),
+                        label: Text('camera.live'.tr()),
                       ),
                       ButtonSegment(
                         value: false,
-                        icon: Icon(Icons.image_outlined),
-                        label: Text('Ảnh'),
+                        icon: const Icon(Icons.image_outlined),
+                        label: Text('camera.snapshot'.tr()),
                       ),
                     ],
                     selected: {liveSelected},
@@ -459,7 +459,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                         color: Colors.white,
                         size: CameraUiTokens.controlIconSize),
                   ),
-                  tooltip: 'Toàn màn hình',
+                  tooltip: 'camera.fullscreen'.tr(),
                   onPressed: () =>
                       _openFullScreen(camera, liveSelected: liveSelected),
                 ),
@@ -585,7 +585,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 key: const ValueKey('directions_button'),
                 onPressed: () => openCameraDirections(camera),
                 icon: const Icon(Icons.directions),
-                label: const Text('Chỉ đường'),
+                label: Text('camera.directions'.tr()),
               ),
             ),
           if (camera.hasLocation)
@@ -595,7 +595,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             height: CameraUiTokens.minTouchTarget,
             child: IconButton(
               key: const ValueKey('viewer_favorite_button'),
-              tooltip: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+              tooltip: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
               onPressed: () {
                 widget.favoritesRepository.setSaved(camera, !isFavorite);
               },
@@ -614,7 +614,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
               height: CameraUiTokens.minTouchTarget,
               child: IconButton(
                 key: const ValueKey('viewer_grid_button'),
-                tooltip: 'Lưới camera',
+                tooltip: 'camera.grid_title'.tr(),
                 onPressed: widget.onOpenMultiCamera,
                 icon: const Icon(
                   Icons.grid_view,
@@ -846,7 +846,7 @@ class _FullScreenMediaPage extends StatelessWidget {
                     CameraGlassIconButton(
                       key: const ValueKey('viewer_fullscreen_close'),
                       icon: Icons.close,
-                      label: 'Đóng',
+                      label: 'camera.close'.tr(),
                       embedded: true,
                       iconColor: Colors.white,
                       iconSize: 28,

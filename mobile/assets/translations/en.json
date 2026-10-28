@@ -53,6 +53,12 @@
     "unfavorite": "Unfavorite",
     "view_grid_tooltip": "View grid",
     "close": "Close",
+    "refresh_after": "Refresh in {}s",
+    "refreshing_now": "Refreshing…",
+    "map_key_missing": "Vietmap key is not configured",
+    "map_load_failed": "Could not load the Vietmap map",
+    "map_reload_failed": "Could not reload Vietmap. The previous map is still shown.",
+    "map_layer_failed": "Could not load traffic or satellite layers. The base map is still available.",
     "clear_search": "Clear search"
   },
   "onboarding": {

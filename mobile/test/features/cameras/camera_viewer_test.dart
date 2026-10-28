@@ -205,6 +205,8 @@ class _Loader extends AssetLoader {
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
         'camera': {
+          'refresh_after': 'Làm mới sau {}s',
+          'refreshing_now': 'Đang cập nhật…',
           'traffic_map_title': 'Bản đồ lưu lượng',
           'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
           'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',

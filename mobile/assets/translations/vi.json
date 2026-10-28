@@ -53,6 +53,12 @@
     "unfavorite": "Bỏ quan tâm",
     "view_grid_tooltip": "Xem lưới",
     "close": "Đóng",
+    "refresh_after": "Làm mới sau {}s",
+    "refreshing_now": "Đang cập nhật…",
+    "map_key_missing": "Chưa cấu hình khóa Vietmap",
+    "map_load_failed": "Không tải được bản đồ Vietmap",
+    "map_reload_failed": "Không tải lại được bản đồ Vietmap. Đang giữ bản đồ trước đó.",
+    "map_layer_failed": "Không tải được lớp giao thông hoặc vệ tinh. Bản đồ nền vẫn khả dụng.",
     "clear_search": "Xóa tìm kiếm"
   },
   "onboarding": {

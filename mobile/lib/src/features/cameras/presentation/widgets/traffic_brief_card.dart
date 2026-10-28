@@ -84,22 +84,22 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
     switch (availability) {
       case 'online':
         color = CameraUiTokens.successGreen;
-        label = 'Đang hoạt động';
+        label = 'camera.status_online'.tr();
         icon = Icons.check_circle_outline;
         break;
       case 'offline':
         color = CameraUiTokens.errorRed;
-        label = 'Mất tín hiệu';
+        label = 'camera.status_offline'.tr();
         icon = Icons.error_outline;
         break;
       case 'degraded':
         color = CameraUiTokens.warningOrange;
-        label = 'Chập chờn';
+        label = 'camera.status_degraded'.tr();
         icon = Icons.warning_amber_outlined;
         break;
       default:
         color = Theme.of(context).colorScheme.onSurfaceVariant;
-        label = 'Chưa rõ';
+        label = 'camera.status_unknown'.tr();
         icon = Icons.help_outline;
     }
 
@@ -147,13 +147,13 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
     if (isStale) {
       icon = Icons.history_rounded;
       color = CameraUiTokens.errorRed;
-      text = 'Ảnh cũ (${seconds}s trước)';
+      text = 'camera.fresh_stale'.tr(args: ['$seconds']);
     } else {
       icon = Icons.check_circle_outlined;
       color = CameraUiTokens.primaryTeal;
       text = seconds < 5
-          ? 'Ảnh mới: Vừa cập nhật'
-          : 'Ảnh mới: Cập nhật ${seconds}s trước';
+          ? 'camera.fresh_just_now'.tr()
+          : 'camera.fresh_seconds'.tr(args: ['$seconds']);
     }
 
     return Padding(
@@ -188,16 +188,17 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
 
     final String districtDetail;
     if (_districtTotal != null && _districtOnlineCount != null) {
-      districtDetail = '$_districtOnlineCount/$_districtTotal camera hoạt động';
+      districtDetail = 'camera.district_online'
+          .tr(args: ['$_districtOnlineCount', '$_districtTotal']);
     } else if (_districtTotal != null) {
-      districtDetail = '$_districtTotal camera trong khu vực';
+      districtDetail = 'camera.district_count'.tr(args: ['$_districtTotal']);
     } else {
       districtDetail = '';
     }
     final districtInfo = [
       if (camera.district?.trim().isNotEmpty ?? false) camera.district!,
       if (districtDetail.isNotEmpty) districtDetail,
-      if (liveCount > 0) '$liveCount camera có trực tiếp',
+      if (liveCount > 0) 'camera.live_count'.tr(args: ['$liveCount']),
     ].join(' · ');
 
     return Container(
@@ -234,7 +235,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
                 const SizedBox(width: CameraUiTokens.spacing8),
                 Flexible(
                     child: Text(
-                  'Tình trạng tại điểm',
+                  'camera.point_status'.tr(),
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -271,7 +272,7 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
           if (shownRelated.isNotEmpty) ...[
             const SizedBox(height: CameraUiTokens.spacing8),
             Text(
-              'Camera lân cận',
+              'camera.nearby_cameras'.tr(),
               style: theme.textTheme.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
               ),

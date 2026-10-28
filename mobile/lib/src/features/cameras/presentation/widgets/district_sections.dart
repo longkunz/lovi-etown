@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -28,9 +29,10 @@ List<CatalogListEntry> buildDistrictSections(List<Camera> items) {
   final order = <String>[];
   final byDistrict = <String, List<Camera>>{};
   for (final camera in items) {
-    final label = (camera.district != null && camera.district!.trim().isNotEmpty)
-        ? camera.district!.trim()
-        : otherDistrictLabel;
+    final label =
+        (camera.district != null && camera.district!.trim().isNotEmpty)
+            ? camera.district!.trim()
+            : otherDistrictLabel;
     if (!byDistrict.containsKey(label)) {
       order.add(label);
       byDistrict[label] = [];
@@ -85,7 +87,7 @@ class DistrictSectionHeader extends StatelessWidget {
           const SizedBox(width: CameraUiTokens.spacing4),
           Expanded(
             child: Text(
-              name,
+              name == otherDistrictLabel ? 'camera.other_district'.tr() : name,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: CameraUiTokens.primaryTeal,

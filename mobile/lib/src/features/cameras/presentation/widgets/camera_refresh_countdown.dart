@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -69,7 +70,9 @@ class _CameraRefreshCountdownState extends State<CameraRefreshCountdown>
                 1000)
             .ceil();
         final waiting = state.nextRefreshAt != null && seconds > 0;
-        final label = waiting ? 'Làm mới sau ${seconds}s' : 'Đang cập nhật…';
+        final label = waiting
+            ? 'camera.refresh_after'.tr(args: ['$seconds'])
+            : 'camera.refreshing_now'.tr();
         return Semantics(
           label: label,
           excludeSemantics: true,

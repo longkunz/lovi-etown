@@ -62,7 +62,8 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _cache = SnapshotMemoryCache();
-    _scheduler = ThumbnailScheduler(repository: widget.repository, cache: _cache);
+    _scheduler =
+        ThumbnailScheduler(repository: widget.repository, cache: _cache);
     _cache.addListener(_onCacheChanged);
     _resolveCameras();
     _refreshTimer = Timer.periodic(widget.refreshInterval, (_) => _refresh());
@@ -166,8 +167,7 @@ class _MultiCameraScreenState extends State<MultiCameraScreen>
                               builder: (_) => CameraViewerScreen(
                                 cameraId: favorite.id,
                                 repository: widget.repository,
-                                favoritesRepository:
-                                    widget.favoritesRepository,
+                                favoritesRepository: widget.favoritesRepository,
                               ),
                             ),
                           )
@@ -221,7 +221,9 @@ class _GridCell extends StatelessWidget {
                       ),
                     )
                   : Icon(
-                      failed ? Icons.videocam_off_outlined : Icons.videocam_outlined,
+                      failed
+                          ? Icons.videocam_off_outlined
+                          : Icons.videocam_outlined,
                       color: CameraUiTokens.primaryTeal,
                       size: 36,
                     ),
@@ -237,7 +239,9 @@ class _GridCell extends StatelessWidget {
                 ),
                 color: Colors.black.withValues(alpha: 0.55),
                 child: Text(
-                  failed ? '${favorite.name} (không tải được)' : favorite.name,
+                  failed
+                      ? 'camera.favorite_unavailable'.tr(args: [favorite.name])
+                      : favorite.name,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 11,

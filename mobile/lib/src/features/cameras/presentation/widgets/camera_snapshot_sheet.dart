@@ -238,7 +238,9 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                 iconSize: CameraUiTokens.controlIconSize,
                                 icon:
                                     isFavorite ? Icons.star : Icons.star_border,
-                                label: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
+                                label: isFavorite
+                                    ? 'camera.unfavorite'.tr()
+                                    : 'camera.favorite'.tr(),
                                 selected: isFavorite,
                                 embedded: true,
                                 onPressed: () {
@@ -301,7 +303,8 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                     ButtonSegment(
                                       value: false,
                                       icon: const Icon(Icons.image_outlined),
-                                      label: Text('camera.snapshot_static'.tr()),
+                                      label:
+                                          Text('camera.snapshot_static'.tr()),
                                     ),
                                     ButtonSegment(
                                       value: true,
@@ -318,18 +321,19 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                     height: CameraUiTokens.spacing12),
                               ],
                               if (_liveFailed) ...[
-                                const Row(
+                                Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.info_outline,
                                       size: 16,
                                       color: CameraUiTokens.errorRed,
                                     ),
-                                    SizedBox(width: CameraUiTokens.spacing4),
+                                    const SizedBox(
+                                        width: CameraUiTokens.spacing4),
                                     Expanded(
                                       child: Text(
-                                        'Không phát được trực tiếp — đang hiện ảnh tĩnh',
-                                        style: TextStyle(
+                                        'camera.live_unavailable'.tr(),
+                                        style: const TextStyle(
                                           color: CameraUiTokens.errorRed,
                                           fontSize: 12,
                                         ),

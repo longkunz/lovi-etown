@@ -119,7 +119,7 @@ class CameraTile extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            'TRỰC TIẾP',
+            'camera.live_upper'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: compact ? 9 : 10,
@@ -141,7 +141,8 @@ class CameraTile extends StatelessWidget {
       child: SizedBox.square(
         dimension: CameraUiTokens.minTouchTarget,
         child: IconButton(
-          tooltip: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
+          tooltip:
+              isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
           padding: EdgeInsets.zero,
           onPressed: onToggleFavorite,
           icon: CameraGlassSurface(

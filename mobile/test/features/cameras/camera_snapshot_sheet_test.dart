@@ -1,3 +1,4 @@
+import 'localized_widget_test_helper.dart';
 import '../../support/pump_camera_transition.dart';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
@@ -206,6 +207,7 @@ class SheetTestAssetLoader extends AssetLoader {
         'close': 'Đóng',
       },
       'camera': {
+        ...cameraTestTranslations,
         'refresh_after': 'Làm mới sau {}s',
         'refreshing_now': 'Đang cập nhật…',
         'title': 'Camera giao thông',

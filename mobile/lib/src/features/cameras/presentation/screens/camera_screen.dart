@@ -105,7 +105,8 @@ class _CameraScreenState extends State<CameraScreen>
       _ownsCubit = true;
     }
 
-    _appForeground = WidgetsBinding.instance.lifecycleState == null || WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _appForeground = WidgetsBinding.instance.lifecycleState == null ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     _thumbnailScheduler.setForeground(widget.active && _appForeground);
     _cache.addListener(_onCacheChanged);
     _catalogCubit.start();
@@ -176,7 +177,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('camera.reset_failed'.tr(args: [failure.message])),
+              content: Text('camera.reset_failed_generic'.tr()),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -330,7 +331,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('camera.favorites_update_failed'.tr(args: [failure.message])),
+              content: Text('camera.favorites_update_failed_generic'.tr()),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -423,7 +424,9 @@ class _CameraScreenState extends State<CameraScreen>
                     onQueryChanged: _catalogCubit.setQuery,
                     viewMode: state.viewMode,
                     onViewModeChanged: _catalogCubit.setViewMode,
-                    validationMessage: state.queryValidationMessage,
+                    validationMessage: state.queryValidationMessage == null
+                        ? null
+                        : 'camera.search_min_chars'.tr(),
                   ),
                 ),
 
@@ -447,10 +450,10 @@ class _CameraScreenState extends State<CameraScreen>
                           const Icon(Icons.warning_amber_rounded,
                               color: CameraUiTokens.errorRed),
                           const SizedBox(width: CameraUiTokens.spacing8),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Dữ liệu quan tâm bị hỏng.',
-                              style: TextStyle(
+                              'camera.favorites_corrupt'.tr(),
+                              style: const TextStyle(
                                 color: CameraUiTokens.errorRed,
                                 fontWeight: FontWeight.w500,
                               ),

@@ -215,11 +215,11 @@ class _CameraTrafficMapViewerScreenState
                       ? Icons.layers
                       : Icons.map,
                   label: _mapType == CameraMapType.street
-                      ? 'Bản đồ vệ tinh'
-                      : 'Bản đồ chuẩn',
+                      ? 'camera.map_satellite'.tr()
+                      : 'camera.map_standard'.tr(),
                   tooltip: _mapType == CameraMapType.street
-                      ? 'Bản đồ vệ tinh'
-                      : 'Bản đồ chuẩn',
+                      ? 'camera.map_satellite'.tr()
+                      : 'camera.map_standard'.tr(),
                   selected: _mapType != CameraMapType.street,
                   forceOpaque: true,
                   onPressed: _toggleMapType,

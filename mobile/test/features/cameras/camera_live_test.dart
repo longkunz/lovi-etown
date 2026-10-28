@@ -1,3 +1,4 @@
+import 'localized_widget_test_helper.dart';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -261,6 +262,7 @@ class _Loader extends AssetLoader {
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
         'camera': {
+          ...cameraTestTranslations,
           'reset_failed': 'Không thể đặt lại: {}',
           'favorites_update_failed': 'Lỗi cập nhật Quan tâm: {}',
           'reset': 'Đặt lại',

@@ -1,3 +1,4 @@
+import 'localized_widget_test_helper.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -205,6 +206,7 @@ class _Loader extends AssetLoader {
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
         'camera': {
+          ...cameraTestTranslations,
           'refresh_after': 'Làm mới sau {}s',
           'refreshing_now': 'Đang cập nhật…',
           'traffic_map_title': 'Bản đồ lưu lượng',
@@ -624,7 +626,7 @@ void main() {
     expect(find.byKey(const ValueKey('viewer_favorite_button')), findsNothing);
     favs.loadResult.complete(const Left(DatabaseFailure('read failed')));
     await _pumpFrames(tester);
-    expect(find.text('read failed'), findsOneWidget);
+    expect(find.text('Không thể tải danh sách quan tâm'), findsOneWidget);
     favs.retry = true;
     await tester.tap(find.byKey(const ValueKey('viewer_favorites_retry')));
     await _pumpFrames(tester);

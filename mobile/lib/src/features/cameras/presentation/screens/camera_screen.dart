@@ -20,6 +20,8 @@ import 'package:flutter_starter/src/features/cameras/data/snapshot/snapshot_memo
 import 'package:flutter_starter/src/features/cameras/data/snapshot/thumbnail_scheduler.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
+import 'package:flutter_starter/src/shared/widgets/ui/app/feedback/app_empty_state.dart';
+import 'package:flutter_starter/src/shared/widgets/ui/app/feedback/app_error_widget.dart';
 import 'package:flutter_starter/src/routing/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
@@ -568,29 +570,19 @@ class _CameraScreenState extends State<CameraScreen>
 
     if (state.catalogState.isFailure && state.items.isEmpty) {
       return SliverFillRemaining(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline,
-                  size: 48, color: CameraUiTokens.errorRed),
-              const SizedBox(height: CameraUiTokens.spacing8),
-              Text('camera.load_failed'.tr()),
-              const SizedBox(height: CameraUiTokens.spacing12),
-              ElevatedButton(
-                onPressed: _catalogCubit.retry,
-                child: Text('shared.retry'.tr()),
-              ),
-            ],
-          ),
+        child: AppErrorWidget(
+          title: 'camera.load_failed'.tr(),
+          onRetry: _catalogCubit.retry,
+          retryLabel: 'shared.retry'.tr(),
         ),
       );
     }
 
     if (state.items.isEmpty) {
       return SliverFillRemaining(
-        child: Center(
-          child: Text('camera.empty_search'.tr()),
+        child: AppEmptyState(
+          icon: Icons.search_off_outlined,
+          title: 'camera.empty_search'.tr(),
         ),
       );
     }

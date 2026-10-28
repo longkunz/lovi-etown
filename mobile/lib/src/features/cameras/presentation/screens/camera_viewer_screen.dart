@@ -282,11 +282,13 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                             value: true,
                             icon: const Icon(Icons.live_tv_outlined),
                             label: Text('camera.live'.tr()),
+                            tooltip: 'camera.live'.tr(),
                           ),
                           ButtonSegment(
                             value: false,
                             icon: const Icon(Icons.image_outlined),
                             label: Text('camera.snapshot'.tr()),
+                            tooltip: 'camera.snapshot'.tr(),
                           ),
                         ],
                         value: liveSelected,

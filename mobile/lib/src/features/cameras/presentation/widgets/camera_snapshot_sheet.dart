@@ -303,13 +303,15 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                     ButtonSegment(
                                       value: false,
                                       icon: const Icon(Icons.image_outlined),
-                                      label:
-                                          Text('camera.snapshot_static'.tr()),
+                                      label: Text('camera.snapshot_static'.tr()),
+                                      tooltip:
+                                          'camera.snapshot_static'.tr(),
                                     ),
                                     ButtonSegment(
                                       value: true,
                                       icon: const Icon(Icons.live_tv_outlined),
                                       label: Text('camera.live'.tr()),
+                                      tooltip: 'camera.live'.tr(),
                                     ),
                                   ],
                                   value: _liveMode,

@@ -192,7 +192,7 @@ class CameraFavoritesSection extends StatelessWidget {
                           const Spacer(),
                           if (fav.isMissingFromCatalog)
                             Text(
-                              'Đã gỡ khỏi danh mục',
+                              'camera.favorite_removed'.tr(),
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: CameraUiTokens.errorRed,
                                 fontSize: 10,

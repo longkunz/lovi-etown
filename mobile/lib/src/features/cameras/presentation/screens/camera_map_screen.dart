@@ -1,6 +1,7 @@
 import '../../../../utils/failure.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../config/map_config.dart';
@@ -138,32 +139,31 @@ class _CameraMapScreenState extends State<CameraMapScreen>
   Widget _locationStatus(CameraMapState state) {
     final status = state.locationStatus;
     if (state.locating) {
-      return Text(mapText('locating', 'Đang lấy vị trí…'));
+      return Text('map_discovery.locating'.tr());
     }
     return switch (status) {
       CameraLocationStatus.denied => TextButton(
           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: _cubit.showNearby,
           child: Text(
-              mapText('location_denied', 'Quyền vị trí bị từ chối. Thử lại'))),
+              'map_discovery.location_denied'.tr())),
       CameraLocationStatus.deniedForever => TextButton(
           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: _cubit.openAppSettings,
-          child: Text(mapText('app_settings', 'Mở cài đặt ứng dụng'))),
+          child: Text('map_discovery.app_settings'.tr())),
       CameraLocationStatus.serviceDisabled => TextButton(
           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: _cubit.openLocationSettings,
-          child: Text(mapText('location_settings', 'Bật dịch vụ vị trí'))),
+          child: Text('map_discovery.location_settings'.tr())),
       CameraLocationStatus.timeout => TextButton(
           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: _cubit.showNearby,
-          child: Text(mapText(
-              'location_timeout', 'Hết thời gian lấy vị trí. Thử lại'))),
+          child: Text('map_discovery.location_timeout'.tr())),
       CameraLocationStatus.failure => TextButton(
           style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
           onPressed: _cubit.showNearby,
           child: Text(
-              mapText('location_failed', 'Không lấy được vị trí. Thử lại'))),
+              'map_discovery.location_failed'.tr())),
       _ => const SizedBox.shrink()
     };
   }
@@ -178,12 +178,11 @@ class _CameraMapScreenState extends State<CameraMapScreen>
       return Padding(
           padding: const EdgeInsets.all(16),
           child: Column(children: [
-            Text(mapText('missing_key',
-                'Chưa cấu hình khóa Vietmap. Bạn vẫn có thể xem danh mục Camera.')),
+            Text('map_discovery.missing_key'.tr()),
             TextButton(
                 style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
                 onPressed: widget.onOpenCameras,
-                child: Text(mapText('open_cameras', 'Mở Camera')))
+                child: Text('map_discovery.open_cameras'.tr()))
           ]));
     }
     final config = CameraMapViewConfig(
@@ -229,7 +228,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
           color: const Color(0xffdceae5),
           child: Center(
               child:
-                  Text(mapText('demo_map', 'Bản đồ minh họa · dữ liệu demo'))));
+                  Text('map_discovery.demo_map'.tr())));
     }
     return CameraMapCanvas(config: config, connectionConfig: _connection);
   }
@@ -253,7 +252,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(mapText('title', 'Bản đồ'),
+                            Text('map_discovery.title'.tr(),
                                 style:
                                     Theme.of(context).textTheme.headlineSmall),
                             Wrap(spacing: 8, runSpacing: 4, children: [
@@ -263,7 +262,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                           .colorScheme
                                           .onSurface),
                                   label: Text(
-                                      mapText('viewport', 'Vùng đang xem')),
+                                      'map_discovery.viewport'.tr()),
                                   selected:
                                       state.mode == CameraMapMode.viewport,
                                   onSelected: (_) => _cubit.showViewport()),
@@ -272,7 +271,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface),
-                                  label: Text(mapText('nearby', 'Gần tôi')),
+                                  label: Text('map_discovery.nearby'.tr()),
                                   selected: state.mode == CameraMapMode.nearby,
                                   onSelected: (_) => _cubit.showNearby())
                             ]),
@@ -294,8 +293,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                     onPressed: state.locating
                                         ? null
                                         : _cubit.showNearby,
-                                    child: Text(mapText(
-                                        'refresh_location', 'Cập nhật vị trí')))
+                                    child: Text('map_discovery.refresh_location'.tr()))
                               ]),
                             if (_districts.isNotEmpty)
                               DropdownButtonFormField<String>(
@@ -303,12 +301,11 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                   isExpanded: true,
                                   decoration: InputDecoration(
                                       labelText:
-                                          mapText('district', 'Quận / huyện')),
+                                          'map_discovery.district'.tr()),
                                   items: [
                                     DropdownMenuItem(
                                         value: null,
-                                        child: Text(mapText('all_districts',
-                                            'Tất cả quận / huyện'))),
+                                        child: Text('map_discovery.all_districts'.tr())),
                                     ..._districts.map((d) => DropdownMenuItem(
                                         value: d.name,
                                         child: Text(d.name,
@@ -321,7 +318,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface),
-                                  label: Text(mapText('traffic', 'Giao thông')),
+                                  label: Text('map_discovery.traffic'.tr()),
                                   selected: _traffic,
                                   onSelected: (_) => _toggleTraffic()),
                               ChoiceChip(
@@ -329,7 +326,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface),
-                                  label: Text(mapText('street', 'Đường phố')),
+                                  label: Text('map_discovery.street'.tr()),
                                   selected: _mapType == CameraMapType.street,
                                   onSelected: (_) => setState(
                                       () => _mapType = CameraMapType.street)),
@@ -338,7 +335,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                       color: Theme.of(context)
                                           .colorScheme
                                           .onSurface),
-                                  label: Text(mapText('hybrid', 'Vệ tinh')),
+                                  label: Text('map_discovery.hybrid'.tr()),
                                   selected: _mapType == CameraMapType.hybrid,
                                   onSelected: (_) => setState(
                                       () => _mapType = CameraMapType.hybrid))
@@ -361,7 +358,7 @@ class _CameraMapScreenState extends State<CameraMapScreen>
                                       minimumSize: const Size(48, 48)),
                                   onPressed: widget.onOpenCameras,
                                   child: Text(
-                                      mapText('open_cameras', 'Mở Camera'))),
+                                      'map_discovery.open_cameras'.tr())),
                             const SizedBox(height: 12),
                             CameraMapResults(
                                 state: _districtFailure == null

@@ -104,7 +104,9 @@
     "other_district": "Other",
     "reset_failed_generic": "Could not reset favorites data",
     "favorites_update_failed_generic": "Could not update favorites",
-    "clear_search": "Clear search"
+    "clear_search": "Clear search",
+    "stale_chip": "Old image"
+
   },
   "onboarding": {
     "onboarding_title_1": "Your Journey,\nPerfectly Planned",

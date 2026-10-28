@@ -104,7 +104,9 @@
     "other_district": "Khác",
     "reset_failed_generic": "Không thể đặt lại dữ liệu quan tâm",
     "favorites_update_failed_generic": "Không thể cập nhật danh sách quan tâm",
-    "clear_search": "Xóa tìm kiếm"
+    "clear_search": "Xóa tìm kiếm",
+    "stale_chip": "Ảnh cũ"
+
   },
   "onboarding": {
     "onboarding_title_1": "Hành trình của bạn,\nĐược lên kế hoạch hoàn hảo",

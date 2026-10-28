@@ -14,18 +14,78 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/utils/typedefs.dart';
 
 final pngBytes = Uint8List.fromList(const [
-  0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,
-  0x00, 0x00, 0x00, 0x0D, 0x49, 0x48, 0x44, 0x52,
-  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
-  0x08, 0x06, 0x00, 0x00, 0x00, 0x1F, 0x15, 0xC4,
-  0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-  0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00,
-  0x05, 0x00, 0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00,
-  0x00, 0x00, 0x00, 0x49, 0x45, 0x4E, 0x44, 0xAE,
-  0x42, 0x60, 0x82,
+  0x89,
+  0x50,
+  0x4E,
+  0x47,
+  0x0D,
+  0x0A,
+  0x1A,
+  0x0A,
+  0x00,
+  0x00,
+  0x00,
+  0x0D,
+  0x49,
+  0x48,
+  0x44,
+  0x52,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x00,
+  0x01,
+  0x08,
+  0x06,
+  0x00,
+  0x00,
+  0x00,
+  0x1F,
+  0x15,
+  0xC4,
+  0x89,
+  0x00,
+  0x00,
+  0x00,
+  0x0A,
+  0x49,
+  0x44,
+  0x41,
+  0x54,
+  0x78,
+  0x9C,
+  0x63,
+  0x00,
+  0x01,
+  0x00,
+  0x00,
+  0x05,
+  0x00,
+  0x01,
+  0x0D,
+  0x0A,
+  0x2D,
+  0xB4,
+  0x00,
+  0x00,
+  0x00,
+  0x00,
+  0x49,
+  0x45,
+  0x4E,
+  0x44,
+  0xAE,
+  0x42,
+  0x60,
+  0x82,
 ]);
 
-Camera liveCam({bool live = true, String? url = 'http://125.234.114.126:11984/api/stream.m3u8?src=x'}) =>
+Camera liveCam(
+        {bool live = true,
+        String? url = 'http://125.234.114.126:11984/api/stream.m3u8?src=x'}) =>
     Camera(
       id: 'cam-live',
       name: 'Mai Chí Thọ - Lương Định Của',
@@ -97,7 +157,8 @@ void main() {
       await tester.pump(const Duration(milliseconds: 600));
     }
 
-    testWidgets('toggle shows for a live camera, hidden for snapshot-only', (tester) async {
+    testWidgets('toggle shows for a live camera, hidden for snapshot-only',
+        (tester) async {
       await openSheet(tester, liveCam());
       expect(find.byKey(const ValueKey('live_mode_toggle')), findsOneWidget);
 
@@ -106,7 +167,9 @@ void main() {
       expect(find.byKey(const ValueKey('live_mode_toggle')), findsNothing);
     });
 
-    testWidgets('a stream that cannot initialize falls back to the snapshot with a note', (tester) async {
+    testWidgets(
+        'a stream that cannot initialize falls back to the snapshot with a note',
+        (tester) async {
       await openSheet(tester, liveCam());
       await tester.tap(find.text('Trực tiếp'));
       // The test environment has no video platform: initialization fails
@@ -118,7 +181,8 @@ void main() {
         find.text('Không phát được trực tiếp — đang hiện ảnh tĩnh'),
         findsOneWidget,
       );
-      expect(find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('snapshot_sheet_image')), findsOneWidget);
     });
   });
 }
@@ -150,7 +214,8 @@ class _Repo implements CameraRepository {
       ));
 
   @override
-  FutureEither<List<DistrictOption>> districts({CancelToken? cancelToken}) async =>
+  FutureEither<List<DistrictOption>> districts(
+          {CancelToken? cancelToken}) async =>
       const Right([]);
 
   @override
@@ -158,7 +223,8 @@ class _Repo implements CameraRepository {
       Right(camera);
 
   @override
-  FutureEither<PlaybackDescriptor> playback(String id, {CancelToken? cancelToken}) async =>
+  FutureEither<PlaybackDescriptor> playback(String id,
+          {CancelToken? cancelToken}) async =>
       Right(PlaybackDescriptor(
         cameraId: camera.id,
         kind: 'snapshot_poll',
@@ -182,7 +248,8 @@ class _Favs implements FavoritesRepository {
   FutureEither<void> load() async => const Right(null);
 
   @override
-  FutureEither<void> setSaved(Camera camera, bool saved) async => const Right(null);
+  FutureEither<void> setSaved(Camera camera, bool saved) async =>
+      const Right(null);
 
   @override
   FutureEither<void> resetCorruptData() async => const Right(null);
@@ -193,6 +260,26 @@ class _Loader extends AssetLoader {
   @override
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
+        'camera': {
+          'reset_failed': 'Không thể đặt lại: {}',
+          'favorites_update_failed': 'Lỗi cập nhật Quan tâm: {}',
+          'reset': 'Đặt lại',
+          'load_failed': 'Không thể tải danh sách camera',
+          'live': 'Trực tiếp',
+          'snapshot': 'Ảnh',
+          'snapshot_static': 'Ảnh tĩnh',
+          'snapshot_load_failed': 'Không thể tải hình ảnh camera',
+          'directions': 'Chỉ đường',
+          'grid_title': 'Lưới camera',
+          'multi_empty': 'Chưa có camera Quan tâm khả dụng',
+          'back': 'Quay lại',
+          'fullscreen': 'Toàn màn hình',
+          'favorite': 'Quan tâm',
+          'unfavorite': 'Bỏ quan tâm',
+          'view_grid_tooltip': 'Xem lưới',
+          'close': 'Đóng',
+          'clear_search': 'Xóa tìm kiếm',
+        },
       };
 }
 

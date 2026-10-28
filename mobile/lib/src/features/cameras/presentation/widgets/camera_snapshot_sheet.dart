@@ -217,7 +217,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             CameraGlassIconButton(
                               key: const ValueKey('sheet_close_button'),
                               icon: Icons.close,
-                              label: 'Đóng',
+                              label: 'camera.close'.tr(),
                               embedded: true,
                               onPressed: () => Navigator.of(context).pop(),
                             ),
@@ -237,7 +237,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                 iconSize: CameraUiTokens.controlIconSize,
                                 icon:
                                     isFavorite ? Icons.star : Icons.star_border,
-                                label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+                                label: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
                                 selected: isFavorite,
                                 embedded: true,
                                 onPressed: () {
@@ -296,16 +296,16 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                               if (camera != null && camera.canLive) ...[
                                 SegmentedButton<bool>(
                                   key: const ValueKey('live_mode_toggle'),
-                                  segments: const [
+                                  segments: [
                                     ButtonSegment(
                                       value: false,
-                                      icon: Icon(Icons.image_outlined),
-                                      label: Text('Ảnh tĩnh'),
+                                      icon: const Icon(Icons.image_outlined),
+                                      label: Text('camera.snapshot_static'.tr()),
                                     ),
                                     ButtonSegment(
                                       value: true,
-                                      icon: Icon(Icons.live_tv_outlined),
-                                      label: Text('Trực tiếp'),
+                                      icon: const Icon(Icons.live_tv_outlined),
+                                      label: Text('camera.live'.tr()),
                                     ),
                                   ],
                                   selected: {_liveMode},
@@ -384,7 +384,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                               key: const ValueKey('directions_button'),
                               onPressed: () => openCameraDirections(camera),
                               icon: const Icon(Icons.directions),
-                              label: const Text('Chỉ đường'),
+                              label: Text('camera.directions'.tr()),
                             ),
                           ),
 
@@ -434,7 +434,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
             const Icon(Icons.broken_image,
                 size: 40, color: CameraUiTokens.errorRed),
             const SizedBox(height: CameraUiTokens.spacing8),
-            const Text('Không thể tải hình ảnh camera'),
+            Text('camera.snapshot_load_failed'.tr()),
             const SizedBox(height: CameraUiTokens.spacing8),
             ElevatedButton(
               onPressed: widget.preview.retry,

@@ -98,6 +98,7 @@ class _CameraGlassSearchFieldState extends State<CameraGlassSearchField> {
                 button: true,
                 label: 'camera.clear_search'.tr(),
                 child: IconButton(
+                  tooltip: 'camera.clear_search'.tr(),
                   icon: const Icon(Icons.clear, size: 18),
                   color: hintColor,
                   constraints: const BoxConstraints(

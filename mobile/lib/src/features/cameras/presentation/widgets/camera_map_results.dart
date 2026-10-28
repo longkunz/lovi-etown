@@ -1,5 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/src/shared/widgets/ui/app/feedback/app_empty_state.dart';
+import 'package:flutter_starter/src/shared/widgets/ui/app/feedback/app_error_widget.dart';
 import '../../domain/camera_models.dart';
 import '../providers/camera_map_state.dart';
 
@@ -23,13 +25,12 @@ class CameraMapResults extends StatelessWidget {
         Text('map_discovery.invalid_viewport'.tr()),
       if (state.updateRequired)
         Text('map_discovery.update_required'.tr()),
-      if (state.failure != null && !state.updateRequired) ...[
-        Text('map_discovery.load_failed'.tr()),
-        TextButton(
-            style: TextButton.styleFrom(minimumSize: const Size(48, 48)),
-            onPressed: onRetry,
-            child: Text('map_discovery.retry'.tr()))
-      ],
+      if (state.failure != null && !state.updateRequired)
+        AppErrorWidget(
+          title: 'map_discovery.load_failed'.tr(),
+          onRetry: onRetry,
+          retryLabel: 'map_discovery.retry'.tr(),
+        ),
       if (state.resultsAreStale)
         Text('map_discovery.stale_results'.tr()),
       if (result != null &&
@@ -48,7 +49,10 @@ class CameraMapResults extends StatelessWidget {
           result.items.isEmpty &&
           !state.loading &&
           state.failure == null)
-        Text('map_discovery.empty'.tr()),
+        AppEmptyState(
+          icon: Icons.search_off_outlined,
+          title: 'map_discovery.empty'.tr(),
+        ),
       if (result != null)
         ...result.items.map((item) => ListTile(
             minVerticalPadding: 12,

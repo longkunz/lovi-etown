@@ -46,8 +46,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _onGetStarted() {
-    // Navigate back or to home. For template purpose:
-    context.go(AppRoutes.login);
+    // Auth is out of the main journey (T06: camera API needs no login):
+    // onboarding ends directly in the Map/Camera shell.
+    context.go(AppRoutes.map);
   }
 
   @override

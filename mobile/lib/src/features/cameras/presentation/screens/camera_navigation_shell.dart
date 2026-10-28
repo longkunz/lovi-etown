@@ -86,7 +86,7 @@ class _CameraNavigationShellState extends State<CameraNavigationShell> {
             child: widget.navigationShell);
     // Top-inset contract (#56): this shell adds NO SafeArea and NO top
     // padding. Each branch owns its own top inset — the camera tab pads
-    // manually (padding.top + kToolbarHeight under extendBodyBehindAppBar
+    // manually (padding.top supplied by Scaffold under extendBodyBehindAppBar
     // so its content scrolls under the glass AppBar), the map tab uses its
     // own SafeArea. Adding a SafeArea here would double-pad both tabs and
     // push the glass headers down. See camera_shell_inset_test.dart.

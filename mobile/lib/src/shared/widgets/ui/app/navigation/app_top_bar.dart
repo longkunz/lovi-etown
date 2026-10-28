@@ -31,7 +31,9 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
       } else if (canPop) {
         context.pop();
       } else {
-        context.go(AppRoutes.home);
+        // No /home route anymore (auth removed from the main journey):
+        // fall back to the Map tab, the shell root.
+        context.go(AppRoutes.map);
       }
     }
 

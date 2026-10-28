@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_cubit.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/providers/camera_preview_state.dart';
@@ -107,7 +108,7 @@ class _CameraImageViewerState extends State<CameraImageViewer> {
                         CameraGlassIconButton(
                           key: const ValueKey('viewer_close_button'),
                           icon: Icons.close,
-                          label: 'Đóng',
+                          label: 'camera.close'.tr(),
                           embedded: true,
                           iconColor: Colors.white,
                           iconSize: 28,

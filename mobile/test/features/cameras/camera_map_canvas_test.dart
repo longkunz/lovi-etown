@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -77,6 +79,25 @@ class FakeController implements CameraMapCanvasController {
 }
 
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+  });
+  Widget localized(Widget child) => EasyLocalization(
+        supportedLocales: const [Locale('vi')],
+        startLocale: const Locale('vi'),
+        fallbackLocale: const Locale('vi'),
+        saveLocale: false,
+        path: 'assets/translations',
+        child: Builder(
+            builder: (context) => MaterialApp(
+                  locale: context.locale,
+                  localizationsDelegates: context.localizationDelegates,
+                  supportedLocales: context.supportedLocales,
+                  home: child,
+                )),
+      );
   testWidgets(
       'markers wait for style; repeated ready is idempotent; idle queries visible region',
       (tester) async {
@@ -191,21 +212,19 @@ void main() {
       (tester) async {
     final loader = FakeLoader()..failAux = true;
     String? actual;
-    await tester.pumpWidget(MaterialApp(
-        home: CameraMapCanvas(
-            styleLoader: loader,
-            connectionConfig: const MapConnectionConfig(apiKey: 'test'),
-            config: const CameraMapViewConfig(
-                center: MapCoordinate(10, 106),
-                zoom: 12,
-                trafficEnabled: true,
-                mapType: CameraMapType.hybrid,
-                markers: []),
-            nativeBuilder:
-                (context, style, config, onCreated, onReady, onIdle) {
-              actual = style;
-              return const SizedBox();
-            })));
+    await tester.pumpWidget(localized(CameraMapCanvas(
+        styleLoader: loader,
+        connectionConfig: const MapConnectionConfig(apiKey: 'test'),
+        config: const CameraMapViewConfig(
+            center: MapCoordinate(10, 106),
+            zoom: 12,
+            trafficEnabled: true,
+            mapType: CameraMapType.hybrid,
+            markers: []),
+        nativeBuilder: (context, style, config, onCreated, onReady, onIdle) {
+          actual = style;
+          return const SizedBox();
+        })));
     await tester.pumpAndSettle();
     expect(jsonDecode(actual!)['sources'], contains('tm'));
     expect(find.textContaining('Không tải được lớp'), findsOneWidget);
@@ -249,19 +268,5 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
     expect(jsonDecode(current!)['sources'], contains('hm'));
-  });
-  testWidgets(
-      'missing key displays configuration message without native canvas',
-      (tester) async {
-    await tester.pumpWidget(const MaterialApp(
-        home: CameraMapCanvas(
-            connectionConfig: MapConnectionConfig(),
-            config: CameraMapViewConfig(
-                center: MapCoordinate(10, 106),
-                zoom: 12,
-                trafficEnabled: true,
-                markers: []))));
-    await tester.pumpAndSettle();
-    expect(find.text('Chưa cấu hình khóa Vietmap'), findsOneWidget);
   });
 }

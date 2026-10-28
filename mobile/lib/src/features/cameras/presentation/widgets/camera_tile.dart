@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
@@ -118,7 +119,7 @@ class CameraTile extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            'TRỰC TIẾP',
+            'camera.live_upper'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: compact ? 9 : 10,
@@ -135,12 +136,13 @@ class CameraTile extends StatelessWidget {
         ? CameraUiTokens.controlForegroundLight
         : CameraUiTokens.controlForegroundDark;
     return Semantics(
-      label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+      label: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
       selected: isFavorite,
       child: SizedBox.square(
         dimension: CameraUiTokens.minTouchTarget,
         child: IconButton(
-          tooltip: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+          tooltip:
+              isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
           padding: EdgeInsets.zero,
           onPressed: onToggleFavorite,
           icon: CameraGlassSurface(
@@ -164,7 +166,7 @@ class CameraTile extends StatelessWidget {
   Widget _buildFavoriteButton() {
     return CameraGlassIconButton(
       icon: isFavorite ? Icons.star : Icons.star_border,
-      label: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+      label: isFavorite ? 'camera.unfavorite'.tr() : 'camera.favorite'.tr(),
       selected: isFavorite,
       embedded: true,
       onPressed: onToggleFavorite,

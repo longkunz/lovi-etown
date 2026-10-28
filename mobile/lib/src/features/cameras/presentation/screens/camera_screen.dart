@@ -105,7 +105,8 @@ class _CameraScreenState extends State<CameraScreen>
       _ownsCubit = true;
     }
 
-    _appForeground = WidgetsBinding.instance.lifecycleState == null || WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _appForeground = WidgetsBinding.instance.lifecycleState == null ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     _thumbnailScheduler.setForeground(widget.active && _appForeground);
     _cache.addListener(_onCacheChanged);
     _catalogCubit.start();
@@ -176,7 +177,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Không thể đặt lại: ${failure.message}'),
+              content: Text('camera.reset_failed_generic'.tr()),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -330,7 +331,7 @@ class _CameraScreenState extends State<CameraScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Lỗi cập nhật Quan tâm: ${failure.message}'),
+              content: Text('camera.favorites_update_failed_generic'.tr()),
               backgroundColor: CameraUiTokens.errorRed,
             ),
           );
@@ -423,7 +424,9 @@ class _CameraScreenState extends State<CameraScreen>
                     onQueryChanged: _catalogCubit.setQuery,
                     viewMode: state.viewMode,
                     onViewModeChanged: _catalogCubit.setViewMode,
-                    validationMessage: state.queryValidationMessage,
+                    validationMessage: state.queryValidationMessage == null
+                        ? null
+                        : 'camera.search_min_chars'.tr(),
                   ),
                 ),
 
@@ -447,10 +450,10 @@ class _CameraScreenState extends State<CameraScreen>
                           const Icon(Icons.warning_amber_rounded,
                               color: CameraUiTokens.errorRed),
                           const SizedBox(width: CameraUiTokens.spacing8),
-                          const Expanded(
+                          Expanded(
                             child: Text(
-                              'Dữ liệu quan tâm bị hỏng.',
-                              style: TextStyle(
+                              'camera.favorites_corrupt'.tr(),
+                              style: const TextStyle(
                                 color: CameraUiTokens.errorRed,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -458,7 +461,7 @@ class _CameraScreenState extends State<CameraScreen>
                           ),
                           TextButton(
                             onPressed: _handleResetCorruptData,
-                            child: const Text('Đặt lại'),
+                            child: Text('camera.reset'.tr()),
                           ),
                         ],
                       ),
@@ -544,7 +547,7 @@ class _CameraScreenState extends State<CameraScreen>
               const Icon(Icons.error_outline,
                   size: 48, color: CameraUiTokens.errorRed),
               const SizedBox(height: CameraUiTokens.spacing8),
-              const Text('Không thể tải danh sách camera'),
+              Text('camera.load_failed'.tr()),
               const SizedBox(height: CameraUiTokens.spacing12),
               ElevatedButton(
                 onPressed: _catalogCubit.retry,
@@ -557,9 +560,9 @@ class _CameraScreenState extends State<CameraScreen>
     }
 
     if (state.items.isEmpty) {
-      return const SliverFillRemaining(
+      return SliverFillRemaining(
         child: Center(
-          child: Text('Không tìm thấy camera phù hợp'),
+          child: Text('camera.empty_search'.tr()),
         ),
       );
     }

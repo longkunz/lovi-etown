@@ -1,3 +1,4 @@
+import 'localized_widget_test_helper.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
@@ -205,11 +206,32 @@ class _Loader extends AssetLoader {
   Future<Map<String, dynamic>> load(String path, Locale locale) async => {
         'shared': {'retry': 'Thử lại', 'close': 'Đóng'},
         'camera': {
+          ...cameraTestTranslations,
+          'refresh_after': 'Làm mới sau {}s',
+          'refreshing_now': 'Đang cập nhật…',
           'traffic_map_title': 'Bản đồ lưu lượng',
           'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',
           'traffic_map_fullscreen': 'Xem bản đồ toàn màn hình',
           'traffic_map_recenter': 'Về vị trí camera',
           'traffic_map_no_location': 'Chưa có dữ liệu vị trí cho camera này',
+          'reset_failed': 'Không thể đặt lại: {}',
+          'favorites_update_failed': 'Lỗi cập nhật Quan tâm: {}',
+          'reset': 'Đặt lại',
+          'load_failed': 'Không thể tải danh sách camera',
+          'live': 'Trực tiếp',
+          'snapshot': 'Ảnh',
+          'snapshot_static': 'Ảnh tĩnh',
+          'snapshot_load_failed': 'Không thể tải hình ảnh camera',
+          'directions': 'Chỉ đường',
+          'grid_title': 'Lưới camera',
+          'multi_empty': 'Chưa có camera Quan tâm khả dụng',
+          'back': 'Quay lại',
+          'fullscreen': 'Toàn màn hình',
+          'favorite': 'Quan tâm',
+          'unfavorite': 'Bỏ quan tâm',
+          'view_grid_tooltip': 'Xem lưới',
+          'close': 'Đóng',
+          'clear_search': 'Xóa tìm kiếm',
         },
       };
 }
@@ -604,7 +626,7 @@ void main() {
     expect(find.byKey(const ValueKey('viewer_favorite_button')), findsNothing);
     favs.loadResult.complete(const Left(DatabaseFailure('read failed')));
     await _pumpFrames(tester);
-    expect(find.text('read failed'), findsOneWidget);
+    expect(find.text('Không thể tải danh sách quan tâm'), findsOneWidget);
     favs.retry = true;
     await tester.tap(find.byKey(const ValueKey('viewer_favorites_retry')));
     await _pumpFrames(tester);

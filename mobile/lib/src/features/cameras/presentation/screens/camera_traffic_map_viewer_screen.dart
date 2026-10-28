@@ -132,7 +132,7 @@ class _CameraTrafficMapViewerScreenState
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              tooltip: 'Quay lại',
+              tooltip: 'camera.back'.tr(),
               onPressed: () => Navigator.of(context).pop(),
             ),
             title: Column(
@@ -162,7 +162,7 @@ class _CameraTrafficMapViewerScreenState
               IconButton(
                 key: const ValueKey('fullscreen_directions_button'),
                 icon: const Icon(Icons.directions),
-                tooltip: 'Chỉ đường',
+                tooltip: 'camera.directions'.tr(),
                 onPressed: () => openCameraDirections(camera),
               ),
             ],
@@ -215,11 +215,11 @@ class _CameraTrafficMapViewerScreenState
                       ? Icons.layers
                       : Icons.map,
                   label: _mapType == CameraMapType.street
-                      ? 'Bản đồ vệ tinh'
-                      : 'Bản đồ chuẩn',
+                      ? 'camera.map_satellite'.tr()
+                      : 'camera.map_standard'.tr(),
                   tooltip: _mapType == CameraMapType.street
-                      ? 'Bản đồ vệ tinh'
-                      : 'Bản đồ chuẩn',
+                      ? 'camera.map_satellite'.tr()
+                      : 'camera.map_standard'.tr(),
                   selected: _mapType != CameraMapType.street,
                   forceOpaque: true,
                   onPressed: _toggleMapType,

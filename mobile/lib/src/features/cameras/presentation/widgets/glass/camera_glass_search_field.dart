@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 import 'camera_glass_surface.dart';
@@ -95,7 +96,7 @@ class _CameraGlassSearchFieldState extends State<CameraGlassSearchField> {
             if (hasText)
               Semantics(
                 button: true,
-                label: 'Xóa tìm kiếm',
+                label: 'camera.clear_search'.tr(),
                 child: IconButton(
                   icon: const Icon(Icons.clear, size: 18),
                   color: hintColor,

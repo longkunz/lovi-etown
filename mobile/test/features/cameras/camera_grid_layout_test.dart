@@ -1,17 +1,52 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_tile.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 
+class _TileLoader extends AssetLoader {
+  const _TileLoader();
+  @override
+  Future<Map<String, dynamic>> load(String path, Locale locale) async => {
+        'camera': {
+          'favorite': 'Quan tâm',
+          'unfavorite': 'Bỏ quan tâm',
+        },
+      };
+}
+
+Widget _app(Widget home) => EasyLocalization(
+      supportedLocales: const [Locale('vi')],
+      path: 'assets/translations',
+      assetLoader: const _TileLoader(),
+      fallbackLocale: const Locale('vi'),
+      startLocale: const Locale('vi'),
+      saveLocale: false,
+      child: Builder(
+        builder: (context) => MaterialApp(
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          home: home,
+        ),
+      ),
+    );
+
 void main() {
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});
+    await EasyLocalization.ensureInitialized();
+  });
+
   for (final mode in [CameraViewMode.card, CameraViewMode.grid]) {
     testWidgets('$mode favorite keeps compact glass and a 48px tap target',
         (tester) async {
       var toggles = 0;
-      await tester.pumpWidget(MaterialApp(
-        home: Scaffold(
-          body: SizedBox(
+      await tester.pumpWidget(_app(Scaffold(
+        body: SizedBox(
             width: 200,
             height: 350,
             child: CameraTile(
@@ -28,7 +63,7 @@ void main() {
           ),
         ),
       ));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       final favorite = find.byTooltip('Bỏ quan tâm');
       expect(tester.getSize(favorite), const Size(48, 48));

@@ -274,16 +274,16 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                       selectedForegroundColor: Colors.white,
                       selectedBackgroundColor: CameraUiTokens.primaryTeal,
                     ),
-                    segments: const [
+                    segments: [
                       ButtonSegment(
                         value: true,
-                        icon: Icon(Icons.live_tv_outlined),
-                        label: Text('Trực tiếp'),
+                        icon: const Icon(Icons.live_tv_outlined),
+                        label: Text('camera.live'.tr()),
                       ),
                       ButtonSegment(
                         value: false,
-                        icon: Icon(Icons.image_outlined),
-                        label: Text('Ảnh'),
+                        icon: const Icon(Icons.image_outlined),
+                        label: Text('camera.snapshot'.tr()),
                       ),
                     ],
                     selected: {liveSelected},
@@ -297,22 +297,22 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 ),
                 if (_liveFailed) ...[
                   const SizedBox(height: CameraUiTokens.spacing8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: CameraUiTokens.spacing16,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline,
                           size: 16,
                           color: CameraUiTokens.errorRed,
                         ),
-                        SizedBox(width: CameraUiTokens.spacing4),
+                        const SizedBox(width: CameraUiTokens.spacing4),
                         Expanded(
                           child: Text(
-                            'Không phát được trực tiếp — đang hiện ảnh tĩnh',
-                            style: TextStyle(
+                            'camera.live_unavailable'.tr(),
+                            style: const TextStyle(
                               color: CameraUiTokens.errorRed,
                               fontSize: 12,
                             ),
@@ -324,22 +324,22 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 ],
                 if (liveSelected && !camera.canLive) ...[
                   const SizedBox(height: CameraUiTokens.spacing8),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: CameraUiTokens.spacing16,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.info_outline,
                           size: 16,
                           color: Colors.white70,
                         ),
-                        SizedBox(width: CameraUiTokens.spacing4),
+                        const SizedBox(width: CameraUiTokens.spacing4),
                         Expanded(
                           child: Text(
-                            'Camera này không có luồng trực tiếp',
-                            style: TextStyle(
+                            'camera.no_live'.tr(),
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 12,
                             ),
@@ -398,9 +398,9 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
           const Icon(Icons.error_outline,
               size: 48, color: CameraUiTokens.errorRed),
           const SizedBox(height: CameraUiTokens.spacing8),
-          const Text(
-            'Không thể tải thông tin camera',
-            style: TextStyle(color: Colors.white),
+          Text(
+            'camera.camera_info_error'.tr(),
+            style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(height: CameraUiTokens.spacing12),
           ElevatedButton(
@@ -459,7 +459,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                         color: Colors.white,
                         size: CameraUiTokens.controlIconSize),
                   ),
-                  tooltip: 'Toàn màn hình',
+                  tooltip: 'camera.fullscreen'.tr(),
                   onPressed: () =>
                       _openFullScreen(camera, liveSelected: liveSelected),
                 ),
@@ -585,7 +585,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
                 key: const ValueKey('directions_button'),
                 onPressed: () => openCameraDirections(camera),
                 icon: const Icon(Icons.directions),
-                label: const Text('Chỉ đường'),
+                label: Text('camera.directions'.tr()),
               ),
             ),
           if (camera.hasLocation)
@@ -595,7 +595,9 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             height: CameraUiTokens.minTouchTarget,
             child: IconButton(
               key: const ValueKey('viewer_favorite_button'),
-              tooltip: isFavorite ? 'Bỏ quan tâm' : 'Quan tâm',
+              tooltip: isFavorite
+                  ? 'camera.unfavorite'.tr()
+                  : 'camera.favorite'.tr(),
               onPressed: () {
                 widget.favoritesRepository.setSaved(camera, !isFavorite);
               },
@@ -614,7 +616,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
               height: CameraUiTokens.minTouchTarget,
               child: IconButton(
                 key: const ValueKey('viewer_grid_button'),
-                tooltip: 'Lưới camera',
+                tooltip: 'camera.grid_title'.tr(),
                 onPressed: widget.onOpenMultiCamera,
                 icon: const Icon(
                   Icons.grid_view,
@@ -637,7 +639,7 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
             horizontal: CameraUiTokens.spacing16,
           ),
           child: Text(
-            'Camera liên quan',
+            'camera.related_cameras'.tr(),
             style: theme.textTheme.titleSmall?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -704,9 +706,9 @@ class _SnapshotView extends StatelessWidget {
             const Icon(Icons.broken_image,
                 size: 40, color: CameraUiTokens.errorRed),
             const SizedBox(height: CameraUiTokens.spacing8),
-            const Text(
-              'Không thể tải hình ảnh camera',
-              style: TextStyle(color: Colors.white),
+            Text(
+              'camera.camera_image_error'.tr(),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: CameraUiTokens.spacing8),
             ElevatedButton(
@@ -764,14 +766,15 @@ class _SnapshotView extends StatelessWidget {
                 color: Colors.black.withValues(alpha: 0.65),
                 borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
               ),
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.history_rounded, size: 14, color: Colors.white),
-                  SizedBox(width: 4),
+                  const Icon(Icons.history_rounded,
+                      size: 14, color: Colors.white),
+                  const SizedBox(width: 4),
                   Text(
-                    'Ảnh cũ',
-                    style: TextStyle(
+                    'camera.stale_image'.tr(),
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
@@ -846,7 +849,7 @@ class _FullScreenMediaPage extends StatelessWidget {
                     CameraGlassIconButton(
                       key: const ValueKey('viewer_fullscreen_close'),
                       icon: Icons.close,
-                      label: 'Đóng',
+                      label: 'camera.close'.tr(),
                       embedded: true,
                       iconColor: Colors.white,
                       iconSize: 28,
@@ -1003,7 +1006,7 @@ class _LiveChip extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            'TRỰC TIẾP',
+            'camera.live_upper'.tr(),
             style: TextStyle(
               color: Colors.white,
               fontSize: compact ? 9 : 10,

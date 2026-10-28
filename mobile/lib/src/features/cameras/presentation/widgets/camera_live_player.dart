@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -173,14 +174,14 @@ class _LiveBadge extends StatelessWidget {
         color: CameraUiTokens.errorRed,
         borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
       ),
-      child: const Row(
+      child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.fiber_manual_record, size: 10, color: Colors.white),
-          SizedBox(width: 4),
+          const Icon(Icons.fiber_manual_record, size: 10, color: Colors.white),
+          const SizedBox(width: 4),
           Text(
-            'TRỰC TIẾP',
-            style: TextStyle(
+            'camera.live_upper'.tr(),
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 10,
               fontWeight: FontWeight.bold,

@@ -67,8 +67,12 @@ void main() {
 
       final favorite = find.byTooltip('Bỏ quan tâm');
       expect(tester.getSize(favorite), const Size(48, 48));
+      // Since #53b the tile itself is also a glass surface: scope the
+      // 32px expectation to the favorite button's own surface.
       expect(
-          tester.getSize(find.byType(CameraGlassSurface)), const Size(32, 32));
+          tester.getSize(find.descendant(
+              of: favorite, matching: find.byType(CameraGlassSurface))),
+          const Size(32, 32));
       expect(tester.widget<Icon>(find.byIcon(Icons.star)).size, 20);
       // The corner is outside the visible 32px control but must remain tappable.
       await tester.tapAt(tester.getTopLeft(favorite) + const Offset(1, 1));

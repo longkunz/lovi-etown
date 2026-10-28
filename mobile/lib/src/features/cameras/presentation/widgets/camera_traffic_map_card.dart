@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/screens/camera_traffic_map_viewer_screen.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 class CameraTrafficMapCard extends StatefulWidget {
@@ -116,7 +117,6 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
     }
 
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final cameraPos = MapCoordinate(camera.latitude!, camera.longitude!);
 
     final markers = <CameraMapMarker>{
@@ -131,15 +131,8 @@ class _CameraTrafficMapCardState extends State<CameraTrafficMapCard> {
       onMapCreated: (controller) => _mapController = controller,
     );
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color:
-            isDark ? CameraUiTokens.surfaceDark : CameraUiTokens.surfaceLight,
-        borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
-        border: Border.all(
-          color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.08),
-        ),
-      ),
+    return CameraGlassSurface(
+      borderRadius: BorderRadius.circular(CameraUiTokens.radius16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,

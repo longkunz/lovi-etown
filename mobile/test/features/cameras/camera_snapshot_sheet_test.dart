@@ -211,6 +211,7 @@ class SheetTestAssetLoader extends AssetLoader {
         'refresh_after': 'Làm mới sau {}s',
         'refreshing_now': 'Đang cập nhật…',
         'title': 'Camera giao thông',
+        'stale_chip': 'Ảnh cũ',
         'favorites_title': 'Quan tâm',
         'traffic_map_title': 'Bản đồ lưu lượng',
         'traffic_map_toggle': 'Bật/tắt lưu lượng giao thông',

@@ -14,6 +14,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_traffic_map_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/traffic_brief_card.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_icon_button.dart';
+import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_segmented_control.dart';
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
@@ -296,7 +297,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               if (camera != null && camera.canLive) ...[
-                                SegmentedButton<bool>(
+                                CameraGlassSegmentedControl<bool>(
                                   key: const ValueKey('live_mode_toggle'),
                                   segments: [
                                     ButtonSegment(
@@ -311,9 +312,9 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                       label: Text('camera.live'.tr()),
                                     ),
                                   ],
-                                  selected: {_liveMode},
-                                  onSelectionChanged: (selection) {
-                                    setState(() => _liveMode = selection.first);
+                                  value: _liveMode,
+                                  onChanged: (value) {
+                                    setState(() => _liveMode = value);
                                   },
                                 ),
                                 const SizedBox(
@@ -498,34 +499,36 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                 Positioned(
                   top: CameraUiTokens.spacing8,
                   left: CameraUiTokens.spacing8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: CameraUiTokens.spacing8,
-                      vertical: CameraUiTokens.spacing4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.65),
-                      borderRadius:
-                          BorderRadius.circular(CameraUiTokens.radius8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.history_rounded,
-                          size: 14,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'camera.stale_image'.tr(),
-                          style: const TextStyle(
+                  child: CameraGlassSurface(
+                    role: CameraGlassRole.control,
+                    // The chip floats over the (dark) snapshot image.
+                    brightness: Brightness.dark,
+                    borderRadius:
+                        BorderRadius.circular(CameraUiTokens.radius8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CameraUiTokens.spacing8,
+                        vertical: CameraUiTokens.spacing4,
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.history_rounded,
+                            size: 14,
                             color: Colors.white,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4),
+                          Text(
+                            'camera.stale_chip'.tr(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

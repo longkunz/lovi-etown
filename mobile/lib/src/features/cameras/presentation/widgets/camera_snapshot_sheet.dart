@@ -303,9 +303,9 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                     ButtonSegment(
                                       value: false,
                                       icon: const Icon(Icons.image_outlined),
-                                      label: Text('camera.snapshot_static'.tr()),
-                                      tooltip:
-                                          'camera.snapshot_static'.tr(),
+                                      label:
+                                          Text('camera.snapshot_static'.tr()),
+                                      tooltip: 'camera.snapshot_static'.tr(),
                                     ),
                                     ButtonSegment(
                                       value: true,
@@ -406,9 +406,6 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                                 widget.preview.open(related.id),
                             snapshotFetchedAt: state.currentFrame?.fetchedAt,
                             isStale: state.isStale,
-                            onDirectionsTap: camera.hasLocation
-                                ? () => openCameraDirections(camera)
-                                : null,
                           ),
                       ],
                     ),
@@ -505,8 +502,7 @@ class _CameraSnapshotSheetState extends State<CameraSnapshotSheet>
                     role: CameraGlassRole.control,
                     // The chip floats over the (dark) snapshot image.
                     brightness: Brightness.dark,
-                    borderRadius:
-                        BorderRadius.circular(CameraUiTokens.radius8),
+                    borderRadius: BorderRadius.circular(CameraUiTokens.radius8),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: CameraUiTokens.spacing8,

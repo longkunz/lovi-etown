@@ -373,9 +373,9 @@ void main() {
       expect(find.text('Quận 3 · 45/61 camera hoạt động'), findsOneWidget);
     });
 
-    testWidgets('shows directions button and handles tap when location present',
+    testWidgets(
+        'does not render a directions button even when location present',
         (tester) async {
-      var directionsTapped = false;
       final repo = _Repo(
         relatedItems: const [],
         districtOptions: const [DistrictOption(name: 'Quận 1', count: 10)],
@@ -387,16 +387,14 @@ void main() {
                 district: 'Quận 1', latitude: 10.77, longitude: 106.70),
             repository: repo,
             onSelectCamera: (_) {},
-            onDirectionsTap: () => directionsTapped = true,
           ),
         ),
       ));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
-      final btn = find.byKey(const ValueKey('brief_directions_button'));
-      expect(btn, findsOneWidget);
-      await tester.tap(btn);
-      expect(directionsTapped, isTrue);
+      // Directions lives in the viewer/sheet action row, not in this card.
+      expect(
+          find.byKey(const ValueKey('brief_directions_button')), findsNothing);
     });
 
     testWidgets('tapping a related camera selects it', (tester) async {
@@ -420,14 +418,12 @@ void main() {
       expect(selected?.id, 'r1');
     });
 
-    testWidgets(
-        'shows camera status, freshness and directions without a district',
+    testWidgets('shows camera status and freshness without a district',
         (tester) async {
       final repo = _Repo(
         relatedItems: const [],
         districtOptions: const [],
       );
-      var directionsTapped = false;
       final fetchedAt = DateTime(2026, 10, 25, 12);
       await tester.pumpWidget(localizedApp(
         home: Scaffold(
@@ -438,7 +434,6 @@ void main() {
             onSelectCamera: (_) {},
             snapshotFetchedAt: fetchedAt,
             clockNow: () => fetchedAt.add(const Duration(seconds: 15)),
-            onDirectionsTap: () => directionsTapped = true,
           ),
         ),
       ));
@@ -449,8 +444,8 @@ void main() {
       expect(find.text('Ảnh mới: Cập nhật 15s trước'), findsOneWidget);
       expect(find.byKey(const ValueKey('traffic_brief_district_info')),
           findsNothing);
-      await tester.tap(find.byKey(const ValueKey('brief_directions_button')));
-      expect(directionsTapped, isTrue);
+      expect(
+          find.byKey(const ValueKey('brief_directions_button')), findsNothing);
     });
 
     testWidgets('keeps camera information when district requests fail',
@@ -477,8 +472,8 @@ void main() {
       await tester.pump();
       expect(find.text('Mất tín hiệu'), findsOneWidget);
       expect(find.text('Ảnh cũ (90s trước)'), findsOneWidget);
-      expect(find.byKey(const ValueKey('brief_directions_button')),
-          findsOneWidget);
+      expect(
+          find.byKey(const ValueKey('brief_directions_button')), findsNothing);
       expect(find.textContaining('camera hoạt động'), findsNothing);
     });
 

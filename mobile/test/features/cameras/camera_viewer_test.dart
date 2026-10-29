@@ -408,6 +408,33 @@ void main() {
     await tester.pumpWidget(const SizedBox());
   });
 
+  testWidgets(
+      'viewer body resolves the dark theme and keeps a single '
+      'directions button', (tester) async {
+    final repo = _ViewerRepo(cameras: {'cam-live': liveCam});
+    await pumpViewer(
+      tester,
+      cameraId: 'cam-live',
+      repo: repo,
+      favs: InMemoryFavoritesRepository(),
+    );
+
+    // The brief card sits outside the inner copyWith dark wraps, so its
+    // resolved Theme proves the new outer buildDarkTheme wrap: the
+    // theme-driven card text now renders light on the dark background.
+    final briefCard = find.byKey(const ValueKey('traffic_brief_cam-live'));
+    expect(briefCard, findsOneWidget);
+    expect(
+      Theme.of(tester.element(briefCard)).brightness,
+      Brightness.dark,
+    );
+    // The action-row button survives; the brief-card duplicate is gone.
+    expect(find.byKey(const ValueKey('directions_button')), findsOneWidget);
+    expect(find.byKey(const ValueKey('brief_directions_button')), findsNothing);
+
+    await tester.pumpWidget(const SizedBox());
+  });
+
   testWidgets('opens in Snapshot mode for a snapshot-only camera',
       (tester) async {
     final repo = _ViewerRepo(cameras: {'cam-plain': plainCam});

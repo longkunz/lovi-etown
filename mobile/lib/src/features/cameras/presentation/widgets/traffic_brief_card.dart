@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_models.dart';
 import 'package:flutter_starter/src/features/cameras/domain/camera_repository.dart';
-import 'package:flutter_starter/src/features/cameras/presentation/widgets/camera_directions.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 
 /// "Tình trạng tại điểm" — traffic brief v1 (T17).
@@ -11,8 +10,9 @@ import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
 /// - Trạng thái hoạt động (online / offline / degraded / unknown)
 /// - Độ tươi của ảnh (số giây từ ảnh mới nhất, ảnh tươi / cũ)
 /// - Tỉ lệ camera cùng quận đang online / tổng số camera quận
-/// - Nút "Chỉ đường" (T10 handoff) khi camera có tọa độ
 /// - Danh sách camera lân cận cùng quận (chạm để chuyển)
+/// (Nút "Chỉ đường" sống ở hàng action của viewer / sheet, không còn
+/// trùng trong thẻ này nữa.)
 class TrafficBriefCard extends StatefulWidget {
   const TrafficBriefCard({
     required this.camera,
@@ -20,7 +20,6 @@ class TrafficBriefCard extends StatefulWidget {
     required this.onSelectCamera,
     this.snapshotFetchedAt,
     this.isStale = false,
-    this.onDirectionsTap,
     this.clockNow,
     super.key,
   });
@@ -30,7 +29,6 @@ class TrafficBriefCard extends StatefulWidget {
   final ValueChanged<Camera> onSelectCamera;
   final DateTime? snapshotFetchedAt;
   final bool isStale;
-  final VoidCallback? onDirectionsTap;
   final DateTime Function()? clockNow;
 
   @override
@@ -253,22 +251,6 @@ class _TrafficBriefCardState extends State<TrafficBriefCard> {
             ),
           ],
           _buildFreshnessRow(context),
-          if (camera.hasLocation) ...[
-            const SizedBox(height: CameraUiTokens.spacing8),
-            OutlinedButton.icon(
-              key: const ValueKey('brief_directions_button'),
-              onPressed:
-                  widget.onDirectionsTap ?? () => openCameraDirections(camera),
-              icon: const Icon(Icons.directions, size: 16),
-              label: Text('camera.directions'.tr()),
-              style: OutlinedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: CameraUiTokens.spacing12,
-                    vertical: CameraUiTokens.spacing4),
-              ),
-            ),
-          ],
           if (shownRelated.isNotEmpty) ...[
             const SizedBox(height: CameraUiTokens.spacing8),
             Text(

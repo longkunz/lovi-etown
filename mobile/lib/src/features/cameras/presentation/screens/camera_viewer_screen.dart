@@ -20,6 +20,7 @@ import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/
 import 'package:flutter_starter/src/features/cameras/presentation/widgets/glass/camera_glass_surface.dart';
 import 'package:flutter_starter/src/theme/camera_glass_theme.dart';
 import 'package:flutter_starter/src/theme/camera_ui_tokens.dart';
+import 'package:flutter_starter/src/theme/theme.dart';
 
 /// Full-screen viewer for a single camera, mirroring the reference
 /// `camera_view` structure: a media area with a Trực tiếp / Ảnh mode
@@ -258,138 +259,144 @@ class _CameraViewerScreenState extends State<CameraViewerScreen>
           final isFavorite = _favoriteIds.contains(camera.id);
           final liveSelected = _liveOverride ?? camera.canLive;
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _buildMediaArea(context, state, liveSelected),
-                const SizedBox(height: CameraUiTokens.spacing12),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: CameraUiTokens.spacing16,
-                  ),
-                  // The viewer background is always dark: pin the glass
-                  // control to dark brightness instead of the system theme.
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      brightness: Brightness.dark,
+          // The viewer background is always dark: resolve the whole body
+          // against the app's real dark theme so theme-driven card text
+          // (traffic map card, brief card, map error text) renders light
+          // instead of the light-theme black. Do NOT use
+          // Theme.of(context).copyWith(brightness: Brightness.dark) here:
+          // copyWith keeps the light textTheme and would not fix the cards.
+          return Theme(
+            data: buildDarkTheme(primaryColorHex: '#00796B'),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildMediaArea(context, state, liveSelected),
+                  const SizedBox(height: CameraUiTokens.spacing12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: CameraUiTokens.spacing16,
                     ),
-                    child: Center(
-                      child: CameraGlassSegmentedControl<bool>(
-                        key: const ValueKey('viewer_mode_switcher'),
-                        segments: [
-                          ButtonSegment(
-                            value: true,
-                            icon: const Icon(Icons.live_tv_outlined),
-                            label: Text('camera.live'.tr()),
-                            tooltip: 'camera.live'.tr(),
-                          ),
-                          ButtonSegment(
-                            value: false,
-                            icon: const Icon(Icons.image_outlined),
-                            label: Text('camera.snapshot'.tr()),
-                            tooltip: 'camera.snapshot'.tr(),
-                          ),
-                        ],
-                        value: liveSelected,
-                        onChanged: (value) {
-                          setState(() {
-                            _liveOverride = value;
-                            if (value) _liveFailed = false;
-                          });
-                        },
+                    // The viewer background is always dark: pin the glass
+                    // control to dark brightness instead of the system theme.
+                    child: Theme(
+                      data: Theme.of(context).copyWith(
+                        brightness: Brightness.dark,
+                      ),
+                      child: Center(
+                        child: CameraGlassSegmentedControl<bool>(
+                          key: const ValueKey('viewer_mode_switcher'),
+                          segments: [
+                            ButtonSegment(
+                              value: true,
+                              icon: const Icon(Icons.live_tv_outlined),
+                              label: Text('camera.live'.tr()),
+                              tooltip: 'camera.live'.tr(),
+                            ),
+                            ButtonSegment(
+                              value: false,
+                              icon: const Icon(Icons.image_outlined),
+                              label: Text('camera.snapshot'.tr()),
+                              tooltip: 'camera.snapshot'.tr(),
+                            ),
+                          ],
+                          value: liveSelected,
+                          onChanged: (value) {
+                            setState(() {
+                              _liveOverride = value;
+                              if (value) _liveFailed = false;
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-                if (_liveFailed) ...[
-                  const SizedBox(height: CameraUiTokens.spacing8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: CameraUiTokens.spacing16,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline,
-                          size: 16,
-                          color: CameraUiTokens.errorRed,
-                        ),
-                        const SizedBox(width: CameraUiTokens.spacing4),
-                        Expanded(
-                          child: Text(
-                            'camera.live_unavailable'.tr(),
-                            style: const TextStyle(
-                              color: CameraUiTokens.errorRed,
-                              fontSize: 12,
+                  if (_liveFailed) ...[
+                    const SizedBox(height: CameraUiTokens.spacing8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CameraUiTokens.spacing16,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: CameraUiTokens.errorRed,
+                          ),
+                          const SizedBox(width: CameraUiTokens.spacing4),
+                          Expanded(
+                            child: Text(
+                              'camera.live_unavailable'.tr(),
+                              style: const TextStyle(
+                                color: CameraUiTokens.errorRed,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-                if (liveSelected && !camera.canLive) ...[
-                  const SizedBox(height: CameraUiTokens.spacing8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: CameraUiTokens.spacing16,
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline,
-                          size: 16,
-                          color: Colors.white70,
-                        ),
-                        const SizedBox(width: CameraUiTokens.spacing4),
-                        Expanded(
-                          child: Text(
-                            'camera.no_live'.tr(),
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontSize: 12,
+                  ],
+                  if (liveSelected && !camera.canLive) ...[
+                    const SizedBox(height: CameraUiTokens.spacing8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CameraUiTokens.spacing16,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: Colors.white70,
+                          ),
+                          const SizedBox(width: CameraUiTokens.spacing4),
+                          Expanded(
+                            child: Text(
+                              'camera.no_live'.tr(),
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-                const SizedBox(height: CameraUiTokens.spacing16),
-                _buildInfoSection(context, camera),
-                const SizedBox(height: CameraUiTokens.spacing12),
-                _buildActionRow(context, camera, isFavorite),
-                if (camera.hasLocation) ...[
+                  ],
                   const SizedBox(height: CameraUiTokens.spacing16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: CameraUiTokens.spacing16,
+                  _buildInfoSection(context, camera),
+                  const SizedBox(height: CameraUiTokens.spacing12),
+                  _buildActionRow(context, camera, isFavorite),
+                  if (camera.hasLocation) ...[
+                    const SizedBox(height: CameraUiTokens.spacing16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: CameraUiTokens.spacing16,
+                      ),
+                      child: CameraTrafficMapCard(
+                        key: ValueKey('viewer_traffic_map_${camera.id}'),
+                        camera: camera,
+                        active:
+                            _routeIsCurrent && _appIsForeground && !_mapCovered,
+                        mapBuilder: widget.mapBuilder,
+                      ),
                     ),
-                    child: CameraTrafficMapCard(
-                      key: ValueKey('viewer_traffic_map_${camera.id}'),
-                      camera: camera,
-                      active:
-                          _routeIsCurrent && _appIsForeground && !_mapCovered,
-                      mapBuilder: widget.mapBuilder,
-                    ),
+                  ],
+                  const SizedBox(height: CameraUiTokens.spacing16),
+                  TrafficBriefCard(
+                    key: ValueKey('traffic_brief_${camera.id}'),
+                    camera: camera,
+                    repository: widget.repository,
+                    onSelectCamera: _openCamera,
+                    snapshotFetchedAt: state.currentFrame?.fetchedAt,
+                    isStale: state.isStale,
                   ),
+                  if (_related.isNotEmpty) _buildRelatedSection(context),
+                  const SizedBox(height: CameraUiTokens.spacing24),
                 ],
-                const SizedBox(height: CameraUiTokens.spacing16),
-                TrafficBriefCard(
-                  key: ValueKey('traffic_brief_${camera.id}'),
-                  camera: camera,
-                  repository: widget.repository,
-                  onSelectCamera: _openCamera,
-                  snapshotFetchedAt: state.currentFrame?.fetchedAt,
-                  isStale: state.isStale,
-                  onDirectionsTap: camera.hasLocation
-                      ? () => openCameraDirections(camera)
-                      : null,
-                ),
-                if (_related.isNotEmpty) _buildRelatedSection(context),
-                const SizedBox(height: CameraUiTokens.spacing24),
-              ],
+              ),
             ),
           );
         },
